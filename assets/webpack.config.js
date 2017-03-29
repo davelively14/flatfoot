@@ -3,7 +3,7 @@
 var path = require('path')
 var webpack = require('webpack')
 
-function root(dest) { return path.resolve(__dirname, dest) }
+function root(dest) { return path.resolve(__dirname, "../", dest) }
 function web(dest) { return root('lib/flatfoot/web/static/' + dest) }
 
 var config = module.exports = {
@@ -32,7 +32,7 @@ var config = module.exports = {
         loader: 'babel-loader',
         query: {
           cacheDirectory: true,
-          presets: ['react', 'es2015']
+          presets: [require.resolve('babel-preset-react'), require.resolve('babel-preset-es2015')]
         }
       }
     ]

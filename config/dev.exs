@@ -12,7 +12,7 @@ config :flatfoot, Flatfoot.Web.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-     node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--color", cd: Path.expand("../", __DIR__)]
+     node: ["node_modules/webpack/bin/webpack.js", "--watch-stdin", "--color", cd: Path.expand("../assets", __DIR__)]
   ]
 
 # ## SSL Support
