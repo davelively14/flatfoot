@@ -19,8 +19,9 @@ defmodule Flatfoot.Web.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", Flatfoot.Web do
-  #   pipe_through :api
-  # end
+  scope "/api", Flatfoot.Web do
+    pipe_through :api
+
+    resources "/api", UserController, only: [:index, :show, :create, :update, :delete]
+  end
 end
