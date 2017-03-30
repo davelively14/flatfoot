@@ -1,7 +1,7 @@
 {
   "name": "flatfoot",
   "version": "1.0.0",
-  "description": "Monitors and reports if your loved ones are being bullied online.",
+  "description": "Monitors and reports if someone you are tracking is being bullied online.",
   "main": "index.js",
   "directories": {
     "test": "test"
