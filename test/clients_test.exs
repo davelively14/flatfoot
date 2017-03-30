@@ -5,7 +5,7 @@ defmodule Flatfoot.ClientsTest do
   alias Flatfoot.Clients.User
 
   @create_attrs %{email: "some email", password_hash: "some password_hash", username: "some username"}
-  @update_attrs %{email: "some updated email", password_hash: "some updated password_hash", username: "some updated username"}
+  @update_attrs %{email: "some updated email", username: "some updated username"}
   @invalid_attrs %{email: nil, password_hash: nil, username: nil}
 
   def fixture(:user, attrs \\ @create_attrs) do
@@ -26,7 +26,6 @@ defmodule Flatfoot.ClientsTest do
   test "create_user/1 with valid data creates a user" do
     assert {:ok, %User{} = user} = Clients.create_user(@create_attrs)
     assert user.email == "some email"
-    assert user.password_hash == "some password_hash"
     assert user.username == "some username"
   end
 
@@ -39,7 +38,6 @@ defmodule Flatfoot.ClientsTest do
     assert {:ok, user} = Clients.update_user(user, @update_attrs)
     assert %User{} = user
     assert user.email == "some updated email"
-    assert user.password_hash == "some updated password_hash"
     assert user.username == "some updated username"
   end
 

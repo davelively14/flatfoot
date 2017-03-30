@@ -51,7 +51,7 @@ defmodule Flatfoot.Clients do
   """
   def create_user(attrs \\ %{}) do
     %User{}
-    |> user_changeset(attrs)
+    |> registration_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -102,11 +102,32 @@ defmodule Flatfoot.Clients do
     user_changeset(user, %{})
   end
 
+  ##############
+  # Changesets #
+  ##############
+
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :password_hash])
-    |> validate_required([:username, :email, :password_hash])
+    |> cast(attrs, ~w(username email))
+    |> validate_required([:username, :email])
     |> unique_constraint(:username)
     |> unique_constraint(:email)
+  end
+
+  defp registration_changeset(%User{} = user, attrs) do
+    user
+    |> user_changeset(attrs)
+    |> cast(attrs, ~w(password))
+    |> validate_length(:password, min: 6, max: 100)
+    |> put_pass_hash
+  end
+
+  defp put_pass_hash(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
+        put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(password))
+      _ ->
+        changeset
+    end
   end
 end
