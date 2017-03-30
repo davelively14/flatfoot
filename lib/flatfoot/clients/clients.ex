@@ -102,6 +102,19 @@ defmodule Flatfoot.Clients do
     user_changeset(user, %{})
   end
 
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user changes.
+
+  ## Examples
+
+      iex> register_user(user)
+      %Ecto.Changeset{source: %User{}}
+
+  """
+  def register_user(%User{} = user) do
+    registration_changeset(user, %{})
+  end
+
   ##############
   # Changesets #
   ##############

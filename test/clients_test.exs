@@ -4,57 +4,86 @@ defmodule Flatfoot.ClientsTest do
   alias Flatfoot.Clients
   alias Flatfoot.Clients.User
 
-  @create_attrs %{email: "some email", password_hash: "some password_hash", username: "some username"}
-  @update_attrs %{email: "some updated email", username: "some updated username"}
-  @invalid_attrs %{email: nil, password_hash: nil, username: nil}
+  @username Faker.Internet.user_name
+  @email Faker.Internet.free_email
+  @password Faker.Code.isbn
+  @new_email Faker.Internet.free_email
+  @new_username Faker.Internet.user_name
 
-  def fixture(:user, attrs \\ @create_attrs) do
-    {:ok, user} = Clients.create_user(attrs)
-    user
+  @create_attrs %{email: @email, password: @password, username: @username}
+
+  describe "list_users/0" do
+    test "returns all users" do
+      users = insert_list(5, :user)
+      assert Clients.list_users() == users
+    end
+
+    test "returns empty array if no users" do
+      assert Clients.list_users() == []
+    end
   end
 
-  test "list_users/1 returns all users" do
-    user = fixture(:user)
-    assert Clients.list_users() == [user]
+  describe "get_user!/1" do
+    test "returns the user with given id" do
+      user = insert(:user)
+      assert Clients.get_user!(user.id) == user
+    end
+
+    test "raises error if no user exists with given id" do
+      assert_raise Ecto.NoResultsError, fn -> Clients.get_user!(0) end
+    end
   end
 
-  test "get_user! returns the user with given id" do
-    user = fixture(:user)
-    assert Clients.get_user!(user.id) == user
+  describe "create_user/1" do
+    test "with valid data creates a user" do
+      assert {:ok, %User{} = user} = Clients.create_user(@create_attrs)
+      assert user.email == @email
+      assert user.username == @username
+    end
+
+    test "with missing data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Clients.create_user(%{username: @username, password: @password})
+      assert {:error, %Ecto.Changeset{}} = Clients.create_user(%{email: @email, password: @password})
+      assert {:error, %Ecto.Changeset{}} = Clients.create_user(%{username: @username, email: @email})
+    end
   end
 
-  test "create_user/1 with valid data creates a user" do
-    assert {:ok, %User{} = user} = Clients.create_user(@create_attrs)
-    assert user.email == "some email"
-    assert user.username == "some username"
+  describe "update_user/2" do
+    test "with valid data updates the user" do
+      user = insert(:user)
+      assert {:ok, user} = Clients.update_user(user, %{username: @new_username, email: @new_email})
+      assert %User{} = user
+      assert user.email == @new_email
+      assert user.username == @new_username
+    end
+
+    test "with invalid data returns error changeset" do
+      user = insert(:user)
+      assert {:error, %Ecto.Changeset{}} = Clients.update_user(user, %{username: ""})
+      assert {:error, %Ecto.Changeset{}} = Clients.update_user(user, %{email: ""})
+      assert user == Clients.get_user!(user.id)
+    end
   end
 
-  test "create_user/1 with invalid data returns error changeset" do
-    assert {:error, %Ecto.Changeset{}} = Clients.create_user(@invalid_attrs)
+  describe "delete_user/1" do
+    test "deletes the user" do
+      user = insert(:user)
+      assert {:ok, %User{}} = Clients.delete_user(user)
+      assert_raise Ecto.NoResultsError, fn -> Clients.get_user!(user.id) end
+    end
   end
 
-  test "update_user/2 with valid data updates the user" do
-    user = fixture(:user)
-    assert {:ok, user} = Clients.update_user(user, @update_attrs)
-    assert %User{} = user
-    assert user.email == "some updated email"
-    assert user.username == "some updated username"
+  describe "change_user/1" do
+    test "returns a user changeset" do
+      user = insert(:user)
+      assert %Ecto.Changeset{} = Clients.change_user(user)
+    end
   end
 
-  test "update_user/2 with invalid data returns error changeset" do
-    user = fixture(:user)
-    assert {:error, %Ecto.Changeset{}} = Clients.update_user(user, @invalid_attrs)
-    assert user == Clients.get_user!(user.id)
-  end
-
-  test "delete_user/1 deletes the user" do
-    user = fixture(:user)
-    assert {:ok, %User{}} = Clients.delete_user(user)
-    assert_raise Ecto.NoResultsError, fn -> Clients.get_user!(user.id) end
-  end
-
-  test "change_user/1 returns a user changeset" do
-    user = fixture(:user)
-    assert %Ecto.Changeset{} = Clients.change_user(user)
+  describe "register_user/1" do
+    test "returns a registration changeset" do
+      user = insert(:user)
+      assert %Ecto.Changeset{} = Clients.register_user(user)
+    end
   end
 end

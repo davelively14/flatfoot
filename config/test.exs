@@ -9,6 +9,9 @@ config :flatfoot, Flatfoot.Web.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+# Reduce number of Bcrypt rounds, speeds up testing
+config :comeonin, :bcrypt_log_rounds, 4
+
 # Configure your database
 config :flatfoot, Flatfoot.Repo,
   adapter: Ecto.Adapters.Postgres,

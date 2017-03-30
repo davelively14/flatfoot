@@ -22,6 +22,7 @@ defmodule Flatfoot.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Flatfoot.DataCase
+      import Flatfoot.Factory
     end
   end
 
