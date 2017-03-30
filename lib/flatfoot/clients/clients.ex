@@ -118,6 +118,7 @@ defmodule Flatfoot.Clients do
     user
     |> user_changeset(attrs)
     |> cast(attrs, ~w(password))
+    |> validate_required(:password)
     |> validate_length(:password, min: 6, max: 100)
     |> put_pass_hash
   end

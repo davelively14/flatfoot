@@ -1,67 +1,116 @@
 defmodule Flatfoot.Web.UserControllerTest do
   use Flatfoot.Web.ConnCase
 
-  alias Flatfoot.Clients
-  alias Flatfoot.Clients.User
+  alias Flatfoot.{Clients.User, Repo}
 
-  @create_attrs %{email: "some email", password: "some password_hash", username: "some username"}
-  @update_attrs %{email: "some updated email", username: "some updated username"}
-  @invalid_attrs %{email: nil, password_hash: nil, username: nil}
+  @username Faker.Internet.user_name
+  @email Faker.Internet.free_email
+  @password Faker.Code.isbn
+  @new_email Faker.Internet.free_email
 
-  def fixture(:user) do
-    {:ok, user} = Clients.create_user(@create_attrs)
-    user
-  end
+  @create_attrs %{email: @email, password: @password, username: @username}
 
-  setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
-  end
+  describe "GET index" do
+    test "renders a list of a single user" do
+      conn = build_conn()
+      user = insert(:user)
 
-  test "lists all entries on index", %{conn: conn} do
-    conn = get conn, user_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
-  end
-
-  test "creates user and renders user when data is valid", %{conn: conn} do
-    conn = post conn, user_path(conn, :create), user: @create_attrs
-    assert %{"id" => id} = json_response(conn, 201)["data"]
-
-    conn = get conn, user_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{
-      "id" => id,
-      "email" => "some email",
-      "username" => "some username"}
-  end
-
-  test "does not create user and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, user_path(conn, :create), user: @invalid_attrs
-    assert json_response(conn, 422)["errors"] != %{}
-  end
-
-  test "updates chosen user and renders user when data is valid", %{conn: conn} do
-    %User{id: id} = user = fixture(:user)
-    conn = put conn, user_path(conn, :update, user), user: @update_attrs
-    assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-    conn = get conn, user_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{
-      "id" => id,
-      "email" => "some updated email",
-      "username" => "some updated username"}
-  end
-
-  test "does not update chosen user and renders errors when data is invalid", %{conn: conn} do
-    user = fixture(:user)
-    conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
-    assert json_response(conn, 422)["errors"] != %{}
-  end
-
-  test "deletes chosen user", %{conn: conn} do
-    user = fixture(:user)
-    conn = delete conn, user_path(conn, :delete, user)
-    assert response(conn, 204)
-    assert_error_sent 404, fn ->
-      get conn, user_path(conn, :show, user)
+      conn = get conn, user_path(conn, :index)
+      assert json_response(conn, 200) == render_json("index.json", users: [user])
     end
+
+    test "renders a list of multiple users" do
+      conn = build_conn()
+      for _ <- 1..10 do insert(:user) end
+      users = User |> Repo.all
+
+      conn = get conn, user_path(conn, :index)
+      assert json_response(conn, 200) == render_json("index.json", users: users)
+    end
+  end
+
+  describe "POST create" do
+    test "creates user and renders user when data is valid" do
+      conn = build_conn()
+
+      conn = post conn, user_path(conn, :create), user: @create_attrs
+
+      # Assigns the id from the response to the variable id during the match
+      assert %{"id" => id} = json_response(conn, 201)["data"]
+
+      conn = get conn, user_path(conn, :show, id)
+      assert json_response(conn, 200)["data"] == %{
+        "id" => id,
+        "email" => @email,
+        "username" => @username
+      }
+    end
+
+    test "does not create user with no email" do
+      conn = build_conn()
+
+      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password}
+      assert json_response(conn, 422)["errors"] == %{"email" => ["can't be blank"]}
+    end
+
+    test "does not create user with no username" do
+      conn = build_conn()
+
+      conn = post conn, user_path(conn, :create), user: %{email: @email, password: @password}
+      assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"]}
+    end
+
+    test "does not create user with no password" do
+      conn = build_conn()
+
+      conn = post conn, user_path(conn, :create), user: %{email: @email, username: @username }
+      assert json_response(conn, 422)["errors"] == %{"password" => ["can't be blank"]}
+    end
+  end
+
+  describe "PUT update" do
+    test "updates user and renders user data when valid" do
+      conn = build_conn()
+      user = insert(:user)
+
+      conn = put conn, user_path(conn, :update, user), user: %{email: @new_email}
+      assert json_response(conn, 200)["data"]
+
+      conn = get conn, user_path(conn, :show, User |> Repo.get_by!(email: @new_email))
+      assert json_response(conn, 200)["data"]["email"] == @new_email
+    end
+
+    test "does not update chosen user and renders errors when data is invalid" do
+      conn = build_conn()
+      user = insert(:user)
+
+      conn = put conn, user_path(conn, :update, user), user: %{username: "", email: ""}
+      assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"]}
+    end
+  end
+
+  describe "DELETE delete" do
+    test "deletes chosen user" do
+      conn = build_conn()
+      user = insert(:user)
+
+      conn = delete conn, user_path(conn, :delete, user)
+      assert response(conn, 204)
+      assert User |> Repo.all |> length == 0
+    end
+
+  end
+
+
+  #####################
+  # Private Functions #
+  #####################
+
+  defp render_json(template, assigns) do
+    assigns = Map.new(assigns)
+
+    Flatfoot.Web.UserView.render(template, assigns)
+    |> Poison.encode!
+    |> Poison.decode!
   end
 end

@@ -5,7 +5,7 @@ defmodule Flatfoot.Factory do
     %Flatfoot.Clients.User{
       username: Faker.Internet.user_name,
       email: Faker.Internet.free_email,
-      password: Faker.Code.iban
+      password: Faker.Code.isbn
     }
   end
 end
