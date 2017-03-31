@@ -10,4 +10,6 @@ defmodule Flatfoot.Factory do
       password_hash: Comeonin.Bcrypt.hashpwsalt(pw)
     }
   end
+
+  
 end

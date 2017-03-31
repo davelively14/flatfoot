@@ -140,21 +140,37 @@ defmodule Flatfoot.Clients do
   ###########
 
   @doc """
-  Creates a session.
+  Pass a valid username and password and returns a Session.
 
   ## Examples
 
-      iex> create_session(%{field: value})
+      iex> create_session(%{username: valid_username, password: valid_password})
       {:ok, %Session{}}
 
-      iex> create_session(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      iex> create_session(%{username: valid_username, password: bad_password})
+      {:error, "Unauthorized, password was incorrect"}
+
+      iex> create_session(%{username: bad_username, password: valid_password})
+      {:error, "Unauthorized, user does not exist"}
 
   """
   def create_session(attrs \\ %{}) do
     %Session{}
     |> session_registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking session changes.
+
+  ## Examples
+
+      iex> register_session(session)
+      %Ecto.Changeset{source: %Session{}}
+
+  """
+  def register_session(%Session{} = session) do
+    session_registration_changeset(session, %{})
   end
 
   ##############

@@ -1,7 +1,7 @@
 defmodule Flatfoot.ClientsTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.{Clients, Clients.User}
+  alias Flatfoot.{Clients, Clients.User, Clients.Session}
 
   @username Faker.Internet.user_name
   @email Faker.Internet.free_email
@@ -10,6 +10,10 @@ defmodule Flatfoot.ClientsTest do
   @new_username Faker.Internet.user_name
 
   @create_attrs %{email: @email, password: @password, username: @username}
+
+  ########
+  # User #
+  ########
 
   describe "list_users/0" do
     test "returns all users" do
@@ -78,6 +82,26 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  ###########
+  # Session #
+  ###########
+
+  describe "create_session/1" do
+    test "with valid user_id creates a session" do
+      user = insert(:user)
+      assert {:ok, %Session{} = session} = Clients.create_session(%{user_id: user.id})
+      assert session.user_id == user.id
+    end
+
+    test "raises error with invalid user_id" do
+      assert_raise Ecto.ConstraintError, fn -> Clients.create_session(%{user_id: 0}) end
+    end
+  end
+
+  ##############
+  # Changesets #
+  ##############
+
   describe "change_user/1" do
     test "returns a user changeset" do
       user = insert(:user)
@@ -89,6 +113,12 @@ defmodule Flatfoot.ClientsTest do
     test "returns a registration changeset" do
       user = insert(:user)
       assert %Ecto.Changeset{} = Clients.register_user(user)
+    end
+  end
+
+  describe "register_session/1" do
+    test "returns a registration session changeset" do
+      
     end
   end
 end
