@@ -66,6 +66,22 @@ defmodule Flatfoot.Web.UserControllerTest do
       conn = post conn, user_path(conn, :create), user: %{email: @email, username: @username }
       assert json_response(conn, 422)["errors"] == %{"password" => ["can't be blank"]}
     end
+
+    test "only accepts valid email address" do
+      conn = build_conn()
+
+      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password, email: "jon@com"}
+      assert json_response(conn, 422)["errors"] == %{"email" => ["has invalid format"]}
+
+      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password, email: "jon@.com"}
+      assert json_response(conn, 422)["errors"] == %{"email" => ["has invalid format"]}
+
+      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password, email: "gmail.com"}
+      assert json_response(conn, 422)["errors"] == %{"email" => ["has invalid format"]}
+
+      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password, email: "j@gmail.com"}
+      assert json_response(conn, 201)
+    end
   end
 
   describe "PUT update" do

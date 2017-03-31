@@ -123,6 +123,7 @@ defmodule Flatfoot.Clients do
     user
     |> cast(attrs, ~w(username email))
     |> validate_required([:username, :email])
+    |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
     |> unique_constraint(:username)
     |> unique_constraint(:email)
   end
