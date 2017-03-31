@@ -20,12 +20,12 @@ defmodule Flatfoot.Web.SessionController do
       user ->
         conn
         |> put_status(:unauthorized)
-        |> render("error.json", user_params)
+        |> render("error.json", error: "password was incorrect")
       true ->
         dummy_checkpw()
         conn
         |> put_status(:unauthorized)
-        |> render("error.json", user_params)
+        |> render("error.json", error: "user does not exist")
     end
   end
 end

@@ -6,6 +6,10 @@ defmodule Flatfoot.Web.SessionView do
     %{data: render_one(session, SessionView, "session.json")}
   end
 
+  def render("error.json", %{error: error}) do
+    %{errors: "Unauthorized, #{error}"}
+  end
+
   def render("session.json", %{session: session}) do
     %{
       id: session.id,

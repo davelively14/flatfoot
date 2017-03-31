@@ -21,5 +21,15 @@ defmodule Flatfoot.Web.SessionControllerTest do
       assert %{"user_id" => user_id} = json_response(conn, 201)["data"]
       assert user_id == user.id
     end
+
+    test "returns error with invalid password", %{conn: conn, user: user} do
+      conn = post conn, session_path(conn, :create), user_params: %{username: user.username, password: "incorrect"}
+      assert json_response(conn, 401)["errors"] == "Unauthorized, password was incorrect"
+    end
+
+    test "returns error with invalid user", %{conn: conn} do
+      conn = post conn, session_path(conn, :create), user_params: %{username: "not_real_name", password: "password"}
+      assert json_response(conn, 401)["errors"] == "Unauthorized, user does not exist"
+    end
   end
 end
