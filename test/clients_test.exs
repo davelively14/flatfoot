@@ -46,6 +46,12 @@ defmodule Flatfoot.ClientsTest do
       assert {:error, %Ecto.Changeset{}} = Clients.create_user(%{email: @email, password: @password})
       assert {:error, %Ecto.Changeset{}} = Clients.create_user(%{username: @username, email: @email})
     end
+
+    test "with wrong email format returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Clients.create_user(%{username: @username, password: @password, email: "dave@gmail"})
+      assert {:error, %Ecto.Changeset{}} = Clients.create_user(%{username: @username, password: @password, email: "dave@gmail."})
+      assert {:error, %Ecto.Changeset{}} = Clients.create_user(%{username: @username, password: @password, email: "gmail.com"})
+    end
   end
 
   describe "update_user/2" do
