@@ -118,7 +118,8 @@ defmodule Flatfoot.ClientsTest do
 
   describe "register_session/1" do
     test "returns a registration session changeset" do
-      
+      session = insert(:session)
+      assert %Ecto.Changeset{} = Clients.register_session(session)
     end
   end
 end

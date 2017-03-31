@@ -11,5 +11,10 @@ defmodule Flatfoot.Factory do
     }
   end
 
-  
+  def session_factory do
+    %Flatfoot.Clients.Session{
+      token: SecureRandom.urlsafe_base64(),
+      user: build(:user)
+    }
+  end
 end
