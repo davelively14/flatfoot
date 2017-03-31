@@ -11,6 +11,7 @@ config :logger, level: :warn
 
 # Reduce number of Bcrypt rounds, speeds up testing
 config :comeonin, :bcrypt_log_rounds, 4
+config :comeonin, :pbkdf2_rounds, 1
 
 # Configure your database
 config :flatfoot, Flatfoot.Repo,
