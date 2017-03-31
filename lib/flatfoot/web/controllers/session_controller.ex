@@ -12,7 +12,7 @@ defmodule Flatfoot.Web.SessionController do
 
     cond do
       user && checkpw(user_params["password"], user.password_hash) ->
-        with {:ok, %Session{} = session} <- Clients.create_session(%{user_id: user.id}) do
+        with {:ok, %Session{} = session} <- Clients.login(%{user_id: user.id}) do
           conn
           |> put_status(:created)
           |> render("show.json", session: session)

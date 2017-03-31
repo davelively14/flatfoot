@@ -86,15 +86,15 @@ defmodule Flatfoot.ClientsTest do
   # Session #
   ###########
 
-  describe "create_session/1" do
+  describe "login/1" do
     test "with valid user_id creates a session" do
       user = insert(:user)
-      assert {:ok, %Session{} = session} = Clients.create_session(%{user_id: user.id})
+      assert {:ok, %Session{} = session} = Clients.login(%{user_id: user.id})
       assert session.user_id == user.id
     end
 
     test "raises error with invalid user_id" do
-      assert_raise Ecto.ConstraintError, fn -> Clients.create_session(%{user_id: 0}) end
+      assert_raise Ecto.ConstraintError, fn -> Clients.login(%{user_id: 0}) end
     end
   end
 

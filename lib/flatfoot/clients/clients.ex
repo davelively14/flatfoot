@@ -144,17 +144,17 @@ defmodule Flatfoot.Clients do
 
   ## Examples
 
-      iex> create_session(%{username: valid_username, password: valid_password})
+      iex> login(%{username: valid_username, password: valid_password})
       {:ok, %Session{}}
 
-      iex> create_session(%{username: valid_username, password: bad_password})
+      iex> login(%{username: valid_username, password: bad_password})
       {:error, "Unauthorized, password was incorrect"}
 
-      iex> create_session(%{username: bad_username, password: valid_password})
+      iex> login(%{username: bad_username, password: valid_password})
       {:error, "Unauthorized, user does not exist"}
 
   """
-  def create_session(attrs \\ %{}) do
+  def login(attrs \\ %{}) do
     %Session{}
     |> session_registration_changeset(attrs)
     |> Repo.insert()
