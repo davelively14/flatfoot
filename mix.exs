@@ -40,6 +40,7 @@ defmodule Flatfoot.Mixfile do
      {:ex_machina, "~> 2.0"},
      {:poison, "~> 3.0"},
      {:cors_plug, "~> 1.2"},
+     {:secure_random, "~> 0.5"},
      {:cowboy, "~> 1.0"}]
   end
 

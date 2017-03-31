@@ -17,4 +17,8 @@ defmodule Flatfoot.Web.UserView do
       email: user.email
     }
   end
+
+  def render("error.json", _) do
+    %{errors: "Failed to authenticate"}
+  end
 end

@@ -6,7 +6,11 @@ defmodule Flatfoot.Clients do
   import Ecto.{Query, Changeset}, warn: false
   alias Flatfoot.Repo
 
-  alias Flatfoot.Clients.User
+  alias Flatfoot.Clients.{User, Session}
+
+  ########
+  # User #
+  ########
 
   @doc """
   Returns the list of users.
@@ -38,6 +42,22 @@ defmodule Flatfoot.Clients do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
+  Gets the first user matching the providing params.
+
+  Raises `Ecto.NoResultsError` if the User does not exist.
+
+  ## Examples
+
+      iex> get_user_by_username(username: "dlives")
+      %User{}
+
+      iex> get_user_by_username(username: "not_username")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_by_username(username), do: Repo.get_by(User, username: username)
+
+  @doc """
   Creates a user.
 
   ## Examples
@@ -51,7 +71,7 @@ defmodule Flatfoot.Clients do
   """
   def create_user(attrs \\ %{}) do
     %User{}
-    |> registration_changeset(attrs)
+    |> user_registration_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -112,7 +132,29 @@ defmodule Flatfoot.Clients do
 
   """
   def register_user(%User{} = user) do
-    registration_changeset(user, %{})
+    user_registration_changeset(user, %{})
+  end
+
+  ###########
+  # Session #
+  ###########
+
+  @doc """
+  Creates a session.
+
+  ## Examples
+
+      iex> create_session(%{field: value})
+      {:ok, %Session{}}
+
+      iex> create_session(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_session(attrs \\ %{}) do
+    %Session{}
+    |> session_registration_changeset(attrs)
+    |> Repo.insert()
   end
 
   ##############
@@ -121,21 +163,37 @@ defmodule Flatfoot.Clients do
 
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, ~w(username email))
+    |> cast(attrs, [:username, :email])
     |> validate_required([:username, :email])
     |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
     |> unique_constraint(:username)
     |> unique_constraint(:email)
   end
 
-  defp registration_changeset(%User{} = user, attrs) do
+  defp user_registration_changeset(%User{} = user, attrs) do
     user
     |> user_changeset(attrs)
-    |> cast(attrs, ~w(password))
+    |> cast(attrs, [:password])
     |> validate_required(:password)
     |> validate_length(:password, min: 6, max: 100)
     |> put_pass_hash
   end
+
+  defp session_changeset(%Session{} = session, attrs) do
+    session
+    |> cast(attrs, [:user_id])
+    |> validate_required([:user_id])
+  end
+
+  defp session_registration_changeset(%Session{} = session, attrs) do
+    session
+    |> session_changeset(attrs)
+    |> put_change(:token, SecureRandom.urlsafe_base64())
+  end
+
+  #####################
+  # Private Functions #
+  #####################
 
   defp put_pass_hash(changeset) do
     case changeset do

@@ -22,6 +22,7 @@ defmodule Flatfoot.Web.Router do
   scope "/api", Flatfoot.Web do
     pipe_through :api
 
-    resources "/api", UserController, only: [:index, :show, :create, :update, :delete]
+    resources "/users", UserController, only: [:index, :show, :create, :update, :delete]
+    resources "/session", SessionController, only: [:create]
   end
 end

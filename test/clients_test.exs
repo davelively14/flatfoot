@@ -1,8 +1,7 @@
 defmodule Flatfoot.ClientsTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.Clients
-  alias Flatfoot.Clients.User
+  alias Flatfoot.{Clients, Clients.User}
 
   @username Faker.Internet.user_name
   @email Faker.Internet.free_email
