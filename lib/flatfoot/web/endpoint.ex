@@ -38,6 +38,8 @@ defmodule Flatfoot.Web.Endpoint do
     key: "_flatfoot_key",
     signing_salt: "W0XZMY1H"
 
+  plug CORSPlug
+
   plug Flatfoot.Web.Router
 
   @doc """

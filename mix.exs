@@ -39,6 +39,7 @@ defmodule Flatfoot.Mixfile do
      {:faker, "~> 0.7", only: [:dev, :test]},
      {:ex_machina, "~> 2.0"},
      {:poison, "~> 3.0"},
+     {:cors_plug, "~> 1.2"},
      {:cowboy, "~> 1.0"}]
   end
 
