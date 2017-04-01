@@ -187,12 +187,7 @@ defmodule Flatfoot.Clients do
     iex> get_session_by_token(invalid_token)
     :error
   """
-  def get_session_by_token(token) do
-    case session = Repo.get_by(Session, token: token) do
-      nil -> :error
-      _ -> {:ok, session}
-    end
-  end
+  def get_session_by_token(token), do: Repo.get_by(Session, token: token)
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking session changes.
