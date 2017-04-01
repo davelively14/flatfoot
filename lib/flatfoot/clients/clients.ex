@@ -58,6 +58,22 @@ defmodule Flatfoot.Clients do
   def get_user_by_username(username), do: Repo.get_by(User, username: username)
 
   @doc """
+  Gets the first user matching the providing params.
+
+  Raises `Ecto.NoResultsError` if the User does not exist.
+
+  ## Examples
+
+      iex> get_user_by_username(username: "dlives")
+      %User{}
+
+      iex> get_user_by_username(username: "not_username")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_by_session(session), do: Repo.get(User, session.user_id)
+
+  @doc """
   Creates a user.
 
   ## Examples
@@ -158,6 +174,24 @@ defmodule Flatfoot.Clients do
     %Session{}
     |> session_registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Pass a valid token and returns the corresponding Session.
+
+  ## Examples
+
+    iex> get_session_by_token(valid_token)
+    {:ok, %Session{}}
+
+    iex> get_session_by_token(invalid_token)
+    :error
+  """
+  def get_session_by_token(token) do
+    case session = Repo.get_by(Session, token: token) do
+      nil -> :error
+      _ -> {:ok, session}
+    end
   end
 
   @doc """
