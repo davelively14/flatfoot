@@ -4,7 +4,7 @@ defmodule Flatfoot.Clients.AuthTest do
 
   @opts Auth.init([])
 
-  test "finds the user by token", %{conn: conn} do
+  test "finds the user with valid token", %{conn: conn} do
     session = insert(:session)
 
     conn =
@@ -15,7 +15,7 @@ defmodule Flatfoot.Clients.AuthTest do
     assert conn.assigns.current_user
   end
 
-  test "invalid token", %{conn: conn} do
+  test "returns 401 status when passed invalid token", %{conn: conn} do
     conn =
       conn
       |> put_auth_token_in_header("foo")
@@ -25,7 +25,7 @@ defmodule Flatfoot.Clients.AuthTest do
     assert conn.halted
   end
 
-  test "no token", %{conn: conn} do
+  test "returns 401 status when passed no token", %{conn: conn} do
     conn = Auth.call(conn, @opts)
 
     assert conn.status == 401
