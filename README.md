@@ -8,8 +8,10 @@ In order to secure access, you'll need a token. You can have multiple active tok
 
 ## Creating a user account:
 
-Run the server and send this via `POST`:
-`http://localhost:4000/api/new_user?user_params[username]=jwilkins&user_params[password]=password&user_params[email]=jwilkins@gmail.com`
+Send this via `POST`:
+```
+http://localhost:4000/api/new_user?user_params[username]=jwilkins&user_params[password]=password&user_params[email]=jwilkins@gmail.com
+```
 
 ```json
 {
@@ -23,13 +25,122 @@ Run the server and send this via `POST`:
 
 ## Logging in:
 
+Returns a token that can be used to authorize.
+
 Run the server and send this via `POST`:
-`http://localhost:4000/api/login?user_params[username]=dlively&user_params[password]=password`
+```
+http://localhost:4000/api/login?user_params[username]=dlively&user_params[password]=password
+```
 
 ```json
 {
     "data": {
-        "token": "NmlaQ2VQMzVGM0IxM3hQTCtiQ0NIUT09"
+        "token": "eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
     }
 }
 ```
+
+## User#Index:
+
+Returns all users.
+
+Get all users by calling `GET` with this this address:
+```
+http://localhost:4000/api/users
+```
+
+Ensure to include authorization in Headers, like this:
+```
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+Will return this:
+
+```json
+{
+    "data": [
+        {
+            "username": "katarina2027",
+            "id": 1,
+            "email": "connor.runolfsson@gmail.com"
+        },
+        {
+            "username": "sabina2065",
+            "id": 2,
+            "email": "dorris2027@gmail.com"
+        },
+        {
+            "username": "jwilkins",
+            "id": 12,
+            "email": "jwilkins@gmail.com"
+        }
+    ]
+}
+```
+
+## User#show
+
+Return only one user.
+
+Get user by calling `GET` with this address, where `:id` is the id of the user.
+```
+http://localhost:4000/api/users/:id
+```
+
+Ensure to include authorization in Headers, like this:
+```
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+Returns this:
+
+```json
+{
+    "data": {
+        "username": "katarina2027",
+        "id": 1,
+        "email": "connor.runolfsson@gmail.com"
+    }
+}
+```
+
+## User#update
+
+Update a user's information.
+
+Use this call to `PUT`:
+```
+http://localhost:4000/api/users/1?user_params[username]=kbob12
+```
+
+Ensure to include authorization in Headers, like this:
+```
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+Returns this:
+```json
+{
+    "data": {
+        "username": "kbob12",
+        "id": 1,
+        "email": "connor.runolfsson@gmail.com"
+    }
+}
+```
+
+## User#delete
+
+Deletes the given user.
+
+Use this call with `DELETE`:
+```
+http://localhost:4000/api/users/1
+```
+
+Ensure to include authorization in Headers, like this:
+```
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+Will not return any content, only a `204` status.
