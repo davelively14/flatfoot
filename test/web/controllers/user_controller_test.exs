@@ -41,7 +41,7 @@ defmodule Flatfoot.Web.UserControllerTest do
     test "creates user and renders user when data is valid" do
       conn = build_conn()
 
-      conn = post conn, user_path(conn, :create), user: @create_attrs
+      conn = post conn, user_path(conn, :create), user_params: @create_attrs
 
       # Assigns the id from the response to the variable id during the match
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -53,37 +53,37 @@ defmodule Flatfoot.Web.UserControllerTest do
     test "does not create user with no email" do
       conn = build_conn()
 
-      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password}
+      conn = post conn, user_path(conn, :create), user_params: %{username: @username, password: @password}
       assert json_response(conn, 422)["errors"] == %{"email" => ["can't be blank"]}
     end
 
     test "does not create user with no username" do
       conn = build_conn()
 
-      conn = post conn, user_path(conn, :create), user: %{email: @email, password: @password}
+      conn = post conn, user_path(conn, :create), user_params: %{email: @email, password: @password}
       assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"]}
     end
 
     test "does not create user with no password" do
       conn = build_conn()
 
-      conn = post conn, user_path(conn, :create), user: %{email: @email, username: @username }
+      conn = post conn, user_path(conn, :create), user_params: %{email: @email, username: @username }
       assert json_response(conn, 422)["errors"] == %{"password" => ["can't be blank"]}
     end
 
     test "only accepts valid email address" do
       conn = build_conn()
 
-      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password, email: "jon@com"}
+      conn = post conn, user_path(conn, :create), user_params: %{username: @username, password: @password, email: "jon@com"}
       assert json_response(conn, 422)["errors"] == %{"email" => ["has invalid format"]}
 
-      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password, email: "jon@.com"}
+      conn = post conn, user_path(conn, :create), user_params: %{username: @username, password: @password, email: "jon@.com"}
       assert json_response(conn, 422)["errors"] == %{"email" => ["has invalid format"]}
 
-      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password, email: "gmail.com"}
+      conn = post conn, user_path(conn, :create), user_params: %{username: @username, password: @password, email: "gmail.com"}
       assert json_response(conn, 422)["errors"] == %{"email" => ["has invalid format"]}
 
-      conn = post conn, user_path(conn, :create), user: %{username: @username, password: @password, email: "j@gmail.com"}
+      conn = post conn, user_path(conn, :create), user_params: %{username: @username, password: @password, email: "j@gmail.com"}
       assert json_response(conn, 201)
     end
   end

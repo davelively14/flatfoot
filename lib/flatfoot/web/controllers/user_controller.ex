@@ -11,7 +11,7 @@ defmodule Flatfoot.Web.UserController do
     render(conn, "index.json", users: users)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{"user_params" => user_params}) do
     with {:ok, %User{} = user} <- Clients.create_user(user_params) do
       conn
       |> put_status(:created)
