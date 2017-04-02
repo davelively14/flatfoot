@@ -98,6 +98,21 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "get_session_by_token/1" do
+    test "reuturns a session when valid token is passed" do
+      session = insert(:session)
+      assert %Session{} = new_session = Clients.get_session_by_token(session.token)
+
+      assert new_session.id == session.id
+      assert new_session.token == session.token
+      assert new_session.user_id == session.user_id
+    end
+
+    test "returns nil if invalid token is passed" do
+      assert nil == Clients.get_session_by_token("abc")
+    end
+  end
+
   ##############
   # Changesets #
   ##############
