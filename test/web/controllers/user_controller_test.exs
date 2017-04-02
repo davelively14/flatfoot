@@ -90,7 +90,7 @@ defmodule Flatfoot.Web.UserControllerTest do
 
   describe "PUT update" do
     test "updates user and renders user data when valid", %{conn: conn, current_user: user} do
-      local_conn = put conn, user_path(conn, :update, user), user: %{email: @new_email}
+      local_conn = put conn, user_path(conn, :update, user), user_params: %{email: @new_email}
       assert json_response(local_conn, 200)["data"]
 
       local_conn = get conn, user_path(conn, :show, User |> Repo.get_by!(email: @new_email))
@@ -98,7 +98,7 @@ defmodule Flatfoot.Web.UserControllerTest do
     end
 
     test "does not update chosen user and renders errors when data is invalid", %{conn: conn, current_user: user} do
-      conn = put conn, user_path(conn, :update, user), user: %{username: "", email: ""}
+      conn = put conn, user_path(conn, :update, user), user_params: %{username: "", email: ""}
       assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"]}
     end
   end
