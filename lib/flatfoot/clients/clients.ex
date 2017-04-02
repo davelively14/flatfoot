@@ -78,10 +78,10 @@ defmodule Flatfoot.Clients do
 
   ## Examples
 
-      iex> create_user(%{field: value})
+      iex> create_user(%{username: username, email: email, password: password})
       {:ok, %User{}}
 
-      iex> create_user(%{field: bad_value})
+      iex> create_user(%{username: nil, email: nil, password: nil})
       {:error, %Ecto.Changeset{}}
 
   """
