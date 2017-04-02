@@ -25,7 +25,7 @@ defmodule Flatfoot.Clients.Auth do
     do: {:ok, Clients.get_user_by_session(session)}
   end
 
-  defp parse_token(["Token token =" <> token]), do: {:ok, String.replace(token, "\"", "")}
+  defp parse_token(["Token token=" <> token]), do: {:ok, String.replace(token, "\"", "")}
   defp parse_token(_), do: :error
 
   defp get_session(token) do

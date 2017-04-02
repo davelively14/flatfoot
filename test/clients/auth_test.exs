@@ -37,6 +37,6 @@ defmodule Flatfoot.Clients.AuthTest do
   #####################
 
   defp put_auth_token_in_header(conn, token) do
-    conn |> put_req_header("authorization", "Token token =\"#{token}\"")
+    conn |> put_req_header("authorization", "Token token=\"#{token}\"")
   end
 end

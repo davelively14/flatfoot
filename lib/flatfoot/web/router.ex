@@ -13,6 +13,10 @@ defmodule Flatfoot.Web.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :authenticate do
+    plug Flatfoot.Clients.Auth
+  end
+
   scope "/", Flatfoot.Web do
     pipe_through :browser # Use the default browser stack
 
@@ -22,7 +26,13 @@ defmodule Flatfoot.Web.Router do
   scope "/api", Flatfoot.Web do
     pipe_through :api
 
-    resources "/users", UserController, only: [:index, :show, :create, :update, :delete]
-    resources "/session", SessionController, only: [:create]
+    resources "/login", SessionController, only: [:create]
+    resources "/new_user", UserController, only: [:create]
+  end
+
+  scope "/api", Flatfoot.Web do
+    pipe_through [:api, :authenticate]
+
+    resources "/users", UserController, only: [:index, :show, :update, :delete]
   end
 end

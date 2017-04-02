@@ -6,6 +6,7 @@ defmodule Flatfoot.Clients.User do
     field :password_hash, :string
     field :password, :string, virtual: true
     field :username, :string
+    has_many :sessions, Flatfoot.Clients.Session, on_delete: :delete_all
 
     timestamps()
   end
