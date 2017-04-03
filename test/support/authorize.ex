@@ -21,6 +21,6 @@ defmodule Flatfoot.Authorize do
 
     not_logged_in = build_conn()
 
-    {:ok, %{conn: conn, not_logged_in: not_logged_in}}
+    {:ok, %{logged_in: conn, not_logged_in: not_logged_in}}
   end
 end

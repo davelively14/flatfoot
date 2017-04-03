@@ -13,12 +13,12 @@ defmodule Flatfoot.Web.UserControllerTest do
   describe "GET index" do
     setup [:login_user_setup]
 
-    test "renders a list of a single user", %{conn: conn} do
+    test "renders a list of a single user", %{logged_in: conn} do
       conn = get conn, user_path(conn, :index)
       assert json_response(conn, 200) == render_json("index.json", users: [conn.assigns.current_user])
     end
 
-    test "renders a list of multiple users", %{conn: conn} do
+    test "renders a list of multiple users", %{logged_in: conn} do
       for _ <- 1..10 do insert(:user) end
       users = User |> Repo.all
 
@@ -87,7 +87,7 @@ defmodule Flatfoot.Web.UserControllerTest do
   describe "PUT update" do
     setup [:login_user_setup]
 
-    test "updates user and renders user data when valid", %{conn: conn} do
+    test "updates user and renders user data when valid", %{logged_in: conn} do
       user = conn.assigns.current_user
       local_conn = put conn, user_path(conn, :update, user), user_params: %{email: @new_email}
 
@@ -97,7 +97,7 @@ defmodule Flatfoot.Web.UserControllerTest do
       assert updated_user["email"] == @new_email
     end
 
-    test "does not update chosen user and renders errors when data is invalid", %{conn: conn} do
+    test "does not update chosen user and renders errors when data is invalid", %{logged_in: conn} do
       conn = put conn, user_path(conn, :update, conn.assigns.current_user), user_params: %{username: "", email: ""}
       assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"]}
     end
@@ -113,7 +113,7 @@ defmodule Flatfoot.Web.UserControllerTest do
   describe "DELETE delete" do
     setup [:login_user_setup]
 
-    test "deletes chosen user", %{conn: conn} do
+    test "deletes chosen user", %{logged_in: conn} do
       conn = delete conn, user_path(conn, :delete, conn.assigns.current_user)
       assert response(conn, 204)
       assert User |> Repo.all |> length == 0
