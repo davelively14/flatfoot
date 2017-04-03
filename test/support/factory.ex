@@ -17,4 +17,14 @@ defmodule Flatfoot.Factory do
       user: build(:user)
     }
   end
+
+  def notification_record_factory do
+    %Flatfoot.Clients.NotificationRecord{
+      nickname: Faker.Name.name,
+      email: Faker.Internet.free_email,
+      role: Faker.Company.buzzword,
+      threshold: Enum.random(0..100),
+      user: build(:user)
+    }
+  end
 end

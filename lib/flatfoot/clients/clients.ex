@@ -6,7 +6,7 @@ defmodule Flatfoot.Clients do
   import Ecto.{Query, Changeset}, warn: false
   alias Flatfoot.Repo
 
-  alias Flatfoot.Clients.{User, Session}
+  alias Flatfoot.Clients.{User, Session, NotificationRecord}
 
   ########
   # User #
@@ -215,6 +215,28 @@ defmodule Flatfoot.Clients do
     session_registration_changeset(session, %{})
   end
 
+  ######################
+  # NotificationRecord #
+  ######################
+
+  @doc """
+  Creates a notificaion record. The `role` and `threshold` attributes are optional. The `role` attribute defaults to `nil` and `threshold` defaults to 0.
+
+  ## Examples
+
+      iex> create_notification_record(%{nickname: "Dad", email: "dl@it.com", user_id: 1, role: "family", threshold: 0})
+      {:ok, %NotificationRecord{}}
+
+      iex> create_notification_record(%{nickname: nil, email: "dlom", user_id: nil})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_notification_record(attrs) do
+    %NotificationRecord{}
+    |> notification_record_changeset(attrs)
+    |> Repo.insert()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -247,6 +269,13 @@ defmodule Flatfoot.Clients do
     session
     |> session_changeset(attrs)
     |> put_change(:token, SecureRandom.urlsafe_base64())
+  end
+
+  def notification_record_changeset(%NotificationRecord{} = record, attrs) do
+    record
+    |> cast(attrs, [:nickname, :email, :role, :threshold, :user_id])
+    |> validate_required([:nickname, :email, :user_id])
+    |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
   end
 
   #####################

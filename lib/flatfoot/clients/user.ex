@@ -7,6 +7,7 @@ defmodule Flatfoot.Clients.User do
     field :password, :string, virtual: true
     field :username, :string
     has_many :sessions, Flatfoot.Clients.Session, on_delete: :delete_all
+    has_many :notification_records, Flatfoot.Clients.NotificationRecord, on_delete: :delete_all
 
     timestamps()
   end

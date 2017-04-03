@@ -1,7 +1,7 @@
 defmodule Flatfoot.ClientsTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.{Clients, Clients.User, Clients.Session}
+  alias Flatfoot.{Clients, Clients.User, Clients.Session, Clients.NotificationRecord}
 
   @username Faker.Internet.user_name
   @email Faker.Internet.free_email
@@ -119,6 +119,39 @@ defmodule Flatfoot.ClientsTest do
 
     test "returns nil if invalid token is passed" do
       assert nil == Clients.get_session_by_token("abc")
+    end
+  end
+
+  ######################
+  # NotificationRecord #
+  ######################
+
+  describe "create_notification_record/1" do
+    @valid_nickname Faker.Name.name
+    @valid_email Faker.Internet.email
+
+    test "with valid params creates a notification record" do
+      user = insert(:user)
+      assert {:ok, %NotificationRecord{} = record} = Clients.create_notification_record(%{user_id: user.id, nickname: @valid_nickname, email: @valid_email})
+
+      assert record.email == @valid_email
+      assert record.nickname == @valid_nickname
+      assert record.user_id == user.id
+      assert record.threshold == 0
+      assert record.role == nil
+    end
+
+    test "with invalid params returns error and changeset" do
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_notification_record(%{user_id: nil, nickname: nil, email: nil})
+      assert changeset.errors[:nickname] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:email] == {"can't be blank", [validation: :required]}
+    end
+
+    test "will associate with correct user" do
+      user = insert(:user)
+      {:ok, record} = Clients.create_notification_record(%{user_id: user.id, nickname: @valid_nickname, email: @valid_email})
+      assert user == Clients.get_user!(record.user_id)
     end
   end
 
