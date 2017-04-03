@@ -181,6 +181,29 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "get_notification_record!/1" do
+    test "with a valid id returns the given notification record" do
+      user = insert(:user)
+      record = insert(:notification_record, user: user)
+
+      result = Clients.get_notification_record!(record.id, user.id)
+
+      assert result.user_id == record.user_id
+      assert result.email == record.email
+      assert result.nickname == record.nickname
+      assert result.role == record.role
+      assert result.id == record.id
+    end
+
+    test "with an invalid id will raise an error" do
+      user = insert(:user)
+      insert(:notification_record, user: user)
+
+      result = Clients.get_notification_record!(1, user.id)
+      assert result == nil
+    end
+  end
+
   ##############
   # Changesets #
   ##############

@@ -237,6 +237,29 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
+  Gets a single notification record.
+
+  Raises `Ecto.NoResultsError` if the NotificationRecord does not exist.
+
+  ## Examples
+
+      iex> get_notification_record!(123)
+      %NotificationRecord{}
+
+      iex> get_notification_record!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_notification_record!(id, user_id) do
+    result = Repo.one from r in NotificationRecord, where: r.user_id == ^user_id and r.id == ^id
+    if result == [] do
+      raise Ecto.NoResultsError
+    else
+      result
+    end
+  end
+
+  @doc """
   Creates a notificaion record. The `role` and `threshold` attributes are optional. The `role` attribute defaults to `nil` and `threshold` defaults to 0.
 
   ## Examples
