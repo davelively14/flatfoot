@@ -23,7 +23,7 @@ users |> Enum.each( fn(user) ->
   }) end
 )
 
-(1..50) |> Enum.each( fn(_) ->
+(1..75) |> Enum.each( fn(_) ->
   Clients.create_notification_record(%{
     nickname: Faker.Name.name,
     email: Faker.Internet.free_email,
