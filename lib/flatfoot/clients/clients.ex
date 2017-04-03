@@ -156,7 +156,7 @@ defmodule Flatfoot.Clients do
   ###########
 
   @doc """
-  Pass a valid username and password and returns a Session.
+  Pass a valid user_id and returns a Session.
 
   ## Examples
 

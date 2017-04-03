@@ -21,6 +21,7 @@ defmodule Flatfoot.Web.ConnCase do
       use Phoenix.ConnTest
       import Flatfoot.Web.Router.Helpers
       import Flatfoot.Factory
+      import Flatfoot.Authorize
 
       # The default endpoint for testing
       @endpoint Flatfoot.Web.Endpoint
