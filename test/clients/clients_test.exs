@@ -81,13 +81,15 @@ defmodule Flatfoot.ClientsTest do
       assert_raise Ecto.NoResultsError, fn -> Clients.get_user!(user.id) end
     end
 
-    test "deletes associated sessions" do
+    test "deletes associated sessions and notification records" do
       user = insert(:user)
       session = insert(:session, user: user)
+      insert(:notification_record, user: user)
 
       assert session.id == Clients.get_session_by_token(session.token) |> Map.get(:id)
       assert {:ok, %User{}} = Clients.delete_user(user)
       assert nil == Clients.get_session_by_token(session.token)
+      assert [] == Clients.list_notification_records(user.id)
     end
   end
 
@@ -205,7 +207,7 @@ defmodule Flatfoot.ClientsTest do
   end
 
   describe "update_notification_record/2" do
-    test "with a valid id and params the notification record is updated" do
+    test "with a valid notification record and params the notification record is updated" do
       record = insert(:notification_record)
       new_email = "new@email.com"
 
@@ -220,6 +222,15 @@ defmodule Flatfoot.ClientsTest do
 
       assert {:error, %Ecto.Changeset{} = changeset} = Clients.update_notification_record(record, %{email: "dd2", user_id: "", nickname: nil})
       assert changeset.errors |> length == 3
+    end
+  end
+
+  describe "delete_notification_record/1" do
+    test "with a valid notification record the record will be destroyed" do
+      record = insert(:notification_record)
+
+      assert {:ok, %NotificationRecord{} = record} = Clients.delete_notification_record(record)
+      assert !Clients.get_notification_record!(record.id, record.user_id)
     end
   end
 

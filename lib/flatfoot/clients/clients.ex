@@ -295,6 +295,22 @@ defmodule Flatfoot.Clients do
     |> Repo.update()
   end
 
+  @doc """
+  Deletes a NotificationRecord.
+
+  ## Examples
+
+      iex> delete_notification_record(valid_notification_record)
+      {:ok, %NotificationRecord{}}
+
+      iex> delete_notification_record(invalid_notification_record)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_notification_record(%NotificationRecord{} = notification_record) do
+    Repo.delete(notification_record)
+  end
+
   ##############
   # Changesets #
   ##############
