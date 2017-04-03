@@ -36,4 +36,34 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
       assert conn.halted
     end
   end
+
+  describe "GET index" do
+    test "renders a list of notification records for current_user", %{conn: conn} do
+      original_records = insert_list(5, :notification_record, user: conn.assigns.current_user)
+      insert_list(5, :notification_record)
+
+      conn = get conn, notification_record_path(conn, :index)
+      assert %{"data" => results} = json_response(conn, 200)
+      assert results |> length == original_records |> length
+    end
+
+    test "will not produce notification records for other users", %{conn: conn} do
+      user = insert(:user)
+      insert_list(5, :notification_record, user: user)
+
+      conn = get conn, notification_record_path(conn, :index)
+      assert %{"data" => results} = json_response(conn, 200)
+      assert results == []
+    end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      user = insert(:user)
+      insert_list(5, :notification_record, user: user)
+      insert_list(5, :notification_record)
+
+      conn = get conn, notification_record_path(conn, :index)
+      assert conn.status == 401
+      assert conn.halted
+    end
+  end
 end

@@ -6,6 +6,10 @@ defmodule Flatfoot.Web.NotificationRecordView do
     %{data: render_one(notification_record, NotificationRecordView, "notification_record.json")}
   end
 
+  def render("index.json", %{notification_records: notification_records}) do
+    %{data: render_many(notification_records, NotificationRecordView, "notification_record.json")}
+  end
+
   def render("notification_record.json", %{notification_record: record}) do
     %{
       user_id: record.user_id,

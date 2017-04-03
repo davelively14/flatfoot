@@ -12,4 +12,9 @@ defmodule Flatfoot.Web.NotificationRecordController do
       |> render("show.json", notification_record: record)
     end
   end
+
+  def index(conn, _) do
+    notification_records = Clients.list_notification_records(conn.assigns.current_user.id)
+    render(conn, "index.json", notification_records: notification_records)
+  end
 end
