@@ -1,7 +1,7 @@
 defmodule Flatfoot.Web.UserControllerTest do
   use Flatfoot.Web.ConnCase
 
-  alias Flatfoot.{Clients.User, Repo}
+  alias Flatfoot.{Clients.User, Repo, Clients}
 
   @username Faker.Internet.user_name
   @email Faker.Internet.free_email
@@ -38,14 +38,14 @@ defmodule Flatfoot.Web.UserControllerTest do
   end
 
   describe "POST create" do
-    test "creates user and renders user when data is valid" do
+    test "creates user when data is valid" do
       conn = build_conn()
 
       conn = post conn, user_path(conn, :create), user_params: @create_attrs
 
       # Assigns the id from the response to the variable id during the match
-      assert %{"id" => id} = json_response(conn, 201)["data"]
-      user = User |> Repo.get(id)
+      assert %{"token" => token} = json_response(conn, 201)["data"]
+      user = Clients.get_user_by_token(token)
       assert user.username == @username
       assert user.email == @email
     end

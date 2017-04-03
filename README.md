@@ -13,12 +13,11 @@ Send this via `POST`:
 http://localhost:4000/api/new_user?user_params[username]=jwilkins&user_params[password]=password&user_params[email]=jwilkins@gmail.com
 ```
 
+Returns this:
 ```json
 {
     "data": {
-        "username": "jwilkins",
-        "id": 12,
-        "email": "jwilkins@gmail.com"
+        "token": "eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
     }
 }
 ```
@@ -32,6 +31,7 @@ Run the server and send this via `POST`:
 http://localhost:4000/api/login?user_params[username]=dlively&user_params[password]=password
 ```
 
+Returns this:
 ```json
 {
     "data": {

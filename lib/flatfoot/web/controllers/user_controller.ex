@@ -13,10 +13,12 @@ defmodule Flatfoot.Web.UserController do
 
   def create(conn, %{"user_params" => user_params}) do
     with {:ok, %User{} = user} <- Clients.create_user(user_params) do
+      {:ok, session} = Clients.login(%{user_id: user.id})
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", user_path(conn, :show, user))
-      |> render("show.json", user: user)
+      |> render(Flatfoot.Web.SessionView, "show.json", session: session)
     end
   end
 

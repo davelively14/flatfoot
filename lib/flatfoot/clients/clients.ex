@@ -160,17 +160,14 @@ defmodule Flatfoot.Clients do
 
   ## Examples
 
-      iex> login(%{username: valid_username, password: valid_password})
+      iex> login(%{user_id: valid_id})
       {:ok, %Session{}}
 
-      iex> login(%{username: valid_username, password: bad_password})
-      {:error, "Unauthorized, password was incorrect"}
-
-      iex> login(%{username: bad_username, password: valid_password})
-      {:error, "Unauthorized, user does not exist"}
+      iex> login(%{user_id: invalid_id})
+      {:error, %Ecto.Changeset{}}
 
   """
-  def login(attrs \\ %{}) do
+  def login(attrs) do
     %Session{}
     |> session_registration_changeset(attrs)
     |> Repo.insert()
@@ -188,6 +185,22 @@ defmodule Flatfoot.Clients do
     :error
   """
   def get_session_by_token(token), do: Repo.get_by(Session, token: token)
+
+  @doc """
+  Pass a valid token and returns the corresponding Session.
+
+  ## Examples
+
+    iex> get_user_by_token(valid_token)
+    {:ok, %Session{}}
+
+    iex> get_user_by_token(invalid_token)
+    :error
+  """
+  def get_user_by_token(token) do
+    session = Session |> Repo.get_by(token: token)
+    User |> Repo.get(session.user_id)
+  end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking session changes.
