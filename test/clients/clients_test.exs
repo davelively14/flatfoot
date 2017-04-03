@@ -167,7 +167,7 @@ defmodule Flatfoot.ClientsTest do
 
     test "with invalid user_id raises an error" do
       user = insert(:user)
-      known_records = insert_list(5, :notification_record)
+      insert_list(5, :notification_record)
 
       assert_raise Ecto.Query.CastError, fn -> Clients.list_notification_records(user) end
     end
