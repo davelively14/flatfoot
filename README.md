@@ -40,7 +40,9 @@ Returns this:
 }
 ```
 
-## User#Index:
+## User API
+
+### User#Index:
 
 Returns all users.
 
@@ -78,7 +80,7 @@ Will return this:
 }
 ```
 
-## User#show
+### User#show
 
 Return only one user.
 
@@ -104,7 +106,7 @@ Returns this:
 }
 ```
 
-## User#update
+### User#update
 
 Update a user's information.
 
@@ -129,7 +131,7 @@ Returns this:
 }
 ```
 
-## User#delete
+### User#delete
 
 Deletes the given user.
 
@@ -144,3 +146,57 @@ Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 ```
 
 Will not return any content, only a `204` status.
+
+## Notification Record API
+
+### NotificationRecord#create
+
+Creates a notification record for the current user.
+
+Use this call to a `POST`:
+
+### NotificationRecord#index
+
+Returns a list of all notification records for the current user as indicated by the token.
+
+Use this call with `GET`:
+```
+http://localhost:4000/api/notification_records
+```
+
+Ensure to include authorization in the Headers, like this:
+```
+Authorization: Token token="UU5NcHlhU1Zra0lzcFlFUHZxTXVxZz09"
+```
+
+Returns this:
+```json
+{
+    "data": [
+        {
+            "user_id": 11,
+            "threshold": 38,
+            "role": "real-time",
+            "nickname": "Miss Abdiel Friesen",
+            "id": 18,
+            "email": "kurtis_blanda@hotmail.com"
+        },
+        {
+            "user_id": 11,
+            "threshold": 2,
+            "role": "reciprocal",
+            "nickname": "Marielle Balistreri",
+            "id": 31,
+            "email": "maryse1998@hotmail.com"
+        },
+        {
+            "user_id": 11,
+            "threshold": 36,
+            "role": "human-resource",
+            "nickname": "Wiley Gibson",
+            "id": 72,
+            "email": "benny2077@gmail.com"
+        }
+    ]
+}
+```
