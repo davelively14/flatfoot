@@ -25,9 +25,21 @@ defmodule Flatfoot.Web.NotificationRecordController do
 
   def update(conn, %{"id" => id, "params" => params}) do
     record = Clients.get_notification_record!(id, conn.assigns.current_user.id)
+
     if record do
       {:ok, result} = Clients.update_notification_record(record, params)
       render(conn, "show.json", notification_record: result)
+    else
+      render(conn, "error.json", error: "That record does not exist or is not available for this user")
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    record = Clients.get_notification_record!(id, conn.assigns.current_user.id)
+    if record do
+      with {:ok, %NotificationRecord{}} <- Clients.delete_notification_record(record) do
+        send_resp(conn, :no_content, "")
+      end
     else
       render(conn, "error.json", error: "That record does not exist or is not available for this user")
     end

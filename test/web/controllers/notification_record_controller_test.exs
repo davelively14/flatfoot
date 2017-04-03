@@ -128,4 +128,26 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
       assert conn.halted
     end
   end
+
+  describe "DELETE delete" do
+    test "deletes chosen notification record", %{conn: conn} do
+      record = insert(:notification_record, user: conn.assigns.current_user)
+      conn = delete conn, notification_record_path(conn, :delete, record)
+      assert response(conn, 204)
+    end
+
+    test "will not delete another user's record", %{conn: conn} do
+      record = insert(:notification_record)
+      conn = delete conn, notification_record_path(conn, :delete, record)
+      assert %{"errors" => errors} = json_response(conn, 200)
+      assert errors == "That record does not exist or is not available for this user"
+    end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      record = insert(:notification_record)
+      conn = delete conn, notification_record_path(conn, :delete, record)
+      assert conn.status == 401
+      assert conn.halted
+    end
+  end
 end
