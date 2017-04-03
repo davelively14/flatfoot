@@ -1,4 +1,4 @@
-alias Flatfoot.Clients
+alias Flatfoot.{Clients, Repo, Clients.NotificationRecord}
 
 (1..10) |> Enum.each( fn (_) ->
   Clients.create_user(%{
@@ -23,5 +23,18 @@ users |> Enum.each( fn(user) ->
   }) end
 )
 
+(1..50) |> Enum.each( fn(_) ->
+  Clients.create_notification_record(%{
+    nickname: Faker.Name.name,
+    email: Faker.Internet.free_email,
+    role: Faker.Company.buzzword,
+    threshold: Enum.random(0..100),
+    user_id: Enum.random(users) |> Map.get(:id)
+  }) end
+)
+
+records = NotificationRecord |> Repo.all
+
 IO.inspect "Seed complete"
 IO.inspect "#{users |> length} users created"
+IO.inspect "#{records |> length} records created"
