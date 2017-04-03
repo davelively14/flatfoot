@@ -80,6 +80,15 @@ defmodule Flatfoot.ClientsTest do
       assert {:ok, %User{}} = Clients.delete_user(user)
       assert_raise Ecto.NoResultsError, fn -> Clients.get_user!(user.id) end
     end
+
+    test "deletes associated sessions" do
+      user = insert(:user)
+      session = insert(:session, user: user)
+
+      assert session.id == Clients.get_session_by_token(session.token) |> Map.get(:id)
+      assert {:ok, %User{}} = Clients.delete_user(user)
+      assert nil == Clients.get_session_by_token(session.token)
+    end
   end
 
   ###########
