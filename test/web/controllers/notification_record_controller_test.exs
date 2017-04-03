@@ -2,7 +2,7 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
   use Flatfoot.Web.ConnCase
 
   describe "POST create, logged in token" do
-    setup [:login_user]
+    setup [:login_user_setup]
 
     test "creates new NotificationRecord with valid attributes", %{conn: conn} do
       user = conn.assigns.current_user
@@ -37,18 +37,5 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
       assert conn.status == 401
       assert conn.halted
     end
-  end
-
-  #####################
-  # Private Functions #
-  #####################
-
-  defp login_user(context) do
-    conn =
-      context.conn
-      |> bypass_through(Flatfoot.Router, :api)
-      |> login
-
-    {:ok, %{conn: conn}}
   end
 end

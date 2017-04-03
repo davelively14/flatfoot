@@ -10,22 +10,11 @@ defmodule Flatfoot.Web.UserControllerTest do
 
   @create_attrs %{email: @email, password: @password, username: @username}
 
-  setup %{conn: conn} do
-    user = insert(:user, password_hash: Comeonin.Bcrypt.hashpwsalt("password"))
-    session = insert(:session, user: user)
-
-    conn =
-      conn
-      |> put_req_header("accept", "application/json")
-      |> put_req_header("authorization", "Token token=\"#{session.token}\"")
-
-    {:ok, conn: conn, current_user: user}
-  end
-
   describe "GET index" do
-    test "renders a list of a single user", %{conn: conn, current_user: current_user} do
+    setup [:login_user_setup]
+    test "renders a list of a single user", %{conn: conn} do
       conn = get conn, user_path(conn, :index)
-      assert json_response(conn, 200) == render_json("index.json", users: [current_user])
+      assert json_response(conn, 200) == render_json("index.json", users: [conn.assigns.current_user])
     end
 
     test "renders a list of multiple users", %{conn: conn} do
@@ -89,23 +78,25 @@ defmodule Flatfoot.Web.UserControllerTest do
   end
 
   describe "PUT update" do
-    test "updates user and renders user data when valid", %{conn: conn, current_user: user} do
-      local_conn = put conn, user_path(conn, :update, user), user_params: %{email: @new_email}
+    setup [:login_user_setup]
+    test "updates user and renders user data when valid", %{conn: conn} do
+      local_conn = put conn, user_path(conn, :update, conn.assigns.current_user), user_params: %{email: @new_email}
       assert json_response(local_conn, 200)["data"]
 
       local_conn = get conn, user_path(conn, :show, User |> Repo.get_by!(email: @new_email))
       assert json_response(local_conn, 200)["data"]["email"] == @new_email
     end
 
-    test "does not update chosen user and renders errors when data is invalid", %{conn: conn, current_user: user} do
-      conn = put conn, user_path(conn, :update, user), user_params: %{username: "", email: ""}
+    test "does not update chosen user and renders errors when data is invalid", %{conn: conn} do
+      conn = put conn, user_path(conn, :update, conn.assigns.current_user), user_params: %{username: "", email: ""}
       assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"]}
     end
   end
 
   describe "DELETE delete" do
-    test "deletes chosen user", %{conn: conn, current_user: user} do
-      conn = delete conn, user_path(conn, :delete, user)
+    setup [:login_user_setup]
+    test "deletes chosen user", %{conn: conn} do
+      conn = delete conn, user_path(conn, :delete, conn.assigns.current_user)
       assert response(conn, 204)
       assert User |> Repo.all |> length == 0
     end
