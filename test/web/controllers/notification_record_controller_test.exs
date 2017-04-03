@@ -1,9 +1,9 @@
 defmodule Flatfoot.Web.NotificationRecordControllerTest do
   use Flatfoot.Web.ConnCase
 
-  describe "POST create" do
-    setup [:login_user_setup]
+  setup [:login_user_setup]
 
+  describe "POST create" do
     test "creates new NotificationRecord with valid attributes", %{conn: conn} do
       user = conn.assigns.current_user
       nickname = Faker.Name.name

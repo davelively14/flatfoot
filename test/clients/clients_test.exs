@@ -155,6 +155,32 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "list_notification_records/1" do
+    test "with valid user_id returns all notification records for a given user" do
+      user = insert(:user)
+      known_records = insert_list(5, :notification_record, user: user)
+      insert_list(2, :notification_record)
+
+      results = Clients.list_notification_records(user.id)
+      assert known_records |> length == results |> length
+    end
+
+    test "with invalid user_id raises an error" do
+      user = insert(:user)
+      known_records = insert_list(5, :notification_record)
+
+      assert_raise Ecto.Query.CastError, fn -> Clients.list_notification_records(user) end
+    end
+
+    test "returns empty list if no results" do
+      user = insert(:user)
+      insert_list(5, :notification_record)
+
+      results = Clients.list_notification_records(user.id)
+      assert results == []
+    end
+  end
+
   ##############
   # Changesets #
   ##############

@@ -219,6 +219,23 @@ defmodule Flatfoot.Clients do
   # NotificationRecord #
   ######################
 
+
+  @doc """
+  Returns a list of notification records for a given user.
+
+  ## Examples
+
+      iex> list_notification_records(user_id)
+      [%NotificationRecords{}, ...]
+
+      iex> list_notification_records(no_user_id)
+      ** (Ecto.NoResultsError)
+
+  """
+  def list_notification_records(user_id) do
+    Repo.all from r in NotificationRecord, where: r.user_id == ^user_id
+  end
+
   @doc """
   Creates a notificaion record. The `role` and `threshold` attributes are optional. The `role` attribute defaults to `nil` and `threshold` defaults to 0.
 
