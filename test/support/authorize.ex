@@ -1,6 +1,6 @@
 defmodule Flatfoot.Authorize do
   import Flatfoot.Factory
-  import Phoenix.ConnTest, only: [bypass_through: 3]
+  import Phoenix.ConnTest, only: [bypass_through: 3, build_conn: 0]
   import Plug.Conn, only: [put_req_header: 3, assign: 3]
   alias Flatfoot.Clients
 
@@ -19,6 +19,8 @@ defmodule Flatfoot.Authorize do
       |> bypass_through(Flatfoot.Router, :api)
       |> login
 
-    {:ok, %{conn: conn}}
+    not_logged_in = build_conn()
+
+    {:ok, %{conn: conn, not_logged_in: not_logged_in}}
   end
 end

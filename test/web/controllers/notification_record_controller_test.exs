@@ -1,7 +1,7 @@
 defmodule Flatfoot.Web.NotificationRecordControllerTest do
   use Flatfoot.Web.ConnCase
 
-  describe "POST create, logged in token" do
+  describe "POST create" do
     setup [:login_user_setup]
 
     test "creates new NotificationRecord with valid attributes", %{conn: conn} do
@@ -25,10 +25,8 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
       assert errors["nickname"] == ["can't be blank"]
       assert errors["email"] == ["can't be blank"]
     end
-  end
 
-  describe "POST create, no token" do
-    test "creates new NotificationRecord with valid attributes", %{conn: conn} do
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
       user = insert(:user)
       nickname = Faker.Name.name
       email = Faker.Internet.free_email

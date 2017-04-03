@@ -12,6 +12,7 @@ defmodule Flatfoot.Web.UserControllerTest do
 
   describe "GET index" do
     setup [:login_user_setup]
+
     test "renders a list of a single user", %{conn: conn} do
       conn = get conn, user_path(conn, :index)
       assert json_response(conn, 200) == render_json("index.json", users: [conn.assigns.current_user])
@@ -23,6 +24,12 @@ defmodule Flatfoot.Web.UserControllerTest do
 
       conn = get conn, user_path(conn, :index)
       assert json_response(conn, 200) == render_json("index.json", users: users)
+    end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      conn = get conn, user_path(conn, :index)
+      assert conn.status == 401
+      assert conn.halted
     end
   end
 
