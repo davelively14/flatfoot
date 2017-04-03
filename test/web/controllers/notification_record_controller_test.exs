@@ -66,4 +66,36 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
       assert conn.halted
     end
   end
+
+  describe "GET show" do
+    test "renders a notification record with a valid id", %{conn: conn} do
+      record = insert(:notification_record, user: conn.assigns.current_user)
+
+      conn = get conn, notification_record_path(conn, :show, record.id)
+      assert %{"data" => result} = json_response(conn, 200)
+
+      assert result["email"] == record.email
+      assert result["nickname"] == record.nickname
+      assert result["role"] == record.role
+      assert result["threshold"] == record.threshold
+      assert result["user_id"] == record.user_id
+    end
+
+    test "does not render a notification record if it does not belong to user", %{conn: conn} do
+      record = insert(:notification_record)
+
+      conn = get conn, notification_record_path(conn, :show, record.id)
+      assert %{"data" => result} = json_response(conn, 200)
+      assert result == nil
+    end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      user = insert(:user)
+      record = insert(:notification_record, user: user)
+
+      conn = get conn, notification_record_path(conn, :show, record.id)
+      assert conn.status == 401
+      assert conn.halted
+    end
+  end
 end

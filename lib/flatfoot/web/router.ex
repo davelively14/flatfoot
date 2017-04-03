@@ -34,6 +34,6 @@ defmodule Flatfoot.Web.Router do
     pipe_through [:api, :authenticate]
 
     resources "/users", UserController, only: [:index, :show, :update, :delete]
-    resources "/notification_records", NotificationRecordController, only: [:create, :index]
+    resources "/notification_records", NotificationRecordController, only: [:create, :index, :show]
   end
 end
