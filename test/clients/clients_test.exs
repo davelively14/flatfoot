@@ -204,6 +204,25 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "update_notification_record/2" do
+    test "with a valid id and params the notification record is updated" do
+      record = insert(:notification_record)
+      new_email = "new@email.com"
+
+      {:ok, result} = Clients.update_notification_record(record, %{email: new_email})
+
+      assert result.email == new_email
+      assert result.id == record.id
+    end
+
+    test "with invalid params returns error and changeset" do
+      record = insert(:notification_record)
+
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.update_notification_record(record, %{email: "dd2", user_id: "", nickname: nil})
+      assert changeset.errors |> length == 3
+    end
+  end
+
   ##############
   # Changesets #
   ##############

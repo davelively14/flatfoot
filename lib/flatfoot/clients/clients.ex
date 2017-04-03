@@ -277,6 +277,24 @@ defmodule Flatfoot.Clients do
     |> Repo.insert()
   end
 
+  @doc """
+  Updates a notification record.
+
+  ## Examples
+
+      iex> update_notification_record(user, %{field: new_value})
+      {:ok, %NotificationRecord{}}
+
+      iex> update_notification_record(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_notification_record(%NotificationRecord{} = record, attrs) do
+    record
+    |> notification_record_changeset(attrs)
+    |> Repo.update()
+  end
+
   ##############
   # Changesets #
   ##############
