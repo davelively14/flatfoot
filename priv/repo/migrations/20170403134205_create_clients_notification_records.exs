@@ -12,6 +12,6 @@ defmodule Flatfoot.Repo.Migrations.CreateClientsNotificationRecords do
       timestamps()
     end
 
-    create index(:clients_notification_records, [:user])
+    create index(:clients_notification_records, [:user_id])
   end
 end
