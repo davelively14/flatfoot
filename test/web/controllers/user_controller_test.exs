@@ -86,28 +86,45 @@ defmodule Flatfoot.Web.UserControllerTest do
 
   describe "PUT update" do
     setup [:login_user_setup]
-    test "updates user and renders user data when valid", %{conn: conn} do
-      local_conn = put conn, user_path(conn, :update, conn.assigns.current_user), user_params: %{email: @new_email}
-      assert json_response(local_conn, 200)["data"]
 
-      local_conn = get conn, user_path(conn, :show, User |> Repo.get_by!(email: @new_email))
-      assert json_response(local_conn, 200)["data"]["email"] == @new_email
+    test "updates user and renders user data when valid", %{conn: conn} do
+      user = conn.assigns.current_user
+      local_conn = put conn, user_path(conn, :update, user), user_params: %{email: @new_email}
+
+      assert %{"data" => updated_user} = json_response(local_conn, 200)
+      assert updated_user["username"] == user.username
+      assert updated_user["id"] == user.id
+      assert updated_user["email"] == @new_email
     end
 
     test "does not update chosen user and renders errors when data is invalid", %{conn: conn} do
       conn = put conn, user_path(conn, :update, conn.assigns.current_user), user_params: %{username: "", email: ""}
       assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"]}
     end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      user = insert(:user)
+      conn = put conn, user_path(conn, :update, user), user_params: %{email: @new_email}
+      assert conn.status == 401
+      assert conn.halted
+    end
   end
 
   describe "DELETE delete" do
     setup [:login_user_setup]
+
     test "deletes chosen user", %{conn: conn} do
       conn = delete conn, user_path(conn, :delete, conn.assigns.current_user)
       assert response(conn, 204)
       assert User |> Repo.all |> length == 0
     end
 
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      user = insert(:user)
+      conn = delete conn, user_path(conn, :delete, user)
+      assert conn.status == 401
+      assert conn.halted
+    end
   end
 
 
