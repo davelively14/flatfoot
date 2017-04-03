@@ -98,4 +98,34 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
       assert conn.halted
     end
   end
+
+  describe "PUT update" do
+    test "with valid params updates notification record", %{conn: conn} do
+      record = insert(:notification_record, user: conn.assigns.current_user)
+      new_email = "new@email.com"
+
+      conn = put conn, notification_record_path(conn, :update, record), params: %{email: new_email}
+      assert %{"data" => result} = json_response(conn, 200)
+      assert result["id"] == record.id
+      assert result["email"] == new_email
+    end
+
+    test "will not update another user's notification record", %{conn: conn} do
+      record = insert(:notification_record)
+      new_email = "new@email.com"
+
+      conn = put conn, notification_record_path(conn, :update, record), params: %{email: new_email}
+      assert %{"errors" => errors} = json_response(conn, 200)
+      assert errors == "That record does not exist or is not available for this user"
+    end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      record = insert(:notification_record)
+      new_email = "new@email.com"
+
+      conn = put conn, notification_record_path(conn, :update, record), params: %{email: new_email}
+      assert conn.status == 401
+      assert conn.halted
+    end
+  end
 end
