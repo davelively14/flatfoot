@@ -5,23 +5,34 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
 
   describe "POST create" do
     test "creates new NotificationRecord with valid attributes", %{logged_in: conn} do
-      user = conn.assigns.current_user
       nickname = Faker.Name.name
       email = Faker.Internet.free_email
 
-      conn = post conn, notification_record_path(conn, :create), params: %{user_id: user.id, nickname: nickname, email: email}
+      conn = post conn, notification_record_path(conn, :create), params: %{nickname: nickname, email: email}
       assert %{"data" => record} = json_response(conn, 201)
 
-      assert record["user_id"] == user.id
+      assert record["user_id"] == conn.assigns.current_user.id
+      assert record["nickname"] == nickname
+      assert record["email"] == email
+    end
+
+    test "does not create a new NotificationRecord for another user", %{logged_in: conn} do
+      user = insert(:user)
+      nickname = Faker.Name.name
+      email = Faker.Internet.free_email
+
+      conn = post conn, notification_record_path(conn, :create), params: %{nickname: nickname, email: email, user_id: user.id}
+      assert %{"data" => record} = json_response(conn, 201)
+
+      assert record["user_id"] == conn.assigns.current_user.id
       assert record["nickname"] == nickname
       assert record["email"] == email
     end
 
     test "with invalid attributes", %{logged_in: conn} do
-      conn = post conn, notification_record_path(conn, :create), params: %{user_id: nil, nickname: nil, email: nil}
+      conn = post conn, notification_record_path(conn, :create), params: %{nickname: nil, email: nil}
       assert %{"errors" => errors} = json_response(conn, 422)
 
-      assert errors["user_id"] == ["can't be blank"]
       assert errors["nickname"] == ["can't be blank"]
       assert errors["email"] == ["can't be blank"]
     end

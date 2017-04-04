@@ -6,6 +6,8 @@ defmodule Flatfoot.Web.NotificationRecordController do
   action_fallback Flatfoot.Web.FallbackController
 
   def create(conn, %{"params" => params}) do
+    params = params |> Map.merge(%{"user_id" => conn.assigns.current_user.id})
+
     with {:ok, %NotificationRecord{} = record} <- Clients.create_notification_record(params) do
       conn
       |> put_status(:created)
