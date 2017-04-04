@@ -154,6 +154,28 @@ Will not return any content, only a `204` status.
 Creates a notification record for the current user.
 
 Use this call to a `POST`:
+```
+http://localhost:4000/api/notification_records?params[nickname]=dad&params[email]=dj@gmail.com&params[role]=family&params[threshold]=0
+```
+
+Ensure to include authorization in the Headers, like this:
+```
+Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
+```
+
+Returns this:
+```json
+{
+    "data": {
+        "user_id": 11,
+        "threshold": 0,
+        "role": "family",
+        "nickname": "dad",
+        "id": 76,
+        "email": "dj@gmail.com"
+    }
+}
+```
 
 ### NotificationRecord#index
 
@@ -200,3 +222,36 @@ Returns this:
     ]
 }
 ```
+
+### NotificationRecord#show
+
+Returns a single notification record when passed its id.
+
+Use this call with `GET`:
+
+```
+http://localhost:4000/api/notification_records/76
+```
+
+Ensure to include the authorization token in the Headers:
+```
+Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
+```
+
+Returns this:
+```json
+{
+    "data": {
+        "user_id": 11,
+        "threshold": 0,
+        "role": "family",
+        "nickname": "dad",
+        "id": 76,
+        "email": "dj@gmail.com"
+    }
+}
+```
+
+### NotificationRecord#update
+
+Update a notification record by passing in the parameters you want to upgrade.
