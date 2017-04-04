@@ -130,6 +130,15 @@ defmodule Flatfoot.Web.NotificationRecordControllerTest do
       assert errors == "That record does not exist or is not available for this user"
     end
 
+    test "cannot change user_id", %{logged_in: conn} do
+      record = insert(:notification_record, user: conn.assigns.current_user)
+      new_user_id = "eleven"
+
+      conn = put conn, notification_record_path(conn, :update, record), params: %{user_id: new_user_id}
+      assert %{"data" => result} = json_response(conn, 200)
+      assert result["user_id"] == conn.assigns.current_user.id
+    end
+
     test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
       record = insert(:notification_record)
       new_email = "new@email.com"
