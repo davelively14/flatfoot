@@ -254,4 +254,44 @@ Returns this:
 
 ### NotificationRecord#update
 
-Update a notification record by passing in the parameters you want to upgrade.
+Update a notification record by passing in the parameters you want to change. Returns the updated notification record.
+
+Use this call with `PUT`:
+```
+http://localhost:4000/api/notification_records/76?params[email]=acdc@gmail.com
+```
+
+Ensure to include the authorization token in the Headers:
+```
+Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
+```
+
+Returns this:
+```json
+{
+    "data": {
+        "user_id": 11,
+        "threshold": 0,
+        "role": "family",
+        "nickname": "dad",
+        "id": 76,
+        "email": "acdc@gmail.com"
+    }
+}
+```
+
+### NotificationRecord#delete
+
+Remove a notification record from the database. Does not return any data.
+
+Use this call with `DELETE`:
+```
+http://localhost:4000/api/notification_records/76
+```
+
+Ensure to include the authorization token in the Headers:
+```
+Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
+```
+
+Will not return any content, only a `204` status.
