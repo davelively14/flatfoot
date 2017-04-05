@@ -1,4 +1,4 @@
-alias Flatfoot.{Clients, Repo, Clients.NotificationRecord}
+alias Flatfoot.{Clients, Repo, Clients.NotificationRecord, Clients.Settings}
 
 (1..10) |> Enum.each( fn (_) ->
   Clients.create_user(%{
@@ -20,7 +20,12 @@ users |> Enum.each( fn(user) ->
   Clients.login(%{
     token: SecureRandom.urlsafe_base64(),
     user_id: user.id
-  }) end
+  })
+  Clients.create_settings(%{
+    global_threshold: Enum.random(0..100),
+    user_id: user.id
+  })
+ end
 )
 
 (1..75) |> Enum.each( fn(_) ->
@@ -34,7 +39,9 @@ users |> Enum.each( fn(user) ->
 )
 
 records = NotificationRecord |> Repo.all
+settings = Settings |> Repo.all
 
 IO.inspect "Seed complete"
 IO.inspect "#{users |> length} users created"
+IO.inspect "#{settings |> length} settings created"
 IO.inspect "#{records |> length} records created"
