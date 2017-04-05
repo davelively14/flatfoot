@@ -53,4 +53,34 @@ defmodule Flatfoot.Web.SettingsControllerTest do
       assert conn.halted
     end
   end
+
+  describe "PUT update" do
+    test "with valid attributes will update settings", %{logged_in: conn} do
+      settings = insert(:settings, user: conn.assigns.current_user, global_threshold: 0)
+
+      conn = put conn, settings_path(conn, :update), params: %{global_threshold: 50}
+      assert %{"data" => result} = json_response(conn, 200)
+      assert settings.global_threshold == 0
+      assert result["global_threshold"] == 50
+      assert settings.id == result["id"]
+    end
+
+    test "with invalid attribute raises error", %{logged_in: conn} do
+      insert(:settings, user: conn.assigns.current_user)
+
+      conn = put conn, settings_path(conn, :update), params: %{global_threshold: "wrong"}
+      assert %{"errors" => error} = json_response(conn, 422)
+      assert error["global_threshold"] == ["is invalid"]
+    end
+
+    test "cannot change user_id", %{logged_in: conn} do
+      user = conn.assigns.current_user
+      insert(:settings, user: user)
+
+      conn = put conn, settings_path(conn, :update), params: %{user_id: 0}
+      assert %{"data" => result} = json_response(conn, 200)
+      assert result["user_id"] != 0
+      assert result["user_id"] == user.id
+    end
+  end
 end

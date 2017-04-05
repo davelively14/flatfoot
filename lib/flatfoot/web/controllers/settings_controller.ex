@@ -20,9 +20,21 @@ defmodule Flatfoot.Web.SettingsController do
     end
   end
 
+  def update(conn, %{"params" => params}) do
+    params = params |> clear_user_id
+
+    with {:ok, %Settings{} = settings} <- Clients.update_settings(conn.assigns.current_user.id, params) do
+      conn
+      |> render("show.json", settings: settings)
+    end
+
+  end
+
   #####################
   # Private Functions #
   #####################
 
   defp add_current_user_id(params, conn), do: params |> Map.merge(%{"user_id" => conn.assigns.current_user.id})
+
+  defp clear_user_id(params), do: params |> Map.delete("user_id")
 end
