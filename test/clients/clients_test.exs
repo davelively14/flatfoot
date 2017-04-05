@@ -238,6 +238,20 @@ defmodule Flatfoot.ClientsTest do
   # Settings #
   ############
 
+  describe "get_settings/1" do
+    test "with valid user_id returns settings" do
+      user = insert(:user)
+      insert(:settings, user: user)
+
+      assert %Settings{} = settings = Clients.get_settings!(user.id)
+      assert settings.user_id == user.id
+    end
+
+    test "with invalid user_id raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Clients.get_settings!(0) end
+    end
+  end
+
   describe "create_settings/1" do
     test "with valid data creates settings" do
       user = insert(:user)

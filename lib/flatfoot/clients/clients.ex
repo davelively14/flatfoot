@@ -320,6 +320,23 @@ defmodule Flatfoot.Clients do
 
   alias Flatfoot.Clients.Settings
 
+  @doc """
+  Provide a user_id and receive the corresponding settings.
+
+  Raises `Ecto.NoResultsError` if the Settings does not exist.
+
+  ## Examples
+
+      iex> get_settings(123)
+      %Settings{}
+
+      iex> get_settings(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_settings!(user_id) do
+    Repo.one! from s in Settings, where: s.user_id == ^user_id
+  end
 
   @doc """
   Creates settings for a given user.
