@@ -16,16 +16,17 @@ Clients.create_user(%{
 
 users = Clients.list_users
 
-users |> Enum.each( fn(user) ->
-  Clients.login(%{
-    token: SecureRandom.urlsafe_base64(),
-    user_id: user.id
-  })
-  Clients.create_settings(%{
-    global_threshold: Enum.random(0..100),
-    user_id: user.id
-  })
- end
+users |> Enum.each(
+  fn (user) ->
+    Clients.login(%{
+      token: SecureRandom.urlsafe_base64(),
+      user_id: user.id
+    })
+    Clients.create_settings(%{
+      global_threshold: Enum.random(0..100),
+      user_id: user.id
+    })
+  end
 )
 
 (1..75) |> Enum.each( fn(_) ->
