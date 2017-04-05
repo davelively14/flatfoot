@@ -34,4 +34,20 @@ defmodule Flatfoot.Factory do
       user: build(:user)
     }
   end
+
+  def blackout_option_factory do
+    %Flatfoot.Clients.BlackoutOption{
+      start: random_ecto_time(),
+      end: random_ecto_time(),
+      threshold: Enum.random(0..100),
+      exclude: [Faker.Address.state_abbr, Faker.Address.state_abbr],
+      settings: build(:settings)
+    }
+  end
+
+  #####################
+  # Private Functions #
+  #####################
+
+  defp random_ecto_time, do: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0})
 end
