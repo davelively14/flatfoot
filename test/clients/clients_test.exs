@@ -285,7 +285,6 @@ defmodule Flatfoot.ClientsTest do
     end
 
     test "with invalid user_id and attributes will raise NoResultsError" do
-      insert(:settings)
       new_threshold = 50
 
       assert_raise Ecto.NoResultsError, fn -> Clients.update_settings(0, %{global_threshold: new_threshold}) end
@@ -297,6 +296,26 @@ defmodule Flatfoot.ClientsTest do
 
       assert {:error, %Ecto.Changeset{} = changeset} = Clients.update_settings(user.id, %{global_threshold: "hello"})
       assert changeset.errors[:global_threshold] == {"is invalid", [type: :integer, validation: :cast]}
+    end
+  end
+
+  describe "delete_settings/1" do
+    test "with valid user_id deletes settings" do
+      user = insert(:user)
+      insert(:settings, user: user)
+
+      assert {:ok, %Settings{} = settings} = Clients.delete_settings(user.id)
+      assert settings.user_id == user.id
+    end
+
+    test "raises a no result error with invalid user_id" do
+      assert_raise Ecto.NoResultsError, fn -> Clients.delete_settings(0) end
+    end
+
+    test "raises an no result error if a user does not have a settings" do
+      user = insert(:user)
+
+      assert_raise Ecto.NoResultsError, fn -> Clients.delete_settings(user.id) end
     end
   end
 

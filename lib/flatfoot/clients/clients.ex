@@ -374,6 +374,23 @@ defmodule Flatfoot.Clients do
     |> Repo.update()
   end
 
+  @doc """
+  Deletes a Settings.
+
+  ## Examples
+
+      iex> delete_settings(user_id)
+      {:ok, %Settings{}}
+
+      iex> delete_settings(invalid_user_id)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_settings(user_id) do
+    settings = get_settings!(user_id)
+    Repo.delete(settings)
+  end
+
   ##############
   # Changesets #
   ##############
