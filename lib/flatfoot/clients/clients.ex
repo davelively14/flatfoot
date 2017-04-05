@@ -356,6 +356,24 @@ defmodule Flatfoot.Clients do
     |> Repo.insert()
   end
 
+  @doc """
+  Pass in user_id and update associated settings.
+
+  ## Examples
+
+      iex> update_settings(user, %{global_threshold: new_value})
+      {:ok, %NotificationRecord{}}
+
+      iex> update_settings(user, %{global_threshold: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_settings(user_id, attrs) do
+    get_settings!(user_id)
+    |> settings_changeset(attrs)
+    |> Repo.update()
+  end
+
   ##############
   # Changesets #
   ##############

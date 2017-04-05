@@ -273,6 +273,33 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "update_settings/2" do
+    test "with valid user_id and attributes updates settings" do
+      user = insert(:user)
+      insert(:settings, user: user)
+      new_threshold = 50
+
+      assert {:ok, %Settings{} = settings} = Clients.update_settings(user.id, %{global_threshold: new_threshold})
+      assert settings.user_id == user.id
+      assert settings.global_threshold == new_threshold
+    end
+
+    test "with invalid user_id and attributes will raise NoResultsError" do
+      insert(:settings)
+      new_threshold = 50
+
+      assert_raise Ecto.NoResultsError, fn -> Clients.update_settings(0, %{global_threshold: new_threshold}) end
+    end
+
+    test "with valid user_id and invalid attributes will return changeset with errors" do
+      user = insert(:user)
+      insert(:settings, user: user)
+
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.update_settings(user.id, %{global_threshold: "hello"})
+      assert changeset.errors[:global_threshold] == {"is invalid", [type: :integer, validation: :cast]}
+    end
+  end
+
   ##############
   # Changesets #
   ##############
