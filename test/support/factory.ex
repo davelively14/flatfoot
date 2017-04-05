@@ -27,4 +27,11 @@ defmodule Flatfoot.Factory do
       user: build(:user)
     }
   end
+
+  def settings_factory do
+    %Flatfoot.Clients.Settings{
+      global_threshold: Enum.random(0..100),
+      user: build(:user)
+    }
+  end
 end

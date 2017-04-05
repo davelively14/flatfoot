@@ -1,7 +1,7 @@
 defmodule Flatfoot.ClientsTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.{Clients, Clients.User, Clients.Session, Clients.NotificationRecord}
+  alias Flatfoot.{Clients, Clients.User, Clients.Session, Clients.NotificationRecord, Clients.Settings}
 
   @username Faker.Internet.user_name
   @email Faker.Internet.free_email
@@ -231,6 +231,31 @@ defmodule Flatfoot.ClientsTest do
 
       assert {:ok, %NotificationRecord{} = record} = Clients.delete_notification_record(record)
       assert !Clients.get_notification_record!(record.id, record.user_id)
+    end
+  end
+
+  ############
+  # Settings #
+  ############
+
+  describe "create_settings/1" do
+    test "with valid data creates settings" do
+      user = insert(:user)
+      assert {:ok, %Settings{} = settings} = Clients.create_settings(%{user_id: user.id})
+      assert settings.user_id == user.id
+      assert settings.global_threshold == 0
+    end
+
+    test "can only create one settings per user" do
+      user = insert(:user)
+      assert {:ok, %Settings{} = _} = Clients.create_settings(%{user_id: user.id})
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_settings(%{user_id: user.id})
+      assert changeset.errors[:user_id] == {"has already been taken", []}
+    end
+
+    test "cannot create settings without user_id" do
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_settings(%{})
+      assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
     end
   end
 

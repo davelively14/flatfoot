@@ -6,11 +6,11 @@ defmodule Flatfoot.Clients do
   import Ecto.{Query, Changeset}, warn: false
   alias Flatfoot.Repo
 
-  alias Flatfoot.Clients.{User, Session, NotificationRecord}
-
   ########
   # User #
   ########
+
+  alias Flatfoot.Clients.User
 
   @doc """
   Returns the list of users.
@@ -155,6 +155,8 @@ defmodule Flatfoot.Clients do
   # Session #
   ###########
 
+  alias Flatfoot.Clients.Session
+
   @doc """
   Pass a valid user_id and returns a Session.
 
@@ -219,6 +221,7 @@ defmodule Flatfoot.Clients do
   # NotificationRecord #
   ######################
 
+  alias Flatfoot.Clients.NotificationRecord
 
   @doc """
   Returns a list of notification records for a given user.
@@ -311,6 +314,31 @@ defmodule Flatfoot.Clients do
     Repo.delete(notification_record)
   end
 
+  ############
+  # Settings #
+  ############
+
+  alias Flatfoot.Clients.Settings
+
+
+  @doc """
+  Creates settings for a given user.
+
+  ## Examples
+
+      iex> create_settings(%{user_id: 12, global_threshold: 0})
+      {:ok, %Settings{}}
+
+      iex> create_settings(%{user_id: nil})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_settings(attrs \\ %{}) do
+    %Settings{}
+    |> settings_changeset(attrs)
+    |> Repo.insert()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -350,6 +378,13 @@ defmodule Flatfoot.Clients do
     |> cast(attrs, [:nickname, :email, :role, :threshold, :user_id])
     |> validate_required([:nickname, :email, :user_id])
     |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
+  end
+
+  def settings_changeset(%Settings{} = settings, attrs) do
+    settings
+    |> cast(attrs, [:global_threshold, :user_id])
+    |> validate_required([:user_id])
+    |> unique_constraint(:user_id)
   end
 
   #####################
