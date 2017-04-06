@@ -447,7 +447,7 @@ defmodule Flatfoot.ClientsTest do
     settings = insert(:settings)
     option = insert(:blackout_option, settings: settings)
 
-    {:ok, %{blackout_option: option, params: option |> Map.from_struct, settings: settings}}
+    {:ok, %{blackout_option: option, params: option |> Map.from_struct}}
   end
 
 end
