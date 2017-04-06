@@ -385,6 +385,26 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "update_blackout_option/2" do
+    setup :setup_blackout_option
+
+    test "with valid option and params will update the blackout option", %{blackout_option: option} do
+      assert {:ok, %BlackoutOption{} = result} = Clients.update_blackout_option(option, %{exclude: "[12, 13]"})
+      assert option.exclude != result.exclude
+      assert option.id == result.id
+    end
+
+    test "with invalid blackout option and valid params will return a changeset with errors" do
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.update_blackout_option(%BlackoutOption{}, %{exclude: "[12, 13]"})
+      assert changeset.errors |> length == 3
+    end
+
+    test "with valid blackout option and invalid params will return a changeset with errors", %{blackout_option: option} do
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.update_blackout_option(option, %{start: 11})
+      assert changeset.errors[:start] == {"is invalid", [type: Ecto.Time, validation: :cast]}
+    end
+  end
+
   ##############
   # Changesets #
   ##############

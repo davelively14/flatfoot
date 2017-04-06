@@ -447,6 +447,24 @@ defmodule Flatfoot.Clients do
     |> Repo.insert()
   end
 
+  @doc """
+  Updates a blackout option.
+
+  ## Examples
+
+      iex> update_blackout_option(blackout_option, %{field: new_value})
+      {:ok, %BlackoutOption{}}
+
+      iex> update_blackout_option(blackout_option, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_blackout_option(%BlackoutOption{} = blackout_option, attrs) do
+    blackout_option
+    |> blackout_option_changeset(attrs)
+    |> Repo.update()
+  end
+
   ##############
   # Changesets #
   ##############
