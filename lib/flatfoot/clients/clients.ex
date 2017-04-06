@@ -327,15 +327,33 @@ defmodule Flatfoot.Clients do
 
   ## Examples
 
-      iex> get_settings(123)
+      iex> get_settings_by_user_id!(123)
       %Settings{}
 
-      iex> get_settings(456)
+      iex> get_settings_by_user_id!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_settings!(user_id) do
+  def get_settings_by_user_id!(user_id) do
     Repo.one! from s in Settings, where: s.user_id == ^user_id
+  end
+
+  @doc """
+  Provide a valid id and returns the corresponding settings.
+
+  Raises `Ecto.NoResultsError` if the Settings does not exist.
+
+  ## Examples
+
+      iex> get_settings!(123)
+      %Settings{}
+
+      iex> get_settings!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_settings!(id) do
+    Settings |> Repo.get!(id)
   end
 
   @doc """
@@ -369,7 +387,7 @@ defmodule Flatfoot.Clients do
 
   """
   def update_settings(user_id, attrs) do
-    get_settings!(user_id)
+    get_settings_by_user_id!(user_id)
     |> settings_changeset(attrs)
     |> Repo.update()
   end
@@ -387,7 +405,7 @@ defmodule Flatfoot.Clients do
 
   """
   def delete_settings(user_id) do
-    settings = get_settings!(user_id)
+    settings = get_settings_by_user_id!(user_id)
     Repo.delete(settings)
   end
 

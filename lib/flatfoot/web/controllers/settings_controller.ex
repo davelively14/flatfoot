@@ -6,7 +6,7 @@ defmodule Flatfoot.Web.SettingsController do
   action_fallback Flatfoot.Web.FallbackController
 
   def show(conn, _) do
-    settings = Clients.get_settings!(conn.assigns.current_user.id)
+    settings = Clients.get_settings_by_user_id!(conn.assigns.current_user.id)
     render(conn, "show.json", settings: settings)
   end
 
