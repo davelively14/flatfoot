@@ -346,6 +346,30 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "list_blackout_options/1" do
+    test "with valid settings_id returns a list of all blackout_options for the settings" do
+      settings = insert(:settings)
+      options = insert_list(5, :blackout_option, settings: settings)
+      insert_list(2, :blackout_option)
+
+      results = Clients.list_blackout_options(settings.id)
+
+      assert results |> length == options |> length
+    end
+
+    test "with settings_id with no blackout options returns an empty list" do
+      settings = insert(:settings)
+      insert_list(3, :blackout_option)
+
+      assert [] = Clients.list_blackout_options(settings.id)
+    end
+
+    test "with invalid settings_id returns an empty list" do
+      insert_list(3, :blackout_option)
+      assert [] = Clients.list_blackout_options(0)
+    end
+  end
+
   ##############
   # Changesets #
   ##############

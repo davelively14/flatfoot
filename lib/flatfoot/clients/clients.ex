@@ -398,6 +398,22 @@ defmodule Flatfoot.Clients do
   alias Flatfoot.Clients.BlackoutOption
 
   @doc """
+  Returns a list of blackout options for a given settings.
+
+  ## Examples
+
+      iex> list_blackout_options(settings_id)
+      [%BlackoutOption{}, ...]
+
+      iex> list_blackout_options(bad_settings_id)
+      ** (Ecto.NoResultsError)
+
+  """
+  def list_blackout_options(settings_id) do
+    Repo.all from r in BlackoutOption, where: r.settings_id == ^settings_id
+  end
+
+  @doc """
   Creates a blackout option for a given settings.
 
   ## Examples
