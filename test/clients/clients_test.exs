@@ -370,6 +370,21 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "get_blackout_option!/1" do
+    setup :setup_blackout_option
+
+    test "with valid id returns the blackout option", %{blackout_option: option} do
+      assert %BlackoutOption{} = result = Clients.get_blackout_option!(option.id)
+      assert result.id == option.id
+      assert result.start == option.start
+      assert result.settings_id == option.settings_id
+    end
+
+    test "with invalid id raises an error" do
+      assert_raise Ecto.NoResultsError, fn -> Clients.get_blackout_option!(0) end
+    end
+  end
+
   ##############
   # Changesets #
   ##############

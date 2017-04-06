@@ -414,6 +414,22 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
+  Gets a single blackout option.
+
+  Raises `Ecto.NoResultsError` if the User does not exist.
+
+  ## Examples
+
+      iex> get_blackout_option!(valid_id)
+      %BlackoutOption{}
+
+      iex> get_blackout_option!(invalid_id)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_blackout_option!(id), do: Repo.get!(BlackoutOption, id)
+
+  @doc """
   Creates a blackout option for a given settings.
 
   ## Examples
