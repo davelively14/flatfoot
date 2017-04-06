@@ -465,6 +465,22 @@ defmodule Flatfoot.Clients do
     |> Repo.update()
   end
 
+  @doc """
+  Deletes a BlackoutOption.
+
+  ## Examples
+
+      iex> delete_blackout_option(blackout_option)
+      {:ok, %BlackoutOption{}}
+
+      iex> delete_blackout_option(blackout_option)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_blackout_option(%BlackoutOption{} = blackout_option) do
+    Repo.delete(blackout_option)
+  end
+
   ##############
   # Changesets #
   ##############

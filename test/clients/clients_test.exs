@@ -405,6 +405,15 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "delete_blackout_option/1" do
+    setup :setup_blackout_option
+
+    test "with valid blackout option will delete the blackout option", %{blackout_option: option} do
+      assert {:ok, %BlackoutOption{} = option} = Clients.delete_blackout_option(option)
+      assert_raise Ecto.NoResultsError, fn -> Clients.get_blackout_option!(option.id) end
+    end
+  end
+
   ##############
   # Changesets #
   ##############
