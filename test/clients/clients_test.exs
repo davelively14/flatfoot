@@ -1,7 +1,7 @@
 defmodule Flatfoot.ClientsTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.{Clients, Clients.User, Clients.Session, Clients.NotificationRecord, Clients.Settings}
+  alias Flatfoot.{Clients, Clients.User, Clients.Session, Clients.NotificationRecord, Clients.Settings, Clients.BlackoutOption}
 
   @username Faker.Internet.user_name
   @email Faker.Internet.free_email
@@ -319,6 +319,33 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  ###################
+  # Blackout Option #
+  ###################
+
+  describe "create_blackout_option/1" do
+    setup :setup_blackout_option
+
+    test "with valid data creates blackout option", %{params: params} do
+      assert {:ok, %BlackoutOption{} = option} = Clients.create_blackout_option(params)
+      assert option.settings_id == params.settings_id
+      assert option.start == params.start
+      assert option.stop == params.stop
+      assert option.settings_id == params.settings_id
+      assert option.exclude == params.exclude
+      assert option.id != params.id
+    end
+
+    test "returns changeset with errors with invalid or missing data" do
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_blackout_option(%{exclude: 11})
+
+      assert changeset.errors[:start] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:stop] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:settings_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:exclude] == {"is invalid", [type: :string, validation: :cast]}
+    end
+  end
+
   ##############
   # Changesets #
   ##############
@@ -343,4 +370,16 @@ defmodule Flatfoot.ClientsTest do
       assert %Ecto.Changeset{} = Clients.register_session(session)
     end
   end
+
+  ##########
+  # Setups #
+  ##########
+
+  defp setup_blackout_option(_) do
+    settings = insert(:settings)
+    option = insert(:blackout_option, settings: settings)
+
+    {:ok, %{blackout_option: option, params: option |> Map.from_struct, settings: settings}}
+  end
+
 end

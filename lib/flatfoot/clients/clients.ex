@@ -391,6 +391,30 @@ defmodule Flatfoot.Clients do
     Repo.delete(settings)
   end
 
+  ###################
+  # Blackout Option #
+  ###################
+
+  alias Flatfoot.Clients.BlackoutOption
+
+  @doc """
+  Creates a blackout option for a given settings.
+
+  ## Examples
+
+      iex> create_blackout_option(%{settings_id: 12, threshold: 0})
+      {:ok, %BlackoutOption{}}
+
+      iex> create_blackout_option(%{settings_id: nil})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_blackout_option(attrs \\ %{}) do
+    %BlackoutOption{}
+    |> blackout_option_changeset(attrs)
+    |> Repo.insert()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -437,6 +461,12 @@ defmodule Flatfoot.Clients do
     |> cast(attrs, [:global_threshold, :user_id])
     |> validate_required([:user_id])
     |> unique_constraint(:user_id)
+  end
+
+  def blackout_option_changeset(%BlackoutOption{} = blackout, attrs) do
+    blackout
+    |> cast(attrs, [:start, :stop, :threshold, :exclude, :settings_id])
+    |> validate_required([:start, :stop, :settings_id])
   end
 
   #####################
