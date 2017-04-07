@@ -90,7 +90,7 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
   end
 
   describe "POST create" do
-    setup :create_setup
+    setup :generic_params
 
     test "with valid attributes will create a blackout option", %{logged_in: conn, valid_params: valid_params} do
       conn = post conn, blackout_option_path(conn, :create), params: valid_params
@@ -114,6 +114,14 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
       assert errors["settings_id"] == ["can't be blank"]
     end
 
+    test "cannot create a blackout option for another user's settings", %{logged_in: conn, valid_params: valid_params} do
+      new_settings = insert(:settings)
+      new_params = valid_params |> Map.update!(:settings_id, &(&1 = new_settings.id))
+
+      conn = post conn, blackout_option_path(conn, :create), params: new_params
+      assert %{"errors" => "Unauthorized. Can not view or edit content for another user."} == json_response(conn, 401)
+    end
+
     test "with invalid token returns 401 and halts", %{not_logged_in: conn, valid_params: valid_params} do
       conn = post conn, blackout_option_path(conn, :create), params: valid_params
       assert conn.status == 401
@@ -121,11 +129,20 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
     end
   end
 
+  # describe "PUT update" do
+  #   setup :generic_params
+  #
+  #   test "with valid attrs will update a blackout option", %{logged_in: conn} do
+  #     user =
+  #     conn = post conn, blackout_option_path(conn, :update, )
+  #   end
+  # end
+
   ##########
   # Setups #
   ##########i
 
-  defp create_setup(context) do
+  defp generic_params(context) do
     valid_params = %{
       start: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1),
       stop: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1),
