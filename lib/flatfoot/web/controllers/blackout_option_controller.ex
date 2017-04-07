@@ -27,11 +27,26 @@ defmodule Flatfoot.Web.BlackoutOptionController do
   end
 
   def create(conn, %{"params" => params}) do
-    with {:ok, %BlackoutOption{} = blackout_option} <- Clients.create_blackout_option(params) do
-      conn
-      |> put_status(:created)
-      |> render("show.json", blackout_option: blackout_option)
+    if params["settings_id"] do
+      settings = Clients.get_settings!(params["settings_id"])
+
+      if authorized?(conn, settings) do
+        with {:ok, %BlackoutOption{} = blackout_option} <- Clients.create_blackout_option(params) do
+          conn
+          |> put_status(:created)
+          |> render("show.json", blackout_option: blackout_option)
+        end
+      else
+        conn |> render_unauthorized
+      end
+    else
+      with {:ok, %BlackoutOption{} = blackout_option} <- Clients.create_blackout_option(params) do
+        conn
+        |> put_status(:created)
+        |> render("show.json", blackout_option: blackout_option)
+      end
     end
+
   end
 
   #####################
