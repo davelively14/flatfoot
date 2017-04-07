@@ -17,13 +17,5 @@ defmodule Flatfoot.Web.BlackoutOptionController do
       true ->
         render(conn, "index.json", blackout_options: blackout_options)
     end
-
-    # if blackout_options == [] do
-    #   conn
-    #   |> put_status(422)
-    #   |> render("error.json", error: "Invalid settings_id")
-    # else
-    #   render(conn, "index.json", blackout_options: blackout_options)
-    # end
   end
 end
