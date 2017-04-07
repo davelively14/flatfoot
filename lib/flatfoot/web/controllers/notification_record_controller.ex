@@ -53,6 +53,5 @@ defmodule Flatfoot.Web.NotificationRecordController do
   #####################
 
   defp clear_user_id(params), do: params |> Map.delete("user_id")
-
   defp add_current_user_id(params, conn), do: params |> Map.merge(%{"user_id" => conn.assigns.current_user.id})
 end
