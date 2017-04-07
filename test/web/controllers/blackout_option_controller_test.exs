@@ -150,6 +150,10 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
       assert_raise Ecto.ConstraintError, fn -> put conn, blackout_option_path(conn, :update, blackout_option), params: %{settings_id: 1} end
     end
 
+    test "raises error with a bad id", %{logged_in: conn} do
+      assert_raise Ecto.NoResultsError, fn -> put conn, blackout_option_path(conn, :update, 0), params: %{threshold: 50} end
+    end
+
     test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
       blackout_option = insert(:blackout_option)
       conn = put conn, blackout_option_path(conn, :update, blackout_option), params: %{threshold: 50}
