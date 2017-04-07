@@ -533,25 +533,34 @@ defmodule Flatfoot.Clients do
     |> put_change(:token, SecureRandom.urlsafe_base64())
   end
 
-  def notification_record_changeset(%NotificationRecord{} = record, attrs) do
+  defp notification_record_changeset(%NotificationRecord{} = record, attrs) do
     record
     |> cast(attrs, [:nickname, :email, :role, :threshold, :user_id])
     |> validate_required([:nickname, :email, :user_id])
     |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
   end
 
-  def settings_changeset(%Settings{} = settings, attrs) do
+  defp settings_changeset(%Settings{} = settings, attrs) do
     settings
     |> cast(attrs, [:global_threshold, :user_id])
     |> validate_required([:user_id])
     |> unique_constraint(:user_id)
   end
 
-  def blackout_option_changeset(%BlackoutOption{} = blackout, attrs) do
+  defp blackout_option_changeset(%BlackoutOption{} = blackout, attrs) do
     blackout
     |> cast(attrs, [:start, :stop, :threshold, :exclude, :settings_id])
     |> validate_required([:start, :stop, :settings_id])
   end
+
+  #############
+  # Authorize #
+  #############
+
+  def owner_id(%Session{} = session), do: session.user_id
+  def owner_id(%NotificationRecord{} = record), do: record.user_id
+  def owner_id(%Settings{} = settings), do: settings.user_id
+  def owner_id(%BlackoutOption{} = option), do: option |> Ecto.assoc(:settings) |> Repo.one |> Ecto.assoc(:user) |> Repo.one |> Map.get(:id)
 
   #####################
   # Private Functions #
