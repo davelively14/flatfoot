@@ -439,6 +439,46 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  #############
+  # Authorize #
+  #############
+
+  describe "owner_id/1" do
+    test "works with blackout_option" do
+      user = insert(:user)
+      settings = insert(:settings, user: user)
+      option = insert(:blackout_option, settings: settings)
+      assert user.id == Clients.owner_id(option)
+    end
+
+    test "works with session" do
+      user = insert(:user)
+      session = insert(:session, user: user)
+      assert user.id == Clients.owner_id(session)
+    end
+
+    test "works with notification_record" do
+      user = insert(:user)
+      record = insert(:notification_record, user: user)
+      assert user.id == Clients.owner_id(record)
+    end
+
+    test "works with settings" do
+      user = insert(:user)
+      settings = insert(:settings, user: user)
+      assert user.id == Clients.owner_id(settings)
+    end
+
+    test "invalid struct will return a FunctionClauseError" do
+      user = insert(:user)
+      assert_raise FunctionClauseError, fn -> Clients.owner_id(user) end
+    end
+
+    test "empty struct will return nil for owner name" do
+      assert nil == Clients.owner_id(%Settings{})
+    end
+  end
+
   ##########
   # Setups #
   ##########
