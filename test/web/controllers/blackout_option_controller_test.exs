@@ -88,4 +88,60 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
       assert conn.halted
     end
   end
+
+  describe "POST create" do
+    setup :create_setup
+
+    test "with valid attributes will create a blackout option", %{logged_in: conn, valid_params: valid_params} do
+      conn = post conn, blackout_option_path(conn, :create), params: valid_params
+      assert %{"data" => option} = json_response(conn, 201)
+
+      assert option["settings_id"] == valid_params.settings_id
+      assert option["threshold"] == valid_params.threshold
+      assert option["start"] == valid_params.start |> Ecto.Time.to_string
+      assert option["stop"] == valid_params.stop |> Ecto.Time.to_string
+      assert option["exclude"] == valid_params.exclude
+    end
+
+    test "with invalid attributes will return errors", %{logged_in: conn, invalid_params: invalid_params} do
+      conn = post conn, blackout_option_path(conn, :create), params: invalid_params
+      assert %{"errors" => errors} = json_response(conn, 422)
+
+      assert errors["threshold"] == ["is invalid"]
+      assert errors["exclude"] == ["is invalid"]
+      assert errors["stop"] == ["can't be blank"]
+      assert errors["start"] == ["can't be blank"]
+      assert errors["settings_id"] == ["can't be blank"]
+    end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn, valid_params: valid_params} do
+      conn = post conn, blackout_option_path(conn, :create), params: valid_params
+      assert conn.status == 401
+      assert conn.halted
+    end
+  end
+
+  ##########
+  # Setups #
+  ##########i
+
+  defp create_setup(context) do
+    valid_params = %{
+      start: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1),
+      stop: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1),
+      threshold: Enum.random(0..100),
+      exclude: "[#{Faker.Address.state_abbr}, #{Faker.Address.state_abbr}]",
+      settings_id: insert(:settings, user: context.logged_in.assigns.current_user) |> Map.get(:id)
+    }
+
+    invalid_params = %{
+      start: nil,
+      stop: nil,
+      threshold: "hello",
+      exclude: 123,
+      settings_id: nil
+    }
+
+    {:ok, %{valid_params: valid_params, invalid_params: invalid_params}}
+  end
 end
