@@ -129,14 +129,34 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
     end
   end
 
-  # describe "PUT update" do
-  #   setup :generic_params
-  #
-  #   test "with valid attrs will update a blackout option", %{logged_in: conn} do
-  #     user =
-  #     conn = post conn, blackout_option_path(conn, :update, )
-  #   end
-  # end
+  describe "PUT update" do
+    test "with valid attrs will update a blackout option", %{logged_in: conn} do
+      settings = insert(:settings, user: conn.assigns.current_user)
+      blackout_option = insert(:blackout_option, settings: settings)
+
+      conn = put conn, blackout_option_path(conn, :update, blackout_option), params: %{exclude: "new string"}
+      assert %{"data" => result} = json_response(conn, 200)
+
+      assert result["threshold"] == blackout_option.threshold
+      assert result["settings_id"] == blackout_option.settings_id
+      assert result["exclude"] != blackout_option.exclude
+      assert result["exclude"] == "new string"
+    end
+
+    test "raises Ecto.ConstraintError on attempt to change settings_id", %{logged_in: conn} do
+      settings = insert(:settings, user: conn.assigns.current_user)
+      blackout_option = insert(:blackout_option, settings: settings)
+
+      assert_raise Ecto.ConstraintError, fn -> put conn, blackout_option_path(conn, :update, blackout_option), params: %{settings_id: 1} end
+    end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      blackout_option = insert(:blackout_option)
+      conn = put conn, blackout_option_path(conn, :update, blackout_option), params: %{threshold: 50}
+      assert conn.status == 401
+      assert conn.halted
+    end
+  end
 
   ##########
   # Setups #

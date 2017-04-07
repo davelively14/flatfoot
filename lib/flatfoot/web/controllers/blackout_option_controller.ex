@@ -46,7 +46,16 @@ defmodule Flatfoot.Web.BlackoutOptionController do
         |> render("show.json", blackout_option: blackout_option)
       end
     end
+  end
 
+  def update(conn, %{"id" => id, "params" => params}) do
+    blackout_option = Clients.get_blackout_option!(id)
+
+    if authorized?(conn, blackout_option) do
+      with {:ok, %BlackoutOption{} = blackout_option} <- Clients.update_blackout_option(blackout_option, params) do
+        render(conn, "show.json", blackout_option: blackout_option)
+      end
+    end
   end
 
   #####################

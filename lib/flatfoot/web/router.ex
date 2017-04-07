@@ -40,6 +40,6 @@ defmodule Flatfoot.Web.Router do
     get "/settings", SettingsController, :show
     put "/settings", SettingsController, :update
 
-    resources "/blackout_options", BlackoutOptionController, only: [:index, :show, :create]
+    resources "/blackout_options", BlackoutOptionController, only: [:index, :show, :create, :update]
   end
 end
