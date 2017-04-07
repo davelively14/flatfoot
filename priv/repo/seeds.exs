@@ -1,4 +1,4 @@
-alias Flatfoot.{Clients, Repo, Clients.NotificationRecord, Clients.Settings}
+alias Flatfoot.{Clients, Repo, Clients.NotificationRecord, Clients.Settings, Clients.BlackoutOption}
 
 (1..10) |> Enum.each( fn (_) ->
   Clients.create_user(%{
@@ -29,6 +29,8 @@ users |> Enum.each(
   end
 )
 
+settings = Settings |> Repo.all
+
 (1..75) |> Enum.each( fn(_) ->
   Clients.create_notification_record(%{
     nickname: Faker.Name.name,
@@ -40,9 +42,21 @@ users |> Enum.each(
 )
 
 records = NotificationRecord |> Repo.all
-settings = Settings |> Repo.all
+
+(1..75) |> Enum.each( fn(_) ->
+  Clients.create_blackout_option(%{
+    start: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1),
+    stop: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1),
+    threshold: Enum.random(0..100),
+    exclude: "[#{Faker.Address.state_abbr}, #{Faker.Address.state_abbr}]",
+    settings_id: Enum.random(settings) |> Map.get(:id)
+  }) end
+)
+
+blackout_options = BlackoutOption |> Repo.all
 
 IO.inspect "Seed complete"
 IO.inspect "#{users |> length} users created"
 IO.inspect "#{settings |> length} settings created"
-IO.inspect "#{records |> length} records created"
+IO.inspect "#{blackout_options |> length} blackout options created"
+IO.inspect "#{records |> length} notification records created"
