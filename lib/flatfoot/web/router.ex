@@ -36,12 +36,10 @@ defmodule Flatfoot.Web.Router do
     resources "/users", UserController, only: [:index, :show, :update, :delete]
     resources "/notification_records", NotificationRecordController, only: [:create, :index, :show, :update, :delete]
 
-    resources "/settings", SettingsController, only: [:create] do
-      resources "/blackout_options", BlackoutOptionController, only: [:index]
-    end
-
+    resources "/settings", SettingsController, only: [:create]
     get "/settings", SettingsController, :show
     put "/settings", SettingsController, :update
 
+    resources "/blackout_options", BlackoutOptionController, only: [:index, :show]
   end
 end
