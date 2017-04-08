@@ -1,8 +1,6 @@
 defmodule Flatfoot.Web.BlackoutOptionControllerTest do
   use Flatfoot.Web.ConnCase
 
-  # alias Flatfoot.Clients.BlackoutOption
-
   setup [:login_user_setup]
 
   describe "GET index" do
@@ -157,6 +155,30 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
     test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
       blackout_option = insert(:blackout_option)
       conn = put conn, blackout_option_path(conn, :update, blackout_option), params: %{threshold: 50}
+      assert conn.status == 401
+      assert conn.halted
+    end
+  end
+
+  describe "DELETE delete" do
+    test "with valid id can delete own blackout option", %{logged_in: conn} do
+      settings = insert(:settings, user: conn.assigns.current_user)
+      blackout_option = insert(:blackout_option, settings: settings)
+
+      conn = delete conn, blackout_option_path(conn, :delete, blackout_option)
+      assert "" == response(conn, 204)
+    end
+
+    test "cannot delete another user's blackout option", %{logged_in: conn} do
+      blackout_option = insert(:blackout_option)
+
+      conn = delete conn, blackout_option_path(conn, :delete, blackout_option)
+      assert %{"errors" => "Unauthorized. Can not view or edit content for another user."} == json_response(conn, 401)
+    end
+
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
+      blackout_option = insert(:blackout_option)
+      conn = delete conn, blackout_option_path(conn, :delete, blackout_option)
       assert conn.status == 401
       assert conn.halted
     end
