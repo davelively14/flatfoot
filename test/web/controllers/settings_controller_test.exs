@@ -31,6 +31,12 @@ defmodule Flatfoot.Web.SettingsControllerTest do
       assert settings["global_threshold"] == 50
     end
 
+    test "will not create a second settings for the same user", %{logged_in: conn} do
+      insert(:settings, user: conn.assigns.current_user)
+      conn = post conn, settings_path(conn, :create), params: %{global_threshold: 50}
+      assert %{"errors" => %{"user_id" => ["has already been taken"]}} = json_response(conn, 422)
+    end
+
     test "with invalid attributes will not create settings", %{logged_in: conn} do
       conn = post conn, settings_path(conn, :create), params: %{global_threshold: "invalid"}
       assert %{"errors" => error} = json_response(conn, 422)
