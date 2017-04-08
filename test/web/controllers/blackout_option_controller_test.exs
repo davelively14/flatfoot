@@ -101,6 +101,13 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
       assert option["exclude"] == valid_params.exclude
     end
 
+    test "with invalid time formats for start and stop will return errors", %{logged_in: conn, bad_time_params: bad_time_params} do
+      conn = post conn, blackout_option_path(conn, :create), params: bad_time_params
+      assert %{"errors" => errors} = json_response(conn, 422)
+      assert errors["start"] == ["is invalid"]
+      assert errors["stop"] == ["is invalid"]
+    end
+
     test "with invalid attributes will return errors", %{logged_in: conn, invalid_params: invalid_params} do
       conn = post conn, blackout_option_path(conn, :create), params: invalid_params
       assert %{"errors" => errors} = json_response(conn, 422)
@@ -189,12 +196,22 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
   ##########i
 
   defp generic_params(context) do
+    settings_id = insert(:settings, user: context.logged_in.assigns.current_user) |> Map.get(:id)
+
     valid_params = %{
       start: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1),
       stop: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1),
       threshold: Enum.random(0..100),
       exclude: "[#{Faker.Address.state_abbr}, #{Faker.Address.state_abbr}]",
-      settings_id: insert(:settings, user: context.logged_in.assigns.current_user) |> Map.get(:id)
+      settings_id: settings_id
+    }
+
+    bad_time_params = %{
+      start: "3:45pm",
+      stop: "noonish",
+      threshold: Enum.random(0..100),
+      exclude: "[#{Faker.Address.state_abbr}, #{Faker.Address.state_abbr}]",
+      settings_id: settings_id
     }
 
     invalid_params = %{
@@ -205,6 +222,6 @@ defmodule Flatfoot.Web.BlackoutOptionControllerTest do
       settings_id: nil
     }
 
-    {:ok, %{valid_params: valid_params, invalid_params: invalid_params}}
+    {:ok, %{valid_params: valid_params, bad_time_params: bad_time_params, invalid_params: invalid_params}}
   end
 end
