@@ -144,10 +144,11 @@ defmodule Flatfoot.ClientsTest do
     end
 
     test "with invalid params returns error and changeset" do
-      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_notification_record(%{user_id: nil, nickname: nil, email: nil})
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_notification_record(%{user_id: nil, nickname: nil, email: nil, threshold: 101})
       assert changeset.errors[:nickname] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:email] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:threshold] == {"is invalid", [validation: :inclusion]}
     end
 
     test "will associate with correct user" do
@@ -265,6 +266,12 @@ defmodule Flatfoot.ClientsTest do
       assert {:ok, %Settings{} = _} = Clients.create_settings(%{user_id: user.id})
       assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_settings(%{user_id: user.id})
       assert changeset.errors[:user_id] == {"has already been taken", []}
+    end
+
+    test "with invalid data will not create settings" do
+      user = insert(:user)
+      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_settings(%{user_id: user.id, global_threshold: 101})
+      assert changeset.errors[:global_threshold] == {"is invalid", [validation: :inclusion]}
     end
 
     test "cannot create settings without user_id" do
