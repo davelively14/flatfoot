@@ -19,20 +19,28 @@ In order to secure access, you'll need a token. You can have multiple active tok
 
 ## <a name="new-account"></a>Creating a user account:
 
-Accepted parameters:
+Provide basic user information to create an account and receive a session token. No authorization required to access.
 
-Name | Type | Notes
---- | --- | ---
-*username* (optional) | string | Must be unique and less than 20 characters.
-*email* (optional) | string | Must be unique and in a valid email format.
-*password* (optional) | string | Must be between 6 and 20 characters. Will be hashed on server.
+Accepted parameters for the `user_params` object:
 
-Send this via `POST`:
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*username* | yes | string | Must be unique and no more than 30 characters.
+*email* | yes | string | Must be unique and in a valid email format.
+*password* | yes | string | Must be between 6 and 100 characters. Will be hashed on server.
+
+API path pattern: `api/new_user?user_params[param]=param_value&user_params[param]=param_value...`
+- Provide params to the `user_params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `POST` method.
+
+##### Example:
+
+HTTP call (no authorization headers required):
+```code
+POST http://localhost:4000/api/new_user?user_params[username]=jwilkins&user_params[password]=password&user_params[email]=jwilkins@gmail.com
 ```
-http://localhost:4000/api/new_user?user_params[username]=jwilkins&user_params[password]=password&user_params[email]=jwilkins@gmail.com
-```
 
-Returns this:
+Return body:
 ```json
 {
     "data": {
@@ -43,21 +51,27 @@ Returns this:
 
 ## <a name="login"></a>Logging in:
 
-Returns a token that can be used to authorize.
+Provide username and password and receive a session token. No authorization required to access.
 
 Accepted parameters:
 
-Name | Type | Notes
---- | --- | ---
-*username* | string | User's username.
-*email* | string | User's non-hashed password.
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*username* | yes | string | Must be unique and no more than 30 characters.
+*password* | yes | string | Must be between 6 and 100 characters. Will be hashed when stored on the server.
 
-Run the server and send this via `POST`:
-```
-http://localhost:4000/api/login?user_params[username]=dlively&user_params[password]=password
+API path pattern: `api/login?user_params[param]=param&user_params[param]`
+- Provide params to the `user_params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `POST` method.
+
+##### Example:
+
+HTTP call (no authorization headers required):
+```code
+POST http://localhost:4000/api/login?user_params[username]=dlively&user_params[password]=password
 ```
 
-Returns this:
+Returb body:
 ```json
 {
     "data": {
@@ -70,20 +84,22 @@ Returns this:
 
 ### <a name="user-index"></a>User#Index:
 
-Returns all users. Currently only available during dev. Takes no parameters.
+Returns all users when called. Currently only available during dev. Takes no parameters. Authorization token is required.
 
-Get all users by calling `GET` with this this address:
-```
-http://localhost:4000/api/users
-```
+API path pattern: `api/users`
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
 
-Ensure to include authorization in Headers, like this:
-```
+##### Example:
+
+HTTP call with authorization header:
+```code
+GET http://localhost:4000/api/users
+...
 Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 ```
 
-Will return this:
-
+Return body:
 ```json
 {
     "data": [
@@ -99,35 +115,31 @@ Will return this:
         },
         {
             "username": "jwilkins",
-            "id": 12,
+            "id": 3,
             "email": "jwilkins@gmail.com"
         }
     ]
 }
 ```
 
-### <a name="user-show"></a>User#show
+### <a name="user-show"></a>User
 
-Return only one user's information. Does not return password.
+Provided a user id in the url and user's information will be returned. Takes no parameters. Does not return password. Authorization token is required.
 
-Accepted parameters:
+API path pattern: `api/users/:user_id/`
+- Provide `:user_id` (integer)
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
 
-Name | Type | Notes
---- | --- | ---
-*id* | integer | The id of the user record to retrieve.
+##### Example:
 
-Get user by calling `GET` with this address, where `:id` is the id of the user.
-```
-http://localhost:4000/api/users/:id
-```
-
-Ensure to include authorization in Headers, like this:
-```
+HTTP call with authorization header:
+```code
+http://localhost:4000/api/users/1
+...
 Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 ```
-
-Returns this:
-
+Return body:
 ```json
 {
     "data": {
@@ -140,25 +152,33 @@ Returns this:
 
 ### <a name="user-update"></a>User#update
 
-Update a user's information.
+Given a user's id and a list of parameters, update a user's information. Authorization token is required.
 
-Accepted parameters:
+Accepted parameters for the `user_params` object.
 
-Name | Type | Notes
---- | --- | ---
-*username* | string |
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*username* | no | string | Must be unique and no more than 30 characters.
+*email* | no | string | Must be unique and in a valid email format.
+*new_password* | no | string | Must be between 6 and 100 characters. MUST be accompanied by `current_password` or it will be ignored.
+*current_password* | no | string | Current password. Only required if providing a `new_password`.
 
-Use this call to `PUT`:
-```
-http://localhost:4000/api/users/1?user_params[username]=kbob12
-```
+API path pattern: `api/users/:user_id/user_params[param]=param_value&user_params[param]=param`
+- Provide `:user_id` (integer)
+- Provide params to the `user_params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `PUT` method.
+- Include authorization token for a user's session in header.
 
-Ensure to include authorization in Headers, like this:
-```
+##### Example:
+
+HTTP call with authorization header:
+```code
+PUT http://localhost:4000/api/users/1?user_params[username]=kbob12
+...
 Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 ```
 
-Returns this:
+Return body:
 ```json
 {
     "data": {
@@ -171,37 +191,54 @@ Returns this:
 
 ### <a name="user-delete"></a>User#delete
 
-Deletes the given user.
+Provided a user id in the url, will delete the user's account. Does not return any data. Takes no parameters. Authorization token is required.
 
-Use this call with `DELETE`:
-```
-http://localhost:4000/api/users/1
-```
+API path pattern: `api/users/:user_id`
+- Provide `:user_id` (integer)
+- Sent via the http `DELETE` method.
+- Include authorization token for a user's session in header.
 
-Ensure to include authorization in Headers, like this:
-```
+##### Example:
+
+HTTP call with authorization header:
+```code
+DELETE http://localhost:4000/api/users/1
+...
 Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 ```
 
-Will not return any content, only a `204` status.
+This function will not return any data, only a `204` status.
 
 ## <a name="notification-record"></a>Notification Record API
 
 ### <a name="notification-record-create"></a>NotificationRecord#create
 
-Creates a notification record for the current user.
+Given a list of parameters, it will create a notification record for the current user. Authorization token required.
 
-Use this call to a `POST`:
-```
+Accepted parameters for the `params` object.
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*nickname* | yes | string | No more than 40 characters.
+*email* | yes | string | Must be in a valid email format.
+*role* | no | string | User customized role.
+*threshold* | no | integer | Sets minimum threshold for notification. Default is 0.
+
+API path pattern: `api/notification_records?params[param]=param_value&params[param]=param`
+- Provide params to the `params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `POST` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
 http://localhost:4000/api/notification_records?params[nickname]=dad&params[email]=dj@gmail.com&params[role]=family&params[threshold]=0
-```
-
-Ensure to include authorization in the Headers, like this:
-```
+...
 Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
 ```
 
-Returns this:
+Return body:
 ```json
 {
     "data": {
@@ -215,22 +252,24 @@ Returns this:
 }
 ```
 
-
 ### <a name="notification-record-index"></a>NotificationRecord#index
 
-Returns a list of all notification records for the current user as indicated by the token.
+Returns a list of all notification records for the current user as indicated by the token. Takes no parameters. Authorization token required.
 
-Use this call with `GET`:
-```
-http://localhost:4000/api/notification_records
-```
+API path pattern: `api/notification_records`
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
 
-Ensure to include authorization in the Headers, like this:
-```
+##### Example:
+
+HTTP call with authorization header:
+```code
+GET http://localhost:4000/api/notification_records
+...
 Authorization: Token token="UU5NcHlhU1Zra0lzcFlFUHZxTXVxZz09"
 ```
 
-Returns this:
+Return body:
 ```json
 {
     "data": [
@@ -264,20 +303,23 @@ Returns this:
 
 ### <a name="notification-record-show"></a>NotificationRecord#show
 
-Returns a single notification record when passed its id.
+Provided a notification record id in the url, will return the record's information. Takes no parameters. Authorization token is required.
 
-Use this call with `GET`:
+API path pattern: `api/users/:notification_record_id`
+- Provide `:notification_record_id` (integer)
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
 
-```
-http://localhost:4000/api/notification_records/76
-```
+##### Example:
 
-Ensure to include the authorization token in the Headers:
-```
+HTTP call with authorization header:
+```code
+GET http://localhost:4000/api/notification_records/76
+...
 Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
 ```
 
-Returns this:
+Return body:
 ```json
 {
     "data": {
@@ -293,19 +335,33 @@ Returns this:
 
 ### <a name="notification-record-update"></a>NotificationRecord#update
 
-Update a notification record by passing in the parameters you want to change. Returns the updated notification record.
+Given a notification record's id and a list of parameters, update a records's information. Authorization token is required.
 
-Use this call with `PUT`:
-```
-http://localhost:4000/api/notification_records/76?params[email]=acdc@gmail.com
-```
+Accepted parameters for the `params` object.
 
-Ensure to include the authorization token in the Headers:
-```
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*username* | no | string | Must be unique and less than 30 characters.
+*email* | no | string | Must be unique and in a valid email format.
+*new_password* | no | string | Must be between 6 and 100 characters. MUST be accompanied by `current_password` or it will be ignored.
+*current_password* | no | string | Current password. Only required if providing a `new_password`.
+
+API path pattern: `api/users/:notification_record_id/params[param]=param_value&params[param]=param`
+- Provide `:notification_record_id` (integer)
+- Provide params to the `params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `PUT` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+PUT http://localhost:4000/api/notification_records/76?params[email]=acdc@gmail.com
+...
 Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
 ```
 
-Returns this:
+Return body:
 ```json
 {
     "data": {
@@ -321,53 +377,122 @@ Returns this:
 
 ### <a name="notification-record-delete"></a>NotificationRecord#delete
 
-Remove a notification record from the database. Does not return any data.
+Provided a notification record id, removes that record from the database. Does not return any data. Takes no parameters. Authorization token is required.
+
+API path pattern: `api/users/:notification_record_id`
+- Provide `:notification_record_id` (integer)
+- Sent via the http `DELETE` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
 
 Use this call with `DELETE`:
-```
-http://localhost:4000/api/notification_records/76
-```
-
-Ensure to include the authorization token in the Headers:
-```
+```code
+DELETE http://localhost:4000/api/notification_records/76
+...
 Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
 ```
 
-Will not return any content, only a `204` status.
+This function will not return any data, only a `204` status.
 
 ## <a name="settings"></a>Settings API
 
 ### <a name="settings-create"></a>Settings#create
 
-Creates a settings record for the current user.
+Given a list of parameters, it will create settings for the current user. Only one settings may exist for any given user. You will receive an error if you attempt to create a second. Authorization token required.
 
-Accepted parameters, required in **bold**:
+Accepted parameters for the `params` object.
 
-Name | Type | Notes
---- | --- | ---
-*global_threshold* (optional) | integer | A number from 1 - 100 that is used as the default threshold for notifications.
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*global_threshold* | no | string | A number from 0 - 100 that is used as the default threshold for notifications.
 
+API path pattern: `api/settings?params[param]=param_value&params[param]=param`
+- Provide params to the `params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `POST` method.
+- Include authorization token for a user's session in header.
 
-Use this call to a `POST`:
-```
-http://localhost:4000/api/
-```
+##### Example:
 
-Ensure to include authorization in the Headers, like this:
-```
+HTTP call with authorization header:
+```code
+POST http://localhost:4000/api/settings?params[global_threshold]=50
+...
 Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
 ```
 
-Returns this:
+Return body:
 ```json
 {
     "data": {
-        "user_id": 11,
-        "threshold": 0,
-        "role": "family",
-        "nickname": "dad",
-        "id": 76,
-        "email": "dj@gmail.com"
+        "user_id": 12,
+        "id": 12,
+        "global_threshold": 50
+    }
+}
+```
+
+### <a name="settings-show"></a>Settings#show
+
+Will return the settings data for the current user. Takes no parameters. Authorization token is required.
+
+API path pattern: `api/settings`
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+GET http://localhost:4000/api/settings
+...
+Authorization: Token token="dzJ0Mmd4R2tpcnhwZXRkTTZzQXE3QT09"
+```
+
+Result body:
+```json
+{
+    "data": {
+        "user_id": 12,
+        "id": 12,
+        "global_threshold": 50
+    }
+}
+```
+
+### <a name="settings-update"></a>Settings#update
+
+Given a list of parameters, update a user's information. Authorization token is required.
+
+Accepted parameters for the `params` object.
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*global_threshold* | no | string | A number from 0 - 100 that is used as the default threshold for notifications.
+
+API path pattern: `api/settings?params[param]=param_value&params[param]=param`
+- Provide params to the `params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `PUT` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+PUT http://localhost:4000/api/settings?params[global_threshold]=25
+...
+Authorization: Token token="dzJ0Mmd4R2tpcnhwZXRkTTZzQXE3QT09"
+```
+
+Result body:
+```json
+{
+    "data": {
+        "user_id": 12,
+        "id": 12,
+        "global_threshold": 25
     }
 }
 ```
