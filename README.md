@@ -10,7 +10,8 @@ Monitors and reports if someone you are tracking is being bullied online.
   * [Index](#user-index) | [Show](#user-show) | [Update](#user-update) | [Delete](#user-delete)
 * [NotificationRecord](#notification-record)
   * [Create](#notification-record-create) | [Index](#notification-record-index) | [Show](#notification-record-show)  | [Update](#notification-record-update) | [Delete](#notification-record-delete)
-
+* [Settings](#settings)
+  * [Create](#settings-create) | [Show](#settings-show) | [Update](#settings-update)
 
 ## Session Tokens
 
@@ -306,3 +307,38 @@ Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
 ```
 
 Will not return any content, only a `204` status.
+
+## <a name="settings"></a>Settings API
+
+### <a name="settings-create"></a>Settings#create
+
+Creates a settings record for the current user.
+
+Accepted parameters:
+Name | Type | Description
+---|---|---
+global_threshold | integer | A number from 1 - 100 that is used as the default threshold for notifications.
+
+Use this call to a `POST`:
+```
+http://localhost:4000/api/notification_records?params[nickname]=dad&params[email]=dj@gmail.com&params[role]=family&params[threshold]=0
+```
+
+Ensure to include authorization in the Headers, like this:
+```
+Authorization: Token token="L2ZmeHJHNzlrSC9sOENnMFcwdjQ4dz09"
+```
+
+Returns this:
+```json
+{
+    "data": {
+        "user_id": 11,
+        "threshold": 0,
+        "role": "family",
+        "nickname": "dad",
+        "id": 76,
+        "email": "dj@gmail.com"
+    }
+}
+```
