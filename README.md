@@ -19,13 +19,13 @@ In order to secure access, you'll need a token. You can have multiple active tok
 
 ## <a name="new-account"></a>Creating a user account:
 
-Accepted parameters, required in ***bold***:
+Accepted parameters:
 
 Name | Type | Notes
 --- | --- | ---
-**username** (optional) | string | Must be unique and less than 20 characters.
-**email** (optional) | string | Must be unique and in a valid email format.
-**password** (optional) | string | Must be between 6 and 20 characters. Will be hashed on server.
+*username* (optional) | string | Must be unique and less than 20 characters.
+*email* (optional) | string | Must be unique and in a valid email format.
+*password* (optional) | string | Must be between 6 and 20 characters. Will be hashed on server.
 
 Send this via `POST`:
 ```
@@ -45,12 +45,12 @@ Returns this:
 
 Returns a token that can be used to authorize.
 
-Accepted parameters, required in ***bold***:
+Accepted parameters:
 
 Name | Type | Notes
 --- | --- | ---
-***username*** | string | User's username.
-***email*** | string | User's non-hashed password.
+*username* | string | User's username.
+*email* | string | User's non-hashed password.
 
 Run the server and send this via `POST`:
 ```
@@ -110,11 +110,11 @@ Will return this:
 
 Return only one user's information. Does not return password.
 
-Accepted parameters, required in ***bold***:
+Accepted parameters:
 
 Name | Type | Notes
 --- | --- | ---
-***id*** | integer | The id of the user record to retrieve.
+*id* | integer | The id of the user record to retrieve.
 
 Get user by calling `GET` with this address, where `:id` is the id of the user.
 ```
@@ -142,11 +142,11 @@ Returns this:
 
 Update a user's information.
 
-Accepted parameters, required in ***bold***:
+Accepted parameters:
 
 Name | Type | Notes
 --- | --- | ---
-***username*** | string |
+*username* | string |
 
 Use this call to `PUT`:
 ```
@@ -345,7 +345,7 @@ Accepted parameters, required in **bold**:
 
 Name | Type | Notes
 --- | --- | ---
-*global_threshold* | integer | A number from 1 - 100 that is used as the default threshold for notifications.
+*global_threshold* (optional) | integer | A number from 1 - 100 that is used as the default threshold for notifications.
 
 
 Use this call to a `POST`:
