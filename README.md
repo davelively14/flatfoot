@@ -2,11 +2,16 @@
 
 Monitors and reports if someone you are tracking is being bullied online.
 
+## TOC
+
+- [Creating a user account](#new-account)
+
+
 ## Session Tokens
 
 In order to secure access, you'll need a token. You can have multiple active tokens per User. This allows a user to manage their logged in status per device (i.e. logging out on your laptop won't destroy the session token you're using on your phone). In order to get a token, the user must create an account or login. Note that every login generates an additional token. While there currently is no limit to number of sessions, but in a later version there will be a max of 10 tokens per user and sessions that remain inactive for 30 days will be deactivated.
 
-## Creating a user account:
+## <a name="new-account"></a>Creating a user account:
 
 Send this via `POST`:
 ```
