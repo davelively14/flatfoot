@@ -110,6 +110,24 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
+  Updates a user.
+
+  ## Examples
+
+      iex> update_user(user, %{field: new_value})
+      {:ok, %User{}}
+
+      iex> update_user(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_and_password(%User{} = user, attrs) do
+    user
+    |> user_registration_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
   Deletes a User.
 
   ## Examples

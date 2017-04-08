@@ -102,6 +102,23 @@ defmodule Flatfoot.Web.UserControllerTest do
       assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"]}
     end
 
+    test "will accept and update password when old password is provided", %{logged_in: conn, password: password} do
+      new_password = "newpassword"
+      user = conn.assigns.current_user
+      conn = put conn, user_path(conn, :update, user), user_params: %{current_password: password, new_password: new_password}
+      assert conn.status == 200
+
+      conn = post conn, session_path(conn, :create), user_params: %{username: user.username, password: new_password}
+      assert conn.status == 201
+    end
+
+    test "will return an error when attempting to change password with an incorrect current password", %{logged_in: conn} do
+      new_password = "newpassword"
+      user = conn.assigns.current_user
+      conn = put conn, user_path(conn, :update, user), user_params: %{current_password: "not correct", new_password: new_password}
+      assert %{"errors" => "Current password is invalid."} = json_response(conn, 401)
+    end
+
     test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
       user = insert(:user)
       conn = put conn, user_path(conn, :update, user), user_params: %{email: @new_email}

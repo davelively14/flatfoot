@@ -4,8 +4,10 @@ defmodule Flatfoot.Authorize do
   import Plug.Conn, only: [put_req_header: 3, assign: 3]
   alias Flatfoot.Clients
 
+  @password "password"
+
   def login(conn, user \\ nil) do
-    user = if !user, do: insert(:user, password_hash: Comeonin.Bcrypt.hashpwsalt("password")), else: user
+    user = if !user, do: insert(:user, password_hash: Comeonin.Bcrypt.hashpwsalt(@password)), else: user
     {:ok, session} = Clients.login(%{user_id: user.id})
 
     conn
@@ -21,6 +23,6 @@ defmodule Flatfoot.Authorize do
 
     not_logged_in = build_conn()
 
-    {:ok, %{logged_in: conn, not_logged_in: not_logged_in}}
+    {:ok, %{logged_in: conn, not_logged_in: not_logged_in, password: @password}}
   end
 end

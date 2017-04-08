@@ -1,6 +1,8 @@
 defmodule Flatfoot.Web.UserController do
   use Flatfoot.Web, :controller
 
+  import Comeonin.Bcrypt, only: [checkpw: 2]
+
   alias Flatfoot.Clients
   alias Flatfoot.Clients.User
 
@@ -30,8 +32,21 @@ defmodule Flatfoot.Web.UserController do
   def update(conn, %{"id" => id, "user_params" => user_params}) do
     user = Clients.get_user!(id)
 
-    with {:ok, %User{} = user} <- Clients.update_user(user, user_params) do
-      render(conn, "show.json", user: user)
+    if user_params["current_password"] && user_params["new_password"] do
+
+      cond do
+        checkpw(user_params["current_password"], user.password_hash) ->
+          user_params = user_params |> Map.merge(%{"password" => user_params["new_password"]})
+          with {:ok, %User{} = user} <- Clients.update_user_and_password(user, user_params) do
+            render(conn, "show.json", user: user)
+          end
+        true ->
+          render(conn |> put_status(401), Flatfoot.Web.ErrorView, "error.json", error: "Current password is invalid.")
+      end
+    else
+      with {:ok, %User{} = user} <- Clients.update_user(user, user_params) do
+        render(conn, "show.json", user: user)
+      end
     end
   end
 
