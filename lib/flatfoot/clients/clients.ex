@@ -556,6 +556,8 @@ defmodule Flatfoot.Clients do
     record
     |> cast(attrs, [:nickname, :email, :role, :threshold, :user_id])
     |> validate_required([:nickname, :email, :user_id])
+    |> validate_inclusion(:threshold, 0..100)
+    |> validate_length(:nickname, max: 40)
     |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
   end
 
@@ -563,12 +565,14 @@ defmodule Flatfoot.Clients do
     settings
     |> cast(attrs, [:global_threshold, :user_id])
     |> validate_required([:user_id])
+    |> validate_inclusion(:global_threshold, 0..100)
     |> unique_constraint(:user_id)
   end
 
   defp blackout_option_changeset(%BlackoutOption{} = blackout, attrs) do
     blackout
     |> cast(attrs, [:start, :stop, :threshold, :exclude, :settings_id])
+    |> validate_inclusion(:threshold, 0..100)
     |> validate_required([:start, :stop, :settings_id])
   end
 
