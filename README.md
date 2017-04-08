@@ -5,6 +5,18 @@ Monitors and reports if someone you are tracking is being bullied online.
 ## TOC
 
 - [Creating a user account](#new-account)
+- [Logging in](#login)
+- [User API](#user-api)
+ - [Index](#user-index)
+ - [Show](#user-show)
+ - [Update](#user-update)
+ - [Delete](#user-delete)
+- [NotificationRecord](#notification-record)
+ - [Create](#notification-record-create)
+ - [Index](#notification-record-index)
+ - [Show](#notification-record-show)
+ - [Update](#notification-record-update)
+ - [Delete](#notification-record-delete)
 
 
 ## Session Tokens
@@ -27,7 +39,7 @@ Returns this:
 }
 ```
 
-## Logging in:
+## <a name="login"></a>Logging in:
 
 Returns a token that can be used to authorize.
 
@@ -45,9 +57,9 @@ Returns this:
 }
 ```
 
-## User API
+## <a name="user-api"></a>User API
 
-### User#Index:
+### <a name="user-index"></a>User#Index:
 
 Returns all users.
 
@@ -85,7 +97,7 @@ Will return this:
 }
 ```
 
-### User#show
+### <a name="user-show"></a>User#show
 
 Return only one user.
 
@@ -111,7 +123,7 @@ Returns this:
 }
 ```
 
-### User#update
+### <a name="user-update"></a>User#update
 
 Update a user's information.
 
@@ -136,7 +148,7 @@ Returns this:
 }
 ```
 
-### User#delete
+### <a name="user-delete"></a>User#delete
 
 Deletes the given user.
 
@@ -152,9 +164,9 @@ Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 
 Will not return any content, only a `204` status.
 
-## Notification Record API
+## <a name="notification-record"></a>Notification Record API
 
-### NotificationRecord#create
+### <a name="notification-record-create"></a>NotificationRecord#create
 
 Creates a notification record for the current user.
 
@@ -182,7 +194,8 @@ Returns this:
 }
 ```
 
-### NotificationRecord#index
+
+### <a name="notification-record-index"></a>NotificationRecord#index
 
 Returns a list of all notification records for the current user as indicated by the token.
 
@@ -228,7 +241,7 @@ Returns this:
 }
 ```
 
-### NotificationRecord#show
+### <a name="notification-record-show"></a>NotificationRecord#show
 
 Returns a single notification record when passed its id.
 
@@ -257,7 +270,7 @@ Returns this:
 }
 ```
 
-### NotificationRecord#update
+### <a name="notification-record-update"></a>NotificationRecord#update
 
 Update a notification record by passing in the parameters you want to change. Returns the updated notification record.
 
@@ -285,7 +298,7 @@ Returns this:
 }
 ```
 
-### NotificationRecord#delete
+### <a name="notification-record-delete"></a>NotificationRecord#delete
 
 Remove a notification record from the database. Does not return any data.
 
