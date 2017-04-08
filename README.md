@@ -4,19 +4,19 @@ Monitors and reports if someone you are tracking is being bullied online.
 
 ## TOC
 
-- [Creating a user account](#new-account)
-- [Logging in](#login)
-- [User API](#user-api)
- - [Index](#user-index)
- - [Show](#user-show)
- - [Update](#user-update)
- - [Delete](#user-delete)
-- [NotificationRecord](#notification-record)
- - [Create](#notification-record-create)
- - [Index](#notification-record-index)
- - [Show](#notification-record-show)
- - [Update](#notification-record-update)
- - [Delete](#notification-record-delete)
+* [Creating a user account](#new-account)
+* [Logging in](#login)
+* [User API](#user-api)
+  * [Index](#user-index)
+  * [Show](#user-show)
+  * [Update](#user-update)
+  * [Delete](#user-delete)
+* [NotificationRecord](#notification-record)
+  * [Create](#notification-record-create)
+  * [Index](#notification-record-index)
+  * [Show](#notification-record-show)
+  * [Update](#notification-record-update)
+  * [Delete](#notification-record-delete)
 
 
 ## Session Tokens
