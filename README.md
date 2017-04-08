@@ -1,8 +1,9 @@
 # Flatfoot
+[![Build Status](https://travis-ci.org/davelively14/flatfoot.svg?branch=master)](https://travis-ci.org/davelively14/flatfoot)
 
 Monitors and reports if someone you are tracking is being bullied online.
 
-## TOC
+## Table of Contents
 
 * [Creating a user account](#new-account)
 * [Logging in](#login)
