@@ -19,6 +19,14 @@ In order to secure access, you'll need a token. You can have multiple active tok
 
 ## <a name="new-account"></a>Creating a user account:
 
+Accepted parameters, required in ***bold***:
+
+Name | Type | Notes
+--- | --- | ---
+**username** (optional) | string | Must be unique and less than 20 characters.
+**email** (optional) | string | Must be unique and in a valid email format.
+**password** (optional) | string | Must be between 6 and 20 characters. Will be hashed on server.
+
 Send this via `POST`:
 ```
 http://localhost:4000/api/new_user?user_params[username]=jwilkins&user_params[password]=password&user_params[email]=jwilkins@gmail.com
@@ -36,6 +44,13 @@ Returns this:
 ## <a name="login"></a>Logging in:
 
 Returns a token that can be used to authorize.
+
+Accepted parameters, required in ***bold***:
+
+Name | Type | Notes
+--- | --- | ---
+***username*** | string | User's username.
+***email*** | string | User's non-hashed password.
 
 Run the server and send this via `POST`:
 ```
@@ -55,7 +70,7 @@ Returns this:
 
 ### <a name="user-index"></a>User#Index:
 
-Returns all users.
+Returns all users. Currently only available during dev. Takes no parameters.
 
 Get all users by calling `GET` with this this address:
 ```
@@ -93,7 +108,13 @@ Will return this:
 
 ### <a name="user-show"></a>User#show
 
-Return only one user.
+Return only one user's information. Does not return password.
+
+Accepted parameters, required in ***bold***:
+
+Name | Type | Notes
+--- | --- | ---
+***id*** | integer | The id of the user record to retrieve.
 
 Get user by calling `GET` with this address, where `:id` is the id of the user.
 ```
@@ -120,6 +141,12 @@ Returns this:
 ### <a name="user-update"></a>User#update
 
 Update a user's information.
+
+Accepted parameters, required in ***bold***:
+
+Name | Type | Notes
+--- | --- | ---
+***username*** | string |
 
 Use this call to `PUT`:
 ```
@@ -314,14 +341,16 @@ Will not return any content, only a `204` status.
 
 Creates a settings record for the current user.
 
-Accepted parameters:
-Name | Type | Description
----|---|---
-global_threshold | integer | A number from 1 - 100 that is used as the default threshold for notifications.
+Accepted parameters, required in **bold**:
+
+Name | Type | Notes
+--- | --- | ---
+*global_threshold* | integer | A number from 1 - 100 that is used as the default threshold for notifications.
+
 
 Use this call to a `POST`:
 ```
-http://localhost:4000/api/notification_records?params[nickname]=dad&params[email]=dj@gmail.com&params[role]=family&params[threshold]=0
+http://localhost:4000/api/
 ```
 
 Ensure to include authorization in the Headers, like this:
