@@ -13,10 +13,12 @@ Monitors and reports if someone you are tracking is being bullied online.
   * [Create](#notification-record-create) | [Index](#notification-record-index) | [Show](#notification-record-show)  | [Update](#notification-record-update) | [Delete](#notification-record-delete)
 * [Settings](#settings)
   * [Create](#settings-create) | [Show](#settings-show) | [Update](#settings-update)
+* [BlackoutOption API](#blackout-option)
+  * [Create](#blackout-option-create) | [Index](#blackout-option-index) | [Show](#blackout-option-show)  | [Update](#blackout-option-update) | [Delete](#blackout-option-delete)
 
 ## Session Tokens
 
-In order to secure access, you'll need a token. You can have multiple active tokens per User. This allows a user to manage their logged in status per device (i.e. logging out on your laptop won't destroy the session token you're using on your phone). In order to get a token, the user must create an account or login. Note that every login generates an additional token. While there currently is no limit to number of sessions, but in a later version there will be a max of 10 tokens per user and sessions that remain inactive for 30 days will be deactivated.
+In order to secure access, you'll need a token to access most features of the API. You can have multiple active tokens per User. This allows a user to manage their logged in status per device (i.e. logging out on your laptop won't destroy the session token you're using on your phone). In order to get a token, the user must create an account or login. Note that every login generates an additional token. While there currently is no limit to number of sessions, but in a later version there will be a max of 10 tokens per user and sessions that remain inactive for 30 days will be deactivated.
 
 ## <a name="new-account"></a>Creating a user account:
 
@@ -83,7 +85,7 @@ Returb body:
 
 ## <a name="user-api"></a>User API
 
-### <a name="user-index"></a>User#Index:
+### <a name="user-index"></a>User#index:
 
 Returns all users when called. Currently only available during dev. Takes no parameters. Authorization token is required.
 
@@ -123,7 +125,7 @@ Return body:
 }
 ```
 
-### <a name="user-show"></a>User
+### <a name="user-show"></a>User#show
 
 Provided a user id in the url and user's information will be returned. Takes no parameters. Does not return password. Authorization token is required.
 
@@ -164,7 +166,7 @@ Name | Required | Type | Notes
 *new_password* | no | string | Must be between 6 and 100 characters. MUST be accompanied by `current_password` or it will be ignored.
 *current_password* | no | string | Current password. Only required if providing a `new_password`.
 
-API path pattern: `api/users/:user_id/user_params[param]=param_value&user_params[param]=param`
+API path pattern: `api/users/:user_id?user_params[param]=param_value&user_params[param]=param`
 - Provide `:user_id` (integer)
 - Provide params to the `user_params` object using the table above. Use the `&` operator to string together additional params.
 - Sent via the http `PUT` method.
@@ -223,7 +225,7 @@ Name | Required | Type | Notes
 *nickname* | yes | string | No more than 40 characters.
 *email* | yes | string | Must be in a valid email format.
 *role* | no | string | User customized role.
-*threshold* | no | integer | Sets minimum threshold for notification. Default is 0.
+*threshold* | no | integer | Sets minimum threshold for notification from 1-100. Default is 0.
 
 API path pattern: `api/notification_records?params[param]=param_value&params[param]=param`
 - Provide params to the `params` object using the table above. Use the `&` operator to string together additional params.
@@ -347,7 +349,7 @@ Name | Required | Type | Notes
 *new_password* | no | string | Must be between 6 and 100 characters. MUST be accompanied by `current_password` or it will be ignored.
 *current_password* | no | string | Current password. Only required if providing a `new_password`.
 
-API path pattern: `api/users/:notification_record_id/params[param]=param_value&params[param]=param`
+API path pattern: `api/users/:notification_record_id?params[param]=param_value&params[param]=param`
 - Provide `:notification_record_id` (integer)
 - Provide params to the `params` object using the table above. Use the `&` operator to string together additional params.
 - Sent via the http `PUT` method.
@@ -497,3 +499,185 @@ Result body:
     }
 }
 ```
+
+## <a name="blackout-option"></a>Blackout Option API
+
+### <a name="blackout-option-create"></a>Blackout Option#create
+
+Given a list of parameters, it will create a blackout option for a given settings. Authorization token required.
+
+Accepted parameters for the `params` object.
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*start* | yes | Ecto.Time | Must be a valid time format. View the [Ecto docs](https://hexdocs.pm/ecto/Ecto.DateTime.html#cast/1) to view accepted formats.
+*stop* | yes | Ecto.Time | Must be a valid time format. View the [Ecto docs](https://hexdocs.pm/ecto/Ecto.DateTime.html#cast/1) to view accepted formats.
+*settings_id* | yes | integer | The `:id` for your settings.
+*threshold* | no | integer | Sets minimum threshold for notification from 1-100. Default is 100.
+*exclude* | no | string | Not yet implemented. Will eventually take a string interpretation of a list for which days to exclude. Will default to none. May depreciate in favor a of an exclusion table.
+
+API path pattern: `api/blackout_options?params[param]=param_value&params[param]=param`
+- Provide params to the `params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `POST` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+POST http://localhost:4000/api/blackout_options?params[start]=18:00:00&params[stop]=06:00:00&params[settings_id]=12
+...
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+Return body:
+```json
+{
+    "data": {
+        "threshold": 100,
+        "stop": "06:00:00",
+        "start": "18:00:00",
+        "settings_id": 12,
+        "id": 76,
+        "exclude": null
+    }
+}
+```
+
+### <a name="blackout-option-index"></a>Blackout Option#index
+
+Returns all blackout_options for a given settings as passed via the `settings_id` parameter. Authorization token is required.
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*settings_id* | yes | integer | The `:id` for your settings.
+
+API path pattern: `api/blackout_options?settings_id=:id`
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+GET http://localhost:4000/api/blackout_options?settings_id=12
+...
+Authorization: Token token="dzJ0Mmd4R2tpcnhwZXRkTTZzQXE3QT09"
+```
+
+Return body:
+```json
+{
+    "data": [
+        {
+            "threshold": 100,
+            "stop": "06:00:00",
+            "start": "18:00:00",
+            "settings_id": 12,
+            "id": 76,
+            "exclude": null
+        },
+        {
+            "threshold": 100,
+            "stop": "09:00:00",
+            "start": "08:00:00",
+            "settings_id": 12,
+            "id": 77,
+            "exclude": null
+        }
+    ]
+}
+```
+
+### <a name="blackout-option-show"></a>Blackout Option#show
+
+Provided a blackout option id in the url and the option will be returned. Takes no parameters. Authorization token is required.
+
+API path pattern: `api/blackout_options/:blackout_option_id/`
+- Provide `:blackout_option_id` (integer)
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+GET http://localhost:4000/api/blackout_options/76
+...
+Authorization: Token token="dzJ0Mmd4R2tpcnhwZXRkTTZzQXE3QT09"
+```
+
+Return body:
+```json
+{
+    "data": {
+        "threshold": 100,
+        "stop": "06:00:00",
+        "start": "18:00:00",
+        "settings_id": 12,
+        "id": 76,
+        "exclude": null
+    }
+}
+```
+
+### <a name="blackout-option-update"></a>Blackout Option#update
+
+Given a blackout option's id and a list of parameters, update an option's information. Authorization token is required.
+
+Accepted parameters for the `params` object.
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*start* | no | Ecto.Time | Must be a valid time format. View the [Ecto docs](https://hexdocs.pm/ecto/Ecto.DateTime.html#cast/1) to view accepted formats.
+*stop* | no | Ecto.Time | Must be a valid time format. View the [Ecto docs](https://hexdocs.pm/ecto/Ecto.DateTime.html#cast/1) to view accepted formats.
+*threshold* | no | integer | Sets minimum threshold for notification from 1-100. Default is 100.
+*exclude* | no | string | Not yet implemented. Will eventually take a string interpretation of a list for which days to exclude. Will default to none. May depreciate in favor a of an exclusion table.
+
+API path pattern: `api/blackout_options/:blackout_option_id?params[param]=param_value&params[param]=param`
+- Provide params to the `params` object using the table above. Use the `&` operator to string together additional params.
+- Sent via the http `PUT` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+PUT http://localhost:4000/api/blackout_options/76?params[start]=15:30:00
+...
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+Return body:
+```json
+{
+    "data": {
+        "threshold": 100,
+        "stop": "06:00:00",
+        "start": "15:30:00",
+        "settings_id": 12,
+        "id": 76,
+        "exclude": null
+    }
+}
+```
+
+### <a name="blackout-option-delete"></a>Blackout Option#delete
+
+Provided a blackout option id in the url, will delete the blackout option. Does not return any data. Takes no parameters. Authorization token is required.
+
+API path pattern: `api/blackout_options/:blackout_option_id`
+- Provide `:blackout_option_id` (integer)
+- Sent via the http `DELETE` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+DELETE http://localhost:4000/api/blackout_options/76
+...
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+This function will not return any data, only a `204` status.
