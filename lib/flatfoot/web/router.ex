@@ -33,6 +33,8 @@ defmodule Flatfoot.Web.Router do
   scope "/api", Flatfoot.Web do
     pipe_through [:api, :authenticate]
 
+    get "/token", SessionController, :get_ws_token
+
     resources "/users", UserController, only: [:index, :show, :update, :delete]
     resources "/notification_records", NotificationRecordController, only: [:create, :index, :show, :update, :delete]
 

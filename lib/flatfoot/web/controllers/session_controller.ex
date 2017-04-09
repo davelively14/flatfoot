@@ -28,4 +28,10 @@ defmodule Flatfoot.Web.SessionController do
         |> render("error.json", error: "user does not exist")
     end
   end
+
+  def get_ws_token(conn, _) do
+    conn
+    |> put_status(200)
+    |> render("token.json", token: conn.assigns.ws_token)
+  end
 end

@@ -31,4 +31,20 @@ defmodule Flatfoot.Web.SessionControllerTest do
       assert json_response(conn, 401)["errors"] == "Unauthorized, user does not exist"
     end
   end
+
+  describe "GET get_ws_token" do
+    setup :login_user_setup
+
+    test "returns valid websocket token", %{logged_in: conn} do
+      conn = get conn, session_path(conn, :get_ws_token)
+      assert %{"token" => token} = json_response(conn, 200)
+      assert token |> String.length == 100
+    end
+
+    test "does not return a token if not logged in", %{not_logged_in: conn} do
+      conn = get conn, session_path(conn, :get_ws_token)
+      assert conn.status == 401
+      assert conn.halted
+    end
+  end
 end

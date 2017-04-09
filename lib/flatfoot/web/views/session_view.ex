@@ -15,4 +15,10 @@ defmodule Flatfoot.Web.SessionView do
       token: session.token
     }
   end
+
+  def render("token.json", %{token: token}) do
+    %{
+      token: token 
+    }
+  end
 end
