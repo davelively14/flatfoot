@@ -4,8 +4,6 @@ defmodule Flatfoot.Clients.AuthTest do
 
   @opts Auth.init([])
 
-  # setup :login_user_setup
-
   test "finds the user with valid token", %{conn: conn} do
     session = insert(:session)
 
