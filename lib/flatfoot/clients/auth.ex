@@ -9,7 +9,11 @@ defmodule Flatfoot.Clients.Auth do
   def call(conn, _opts) do
     case find_user(conn) do
       {:ok, user} ->
-        assign(conn, :current_user, user)
+        token = Phoenix.Token.sign(conn, "user socket", user.id)
+
+        conn
+        |> assign(:ws_token, token)
+        |> assign(:current_user, user)
       _ -> auth_error!(conn)
     end
   end
