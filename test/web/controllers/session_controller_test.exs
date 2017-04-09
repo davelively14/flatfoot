@@ -18,7 +18,8 @@ defmodule Flatfoot.Web.SessionControllerTest do
     test "creates new session with valid attributes", %{conn: conn, user: user, password: password} do
       conn = post conn, session_path(conn, :create), user_params: %{username: user.username, password: password}
 
-      assert %{"token" => _} = json_response(conn, 201)["data"]
+      assert %{"data" => result} = json_response(conn, 201)
+      assert result["token"] |> String.length == 32
     end
 
     test "returns error with invalid password", %{conn: conn, user: user} do
