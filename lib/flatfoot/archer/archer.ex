@@ -26,6 +26,22 @@ defmodule Flatfoot.Archer do
   end
 
   @doc """
+  Gets a single backend.
+
+  Raises `Ecto.NoResultsError` if the Backend does not exist.
+
+  ## Examples
+
+      iex> get_backend!(123)
+      %Backend{}
+
+      iex> get_backend!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_backend!(id), do: Repo.get!(Backend, id)
+
+  @doc """
   Creates a backend. Note that the module and name_snake are created by the app.
 
   ## Examples

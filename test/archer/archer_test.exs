@@ -43,9 +43,21 @@ defmodule Flatfoot.ArcherTest do
 
     test "with invalid attiributes will return errors" do
       {:error, changeset} = Archer.create_backend(%{})
-      
+
       assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:url] == {"can't be blank", [validation: :required]}
+    end
+  end
+
+  describe "get_backend!/2" do
+    test "with valid id returns a backend" do
+      backend = insert(:archer_backend)
+      result = Archer.get_backend!(backend.id)
+      assert backend == result
+    end
+
+    test "with invalid id raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Archer.get_backend!(0) end
     end
   end
 end
