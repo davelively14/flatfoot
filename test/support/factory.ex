@@ -46,13 +46,13 @@ defmodule Flatfoot.Factory do
   end
 
   def archer_backend_factory do
-    name_snake = Faker.Name.name |> String.downcase |> String.replace(" ", "_")
-    
+    name = Faker.Name.name
+
     %Flatfoot.Archer.Backend{
-      name: Faker.Name.name,
-      name_snake: name_snake,
+      name: name,
+      name_snake: name |> String.downcase |> String.replace(" ", "_"),
       url: Faker.Internet.url,
-      module: "Flatfoot.Archer.#{name_snake}"
+      module: "Flatfoot.Archer.#{name |> String.split(" ") |> Enum.map(&String.capitalize/1) |> List.to_string}"
     }
   end
 

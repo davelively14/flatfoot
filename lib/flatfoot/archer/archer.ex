@@ -24,4 +24,51 @@ defmodule Flatfoot.Archer do
   def list_backends do
     Repo.all(Backend)
   end
+
+  @doc """
+  Creates a backend. Note that the module and name_snake are created by the app.
+
+  ## Examples
+
+      iex> create_backend(%{name: "Twitter", url: "https://www.twitter.com")
+      {:ok, %Backend{name: "Twitter, url: "https://www.twitter.com", name_snake: "twitter", "Flatfoot.Archer.Twitter"}}
+
+      iex> create_backend(%{name: nil})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_backend(attrs) do
+    %Backend{}
+    |> backend_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  ##############
+  # Changesets #
+  ##############
+
+  defp backend_changeset(%Backend{} = backend, attrs) do
+    backend
+    |> cast(attrs, [:name, :url])
+    |> validate_required([:name, :url])
+    |> add_snake_and_module
+  end
+
+  #####################
+  # Private Functions #
+  #####################
+
+  defp add_snake_and_module(changeset) do
+    case changeset do
+      %Ecto.Changeset{valid?: true, changes: %{name: name}} ->
+        name_snake = name |> String.downcase |> String.replace(" ", "_")
+        name_camel = name |> String.split(" ") |> Enum.map(&String.capitalize/1) |> List.to_string
+
+        changeset
+        |> put_change(:name_snake, name_snake)
+        |> put_change(:module, "Flatfoot.Archer.#{name_camel}")
+      _ ->
+        changeset
+    end
+  end
 end

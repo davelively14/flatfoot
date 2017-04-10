@@ -28,4 +28,24 @@ defmodule Flatfoot.ArcherTest do
       assert [] == results
     end
   end
+
+  describe "create_backend/1" do
+    test "with valid attributes will create a backend" do
+      name = "some name"
+      url = Faker.Internet.url
+
+      {:ok, backend} = Archer.create_backend(%{name: name, url: url})
+      assert backend.name == name
+      assert backend.url == url
+      assert backend.name_snake == "some_name"
+      assert backend.module == "Flatfoot.Archer.SomeName"
+    end
+
+    test "with invalid attiributes will return errors" do
+      {:error, changeset} = Archer.create_backend(%{})
+      
+      assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:url] == {"can't be blank", [validation: :required]}
+    end
+  end
 end
