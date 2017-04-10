@@ -7,6 +7,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 
 * [Creating a user account](#new-account)
 * [Logging in](#login)
+* [Getting a socket token](#get-token)
 * [User API](#user-api)
   * [Index](#user-index) | [Show](#user-show) | [Update](#user-update) | [Delete](#user-delete)
 * [NotificationRecord](#notification-record)
@@ -80,6 +81,30 @@ Returb body:
     "data": {
         "token": "eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
     }
+}
+```
+
+## <a name="get-token"></a>Getting a socket token
+
+With a valid authentication token, will return a Phoenix token that can be used to connect to a channel. Takes no parameters. Authorziation token is required.
+
+API path pattern: `api/token`
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+GET http://localhost:4000/api/token
+...
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+Return body:
+```json
+{
+    "token": "IOPyNTY.g3QAJKLCZAAEZGF0YWELZAAGc2lnbmVkbgYAUv4SWFsB.fmlQX7tWQyxUh6KPC0Eq9tLioTadZd7jiduY5Lf29DE"
 }
 ```
 
