@@ -45,6 +45,17 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def archer_backend_factory do
+    name_snake = Faker.Name.name |> String.downcase |> String.replace(" ", "_")
+    
+    %Flatfoot.Archer.Backend{
+      name: Faker.Name.name,
+      name_snake: name_snake,
+      url: Faker.Internet.url,
+      module: "Flatfoot.Archer.#{name_snake}"
+    }
+  end
+
   #####################
   # Private Functions #
   #####################
