@@ -19,6 +19,9 @@ defmodule Flatfoot.Web.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
+      import Flatfoot.Factory
+      import Flatfoot.Authorize
+      import Flatfoot.Web.Router.Helpers
 
       # The default endpoint for testing
       @endpoint Flatfoot.Web.Endpoint
