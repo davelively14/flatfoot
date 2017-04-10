@@ -49,4 +49,25 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_backend!(0) end
     end
   end
+
+  ########
+  # User #
+  ########
+
+  describe "get_user!/1" do
+    test "with valid id returns a user" do
+      user = insert(:user)
+      result = Spade.get_user!(user.id)
+
+      assert user.id == result.id
+      assert user.username == result.username
+      assert user.email == result.email
+
+      assert_raise KeyError, fn -> result.password_hash end
+    end
+
+    test "with invalid id raises an error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_user!(0) end
+    end
+  end
 end

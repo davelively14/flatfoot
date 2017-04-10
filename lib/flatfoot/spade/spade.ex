@@ -40,4 +40,26 @@ defmodule Flatfoot.Spade do
 
   """
   def get_backend!(id), do: Repo.get!(Backend, id)
+
+  ########
+  # User #
+  ########
+
+  alias Flatfoot.Spade.User
+
+  @doc """
+  Returns a single user.
+
+  Raises `Ecto.NoResultsError` if the User does not exist.
+
+  ## Examples
+
+      iex> get_user!(123)
+      %User{}
+
+      iex> get_user!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user!(id), do: Repo.get!(User, id)
 end
