@@ -38,8 +38,7 @@ defmodule Flatfoot.Web.SessionControllerTest do
 
     test "returns valid websocket token", %{logged_in: conn} do
       conn = get conn, session_path(conn, :get_ws_token)
-      assert %{"token" => token} = json_response(conn, 200)
-      assert token |> String.length == 100
+      assert %{"token" => _} = json_response(conn, 200)
     end
 
     test "does not return a token if not logged in", %{not_logged_in: conn} do
