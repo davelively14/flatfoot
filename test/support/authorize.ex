@@ -16,8 +16,9 @@ defmodule Flatfoot.Authorize do
   end
 
   def login_user_setup(context) do
+    conn = if Map.has_key?(context, :conn), do: context.conn, else: build_conn()
     conn =
-      context.conn
+      conn
       |> bypass_through(Flatfoot.Router, :api)
       |> login
 
