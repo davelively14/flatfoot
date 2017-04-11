@@ -112,4 +112,18 @@ defmodule Flatfoot.SpadeTest do
       assert [] == results
     end
   end
+
+  describe "get_target!/1" do
+    test "with valid id, returns a target" do
+      target = insert(:target)
+
+      result = Spade.get_target!(target.id)
+      assert result.id == target.id
+      assert result.name == target.name
+    end
+
+    test "with invalid id, raises an error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_target!(0) end
+    end
+  end
 end

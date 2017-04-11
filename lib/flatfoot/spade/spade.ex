@@ -100,6 +100,22 @@ defmodule Flatfoot.Spade do
     Repo.all from t in Target, where: t.user_id == ^user_id
   end
 
+  @doc """
+  Returns a single target.
+
+  Raises `Ecto.NoResultsError` if the Target does not exist.
+
+  ## Examples
+
+      iex> get_target!(123)
+      %Target{}
+
+      iex> get_target!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_target!(id), do: Repo.get!(Target, id)
+
   ##############
   # Changesets #
   ##############
