@@ -49,7 +49,7 @@ defmodule Flatfoot.ArcherTest do
     end
   end
 
-  describe "get_backend!/2" do
+  describe "get_backend!/1" do
     test "with valid id returns a backend" do
       backend = insert(:archer_backend)
       result = Archer.get_backend!(backend.id)
