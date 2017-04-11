@@ -56,6 +56,15 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def target_factory do
+    %Flatfoot.Spade.Target{
+      name: Faker.Name.name,
+      relationship: Faker.Team.creature,
+      active: [true, false] |> Enum.random,
+      user: build(:user)
+    }
+  end
+
   #####################
   # Private Functions #
   #####################

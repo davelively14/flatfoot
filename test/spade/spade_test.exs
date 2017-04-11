@@ -70,4 +70,28 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_user!(0) end
     end
   end
+
+  ##########
+  # Target #
+  ##########
+
+  describe "create_target/1" do
+    test "with valid attributes, creates target" do
+      name = Faker.Name.name
+      relationship = Faker.Team.creature
+      user = insert(:user)
+
+      {:ok, target} = Spade.create_target(%{name: name, relationship: relationship, user_id: user.id})
+      assert name == target.name
+      assert relationship == target.relationship
+      assert user.id == target.user_id
+    end
+
+    test "with invalid attributes, will return changeset with errors" do
+      {:error, changeset} = Spade.create_target(%{})
+
+      assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
+    end
+  end
 end
