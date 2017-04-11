@@ -116,6 +116,23 @@ defmodule Flatfoot.Spade do
   """
   def get_target!(id), do: Repo.get!(Target, id)
 
+  @doc """
+  Given a Target id, will delete that Target.
+
+  ## Examples
+
+      iex> delete_target(135)
+      {:ok, %Target{}}
+
+      iex> delete_target(0)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_target(id) do
+    get_target!(id)
+    |> Repo.delete
+  end
+
   ##############
   # Changesets #
   ##############

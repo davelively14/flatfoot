@@ -126,4 +126,18 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_target!(0) end
     end
   end
+
+  describe "delete_target/1" do
+    test "with valid id, deletes a target and returns the deleted target" do
+      target = insert(:target)
+
+      {:ok, result} = Spade.delete_target(target.id)
+      assert result.id == target.id
+      assert Spade.list_targets(target.user_id) == []
+    end
+
+    test "with invalid id, raises NoResultsError" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.delete_target(0) end
+    end
+  end
 end
