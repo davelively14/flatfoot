@@ -9,14 +9,14 @@ defmodule Flatfoot.SpadeTest do
 
   describe "list_backends/0" do
     test "will return all backends" do
-      backends = insert_list(3, :archer_backend)
+      backends = insert_list(3, :backend)
       results = Spade.list_backends()
 
       assert backends |> length == results |> length
     end
 
     test "will return the correct backends" do
-      backend = insert(:archer_backend)
+      backend = insert(:backend)
 
       [result] = Spade.list_backends()
       assert result.id == backend.id
@@ -34,7 +34,7 @@ defmodule Flatfoot.SpadeTest do
 
   describe "get_backend!/1" do
     test "with valid id returns a backend" do
-      backend = insert(:archer_backend)
+      backend = insert(:backend)
       result = Spade.get_backend!(backend.id)
 
       assert result.id == backend.id
@@ -162,6 +162,31 @@ defmodule Flatfoot.SpadeTest do
 
     test "with invalid target_id, raises error" do
       assert_raise Ecto.NoResultsError, fn -> Spade.update_target(0, %{name: "Hello"}) end
+    end
+  end
+
+  ##################
+  # Target Account #
+  ##################
+
+  describe "create_target_account/1" do
+    test "with valid attributes, creates target account" do
+      target = insert(:target)
+      backend = insert(:backend)
+      handle = Faker.Internet.user_name
+      {:ok, result} = Spade.create_target_account(%{target_id: target.id, backend_id: backend.id, handle: handle})
+
+      assert result.target_id == target.id
+      assert result.backend_id == backend.id
+      assert result.handle == handle
+    end
+
+    test "with invalid attributes, returns a changeset with errors" do
+      {:error, changeset} = Spade.create_target_account(%{})
+
+      assert changeset.errors[:target_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:backend_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:handle] == {"can't be blank", [validation: :required]}
     end
   end
 end

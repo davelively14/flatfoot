@@ -9,14 +9,14 @@ defmodule Flatfoot.ArcherTest do
 
   describe "list_backends/0" do
     test "returns all backends" do
-      backends = insert_list(3, :archer_backend)
+      backends = insert_list(3, :backend)
       results = Archer.list_backends()
 
       assert results |> length == backends |> length
     end
 
     test "returns the correct backends" do
-      backend = insert(:archer_backend)
+      backend = insert(:backend)
       results = Archer.list_backends()
 
       assert [backend] == results
@@ -51,7 +51,7 @@ defmodule Flatfoot.ArcherTest do
 
   describe "get_backend!/1" do
     test "with valid id returns a backend" do
-      backend = insert(:archer_backend)
+      backend = insert(:backend)
       result = Archer.get_backend!(backend.id)
       assert backend == result
     end

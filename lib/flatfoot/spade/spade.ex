@@ -151,6 +151,30 @@ defmodule Flatfoot.Spade do
     |> Repo.update()
   end
 
+  ##################
+  # Target Account #
+  ##################
+
+  alias Flatfoot.Spade.TargetAccount
+
+  @doc """
+  Creates a target account with valid params
+
+  ## Examples
+
+      iex> create_target_account(%{handle: "@realOneal", target_id: 4, backend_id: 12)
+      {:ok, %TargetAccount{handle: "@realOneal", target_id: 4, backend_id: 12}}
+
+      iex> create_target_account(%{})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_target_account(attrs) do
+    %TargetAccount{}
+    |> target_account_changeset(attrs)
+    |> Repo.insert()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -159,5 +183,11 @@ defmodule Flatfoot.Spade do
     target
     |> cast(attrs, [:name, :relationship, :user_id])
     |> validate_required([:name, :user_id])
+  end
+
+  defp target_account_changeset(%TargetAccount{} = target_account, attrs) do
+    target_account
+    |> cast(attrs, [:handle, :target_id, :backend_id])
+    |> validate_required([:handle, :target_id, :backend_id])
   end
 end

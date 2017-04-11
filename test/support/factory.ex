@@ -45,7 +45,7 @@ defmodule Flatfoot.Factory do
     }
   end
 
-  def archer_backend_factory do
+  def backend_factory do
     name = Faker.Name.name
 
     %Flatfoot.Archer.Backend{
