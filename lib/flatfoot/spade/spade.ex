@@ -204,6 +204,23 @@ defmodule Flatfoot.Spade do
   """
   def get_target_account!(id), do: Repo.get!(TargetAccount, id)
 
+  @doc """
+  Given a TargetAccount id, will delete that TargetAccount.
+
+  ## Examples
+
+      iex> delete_target_account(135)
+      {:ok, %TargetAccount{}}
+
+      iex> delete_target_account(0)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_target_account(id) do
+    get_target_account!(id)
+    |> Repo.delete
+  end
+
   ##############
   # Changesets #
   ##############

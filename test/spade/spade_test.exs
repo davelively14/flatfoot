@@ -133,7 +133,7 @@ defmodule Flatfoot.SpadeTest do
 
       {:ok, result} = Spade.delete_target(target.id)
       assert result.id == target.id
-      assert Spade.list_targets(target.user_id) == []
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_target!(target.id) end
     end
 
     test "with invalid id, raises NoResultsError" do
@@ -219,6 +219,20 @@ defmodule Flatfoot.SpadeTest do
 
     test "with invalid target_account_id, raises error" do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_target_account!(0) end
+    end
+  end
+
+  describe "delete_target_account/1" do
+    test "with valid id, deletes a target account and returns that deleted account" do
+      account = insert(:target_account)
+
+      {:ok, result} = Spade.delete_target_account(account.id)
+      assert result.id == account.id
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_target_account!(account.id) end
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.delete_target_account(0) end
     end
   end
 end
