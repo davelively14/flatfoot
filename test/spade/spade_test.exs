@@ -94,4 +94,22 @@ defmodule Flatfoot.SpadeTest do
       assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
     end
   end
+
+  describe "list_targets/1" do
+    test "with valid user_id, returns all targets for that user" do
+      user = insert(:user)
+      user_targets = insert(:target, user: user)
+      insert_list(2, :target)
+
+      results = Spade.list_targets(user.id)
+      assert results |> length == 1
+      assert user_targets.id == results |> List.first |> Map.get(:id)
+    end
+
+    test "returns empty list if no backends exist" do
+      insert_list(3, :target)
+      results = Spade.list_targets(1)
+      assert [] == results
+    end
+  end
 end

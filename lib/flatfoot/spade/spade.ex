@@ -87,6 +87,19 @@ defmodule Flatfoot.Spade do
     |> Repo.insert()
   end
 
+  @doc """
+  Give a user_id, returns a list of targets for a given user.
+
+  ## Examples
+
+      iex> list_targets(12)
+      [%Backend{}, ...]
+
+  """
+  def list_targets(user_id) do
+    Repo.all from t in Target, where: t.user_id == ^user_id
+  end
+
   ##############
   # Changesets #
   ##############
