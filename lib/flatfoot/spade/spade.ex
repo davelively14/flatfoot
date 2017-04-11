@@ -93,7 +93,7 @@ defmodule Flatfoot.Spade do
   ## Examples
 
       iex> list_targets(12)
-      [%Backend{}, ...]
+      [%Target{}, ...]
 
   """
   def list_targets(user_id) do
@@ -173,6 +173,19 @@ defmodule Flatfoot.Spade do
     %TargetAccount{}
     |> target_account_changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Give a target id, returns a list of target_accounts for a given target.
+
+  ## Examples
+
+      iex> list_target_accounts(12)
+      [%TargetAccount{}, ...]
+
+  """
+  def list_target_accounts(target_id) do
+    Repo.all from t in TargetAccount, where: t.target_id == ^target_id
   end
 
   ##############
