@@ -221,6 +221,24 @@ defmodule Flatfoot.Spade do
     |> Repo.delete
   end
 
+  @doc """
+  Updates a target_account.
+
+  ## Examples
+
+      iex> update_target_account(target_account, %{field: new_value})
+      {:ok, %TargetAccount{}}
+
+      iex> update_target_account(target_account, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_target_account(id, attrs) do
+    get_target_account!(id)
+    |> target_acount_update_changeset(attrs)
+    |> Repo.update()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -235,5 +253,11 @@ defmodule Flatfoot.Spade do
     target_account
     |> cast(attrs, [:handle, :target_id, :backend_id])
     |> validate_required([:handle, :target_id, :backend_id])
+  end
+
+  defp target_acount_update_changeset(%TargetAccount{} = target_account, attrs) do
+    target_account
+    |> cast(attrs, [:handle])
+    |> validate_required([:handle])
   end
 end

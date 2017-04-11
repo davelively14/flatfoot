@@ -235,4 +235,37 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.delete_target_account(0) end
     end
   end
+
+  describe "update_target_account/2" do
+    test "with valid target_account_id and attributes, updates target_account" do
+      account = insert(:target_account)
+      new_handle = "@things"
+
+      {:ok, result} = Spade.update_target_account(account.id, %{handle: new_handle})
+      assert result.id == account.id
+      assert result.handle == new_handle
+    end
+
+    test "does not update associations" do
+      account = insert(:target_account)
+      new_handle = "@things"
+
+      {:ok, result} = Spade.update_target_account(account.id, %{handle: new_handle, backend_id: 0, target_id: 0})
+      assert result.id == account.id
+      assert result.handle == new_handle
+      assert result.backend_id == account.backend_id
+      assert result.target_id == account.target_id
+    end
+
+    test "with invalid params, returns changeset with error" do
+      account = insert(:target_account)
+
+      {:error, changeset} = Spade.update_target_account(account.id, %{handle: nil})
+      assert changeset.errors[:handle] == {"can't be blank", [validation: :required]}
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.update_target_account(0, %{}) end
+    end
+  end
 end
