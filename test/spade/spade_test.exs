@@ -193,8 +193,8 @@ defmodule Flatfoot.SpadeTest do
   describe "list_target_accounts/1" do
     test "with valid target_id, returns a list of target accounts" do
       target = insert(:target)
-      account = insert(:target_accounts, target: target)
-      insert_list(2, :target_accounts)
+      account = insert(:target_account, target: target)
+      insert_list(2, :target_account)
 
       results = Spade.list_target_accounts(target.id)
       assert results |> length == 1
@@ -203,6 +203,22 @@ defmodule Flatfoot.SpadeTest do
 
     test "with non existant target_id returns empty list" do
       assert [] == Spade.list_target_accounts(0)
+    end
+  end
+
+  describe "get_target_account!/1" do
+    test "with valid target_account_id, returns a single target account" do
+      account = insert(:target_account)
+
+      result = Spade.get_target_account!(account.id)
+      assert result.id == account.id
+      assert result.handle == account.handle
+      assert result.target_id == account.target_id
+      assert result.backend_id == account.backend_id
+    end
+
+    test "with invalid target_account_id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_target_account!(0) end
     end
   end
 end
