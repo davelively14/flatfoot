@@ -140,4 +140,28 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.delete_target(0) end
     end
   end
+
+  describe "update_target/2" do
+    test "with valid target_id and attributes, updates a target" do
+      target = insert(:target)
+      new_name = "New name"
+
+      {:ok, result} = Spade.update_target(target.id, %{name: new_name})
+      assert result.id == target.id
+      assert result.name != target.name
+      assert result.name == new_name
+    end
+
+    test "with invalid params, returns changeset with errors" do
+      target = insert(:target)
+
+      {:error, changeset} = Spade.update_target(target.id, %{name: nil})
+      assert changeset.errors |> length == 1
+      assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
+    end
+
+    test "with invalid target_id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.update_target(0, %{name: "Hello"}) end
+    end
+  end
 end

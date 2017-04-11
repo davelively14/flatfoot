@@ -133,6 +133,24 @@ defmodule Flatfoot.Spade do
     |> Repo.delete
   end
 
+  @doc """
+  Updates a target.
+
+  ## Examples
+
+      iex> update_target(target, %{field: new_value})
+      {:ok, %Target{}}
+
+      iex> update_target(target, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_target(id, attrs) do
+    get_target!(id)
+    |> target_changeset(attrs)
+    |> Repo.update()
+  end
+
   ##############
   # Changesets #
   ##############
