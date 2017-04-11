@@ -65,6 +65,14 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def target_accounts_factory do
+    %Flatfoot.Spade.TargetAccount{
+      handle: Faker.Internet.user_name,
+      target: build(:target),
+      backend: build(:backend)
+    }
+  end
+
   #####################
   # Private Functions #
   #####################
