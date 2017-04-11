@@ -147,7 +147,7 @@ defmodule Flatfoot.Spade do
   """
   def update_target(id, attrs) do
     get_target!(id)
-    |> target_changeset(attrs)
+    |> target_update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -247,6 +247,12 @@ defmodule Flatfoot.Spade do
     target
     |> cast(attrs, [:name, :relationship, :user_id])
     |> validate_required([:name, :user_id])
+  end
+
+  defp target_update_changeset(%Target{} = target, attrs) do
+    target
+    |> cast(attrs, [:name, :relationship])
+    |> validate_required([:name])
   end
 
   defp target_account_changeset(%TargetAccount{} = target_account, attrs) do

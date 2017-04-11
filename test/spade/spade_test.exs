@@ -152,6 +152,16 @@ defmodule Flatfoot.SpadeTest do
       assert result.name == new_name
     end
 
+    test "does not update associations" do
+      target = insert(:target)
+      new_name = "new name"
+
+      {:ok, result} = Spade.update_target(target.id, %{name: new_name, user_id: 0})
+      assert result.id == target.id
+      assert result.name == new_name
+      assert result.user_id == target.user_id
+    end
+
     test "with invalid params, returns changeset with errors" do
       target = insert(:target)
 
