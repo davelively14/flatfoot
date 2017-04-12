@@ -278,4 +278,25 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.update_target_account(0, %{}) end
     end
   end
+
+  #############
+  # Watchlist #
+  #############
+
+  describe "create_watchlist/1" do
+    test "with valid attributes, creates a watchlist" do
+      user = insert(:user)
+      name = Faker.Name.name
+
+      {:ok, watchlist} = Spade.create_watchlist(%{user_id: user.id, name: name})
+      assert watchlist.name == name
+      assert watchlist.user_id == user.id
+    end
+
+    test "with invalid attributes, returns a changeset with errors" do
+      {:error, changeset} = Spade.create_watchlist(%{})
+      assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
+    end
+  end
 end

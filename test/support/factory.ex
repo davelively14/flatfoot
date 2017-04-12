@@ -73,6 +73,13 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def watchlist_factory do
+    %Flatfoot.Spade.Watchlist{
+      name: Faker.Name.name,
+      user: build(:user)
+    }
+  end
+
   #####################
   # Private Functions #
   #####################

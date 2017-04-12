@@ -239,6 +239,30 @@ defmodule Flatfoot.Spade do
     |> Repo.update()
   end
 
+  #############
+  # Watchlist #
+  #############
+
+  alias Flatfoot.Spade.Watchlist
+
+  @doc """
+  Creates a watchlist with valid params
+
+  ## Examples
+
+      iex> create_watchlist(%{name: "Bullies", user_id: 4)
+      {:ok, %Watchlist{name: "Bullies", user_id: 4}}
+
+      iex> create_watchlist(%{})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_watchlist(attrs) do
+    %Watchlist{}
+    |> watchlist_changeset(attrs)
+    |> Repo.insert()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -265,5 +289,11 @@ defmodule Flatfoot.Spade do
     target_account
     |> cast(attrs, [:handle])
     |> validate_required([:handle])
+  end
+
+  defp watchlist_changeset(%Watchlist{} = watchlist, attrs) do
+    watchlist
+    |> cast(attrs, [:user_id, :name])
+    |> validate_required([:user_id, :name])
   end
 end
