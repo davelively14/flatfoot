@@ -159,7 +159,7 @@ defmodule Flatfoot.SpadeTest do
       {:ok, result} = Spade.update_target(target.id, %{name: new_name, user_id: 0})
       assert result.id == target.id
       assert result.name == new_name
-      assert result.user_id == target.user_id
+      assert result.user_id == target.user_id != 0
     end
 
     test "with invalid params, returns changeset with errors" do
@@ -263,8 +263,8 @@ defmodule Flatfoot.SpadeTest do
       {:ok, result} = Spade.update_target_account(account.id, %{handle: new_handle, backend_id: 0, target_id: 0})
       assert result.id == account.id
       assert result.handle == new_handle
-      assert result.backend_id == account.backend_id
-      assert result.target_id == account.target_id
+      assert result.backend_id == account.backend_id != 0
+      assert result.target_id == account.target_id != 0
     end
 
     test "with invalid params, returns changeset with error" do
@@ -344,6 +344,34 @@ defmodule Flatfoot.SpadeTest do
 
     test "with invalid id, raises error" do
       assert_raise Ecto.NoResultsError, fn -> Spade.delete_watchlist(0) end
+    end
+  end
+
+  describe "update_watchlist/2" do
+    test "with valid id and attributes, updates watchlist" do
+      watchlist = insert(:watchlist)
+      new_name = "New name"
+
+      {:ok, result} = Spade.update_watchlist(watchlist.id, %{name: new_name})
+      assert result.id == watchlist.id
+      assert result.name == new_name
+    end
+
+    test "with invalid id and valid attributes, raises error" do
+      new_name = "New name"
+      assert_raise Ecto.NoResultsError, fn -> Spade.update_watchlist(0, %{name: new_name}) end
+    end
+
+    test "with valid id and invalid attributes, returns changeset with errors" do
+      watchlist = insert(:watchlist)
+      {:error, changeset} = Spade.update_watchlist(watchlist.id, %{name: ""})
+      assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
+    end
+
+    test "cannot alter associations" do
+      watchlist = insert(:watchlist)
+      {:ok, result} = Spade.update_watchlist(watchlist.id, %{user_id: 0})
+      assert watchlist.id == result.id != 0
     end
   end
 end

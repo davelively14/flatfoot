@@ -309,6 +309,24 @@ defmodule Flatfoot.Spade do
     |> Repo.delete
   end
 
+  @doc """
+  With a valid watchlist id and attributes, updates a watchlist.
+
+  ## Examples
+
+      iex> update_watchlist(watchlist_id, %{field: new_value})
+      {:ok, %Watchlist{}}
+
+      iex> update_watchlist(watchlist_id, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_watchlist(id, attrs) do
+    get_watchlist!(id)
+    |> watchlist_update_changeset(attrs)
+    |> Repo.update()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -340,6 +358,12 @@ defmodule Flatfoot.Spade do
   defp watchlist_changeset(%Watchlist{} = watchlist, attrs) do
     watchlist
     |> cast(attrs, [:user_id, :name])
+    |> validate_required([:user_id, :name])
+  end
+
+  defp watchlist_update_changeset(%Watchlist{} = watchlist, attrs) do
+    watchlist
+    |> cast(attrs, [:name])
     |> validate_required([:user_id, :name])
   end
 end
