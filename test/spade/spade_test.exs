@@ -318,4 +318,18 @@ defmodule Flatfoot.SpadeTest do
       assert [] == Spade.list_watchlists(user.id)
     end
   end
+
+  describe "get_watchlist/1" do
+    test "with valid id, returns a watchlist" do
+      watchlist = insert(:watchlist)
+
+      result = Spade.get_watchlist!(watchlist.id)
+      assert result.id == watchlist.id
+      assert result.name == watchlist.name
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_watchlist!(0) end
+    end
+  end
 end

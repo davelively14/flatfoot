@@ -276,6 +276,22 @@ defmodule Flatfoot.Spade do
     Repo.all from t in Watchlist, where: t.user_id == ^user_id
   end
 
+  @doc """
+  Returns a single watchlist.
+
+  Raises `Ecto.NoResultsError` if the Watchlist does not exist.
+
+  ## Examples
+
+      iex> get_watchlist!(123)
+      %Watchlist{}
+
+      iex> get_watchlist!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_watchlist!(id), do: Repo.get!(Watchlist, id)
+
   ##############
   # Changesets #
   ##############
