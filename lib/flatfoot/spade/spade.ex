@@ -292,6 +292,23 @@ defmodule Flatfoot.Spade do
   """
   def get_watchlist!(id), do: Repo.get!(Watchlist, id)
 
+  @doc """
+  Given a Watchlist id, will delete that Watchlist.
+
+  ## Examples
+
+      iex> delete_watchlist(135)
+      {:ok, %Watchlist{}}
+
+      iex> delete_watchlist(0)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_watchlist(id) do
+    get_watchlist!(id)
+    |> Repo.delete
+  end
+
   ##############
   # Changesets #
   ##############

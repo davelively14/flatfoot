@@ -332,4 +332,18 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_watchlist!(0) end
     end
   end
+
+  describe "delete_watchlist/1" do
+    test "with valid id, deletes watchlist" do
+      watchlist = insert(:watchlist)
+
+      {:ok, result} = Spade.delete_watchlist(watchlist.id)
+      assert result.id == watchlist.id
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_watchlist!(watchlist.id) end
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.delete_watchlist(0) end
+    end
+  end
 end
