@@ -299,4 +299,23 @@ defmodule Flatfoot.SpadeTest do
       assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
     end
   end
+
+  describe "list_watchlists/1" do
+    test "with valid user_id, returns list of watchlists" do
+      user = insert(:user)
+      watchlist = insert(:watchlist, user: user)
+      insert_list(3, :watchlist)
+
+      results = Spade.list_watchlists(user.id)
+      assert results |> length == 1
+      assert watchlist.id == results |> List.first |> Map.get(:id)
+    end
+
+    test "with user_id with no watchlists, returns empty list" do
+      user = insert(:user)
+      insert_list(3, :watchlist)
+
+      assert [] == Spade.list_watchlists(user.id)
+    end
+  end
 end
