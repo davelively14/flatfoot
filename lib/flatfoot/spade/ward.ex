@@ -1,9 +1,9 @@
-defmodule Flatfoot.Spade.Target do
+defmodule Flatfoot.Spade.Ward do
   use Ecto.Schema
 
-  schema "spade_targets" do
+  schema "spade_wards" do
     belongs_to :user, Flatfoot.Spade.User
-    has_many :target_accounts, Flatfoot.Spade.TargetAccount, on_delete: :delete_all
+    has_many :ward_accounts, Flatfoot.Spade.WardAccount, on_delete: :delete_all
 
     field :name, :string
     field :relationship, :string

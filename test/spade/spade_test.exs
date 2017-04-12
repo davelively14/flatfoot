@@ -71,211 +71,211 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
-  ##########
-  # Target #
-  ##########
+  ########
+  # Ward #
+  ########
 
-  describe "create_target/1" do
-    test "with valid attributes, creates target" do
+  describe "create_ward/1" do
+    test "with valid attributes, creates ward" do
       name = Faker.Name.name
       relationship = Faker.Team.creature
       user = insert(:user)
 
-      {:ok, target} = Spade.create_target(%{name: name, relationship: relationship, user_id: user.id})
-      assert name == target.name
-      assert relationship == target.relationship
-      assert user.id == target.user_id
+      {:ok, ward} = Spade.create_ward(%{name: name, relationship: relationship, user_id: user.id})
+      assert name == ward.name
+      assert relationship == ward.relationship
+      assert user.id == ward.user_id
     end
 
     test "with invalid attributes, will return changeset with errors" do
-      {:error, changeset} = Spade.create_target(%{})
+      {:error, changeset} = Spade.create_ward(%{})
 
       assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
     end
   end
 
-  describe "list_targets/1" do
-    test "with valid user_id, returns all targets for that user" do
+  describe "list_wards/1" do
+    test "with valid user_id, returns all wards for that user" do
       user = insert(:user)
-      user_targets = insert(:target, user: user)
-      insert_list(2, :target)
+      user_wards = insert(:ward, user: user)
+      insert_list(2, :ward)
 
-      results = Spade.list_targets(user.id)
+      results = Spade.list_wards(user.id)
       assert results |> length == 1
-      assert user_targets.id == results |> List.first |> Map.get(:id)
+      assert user_wards.id == results |> List.first |> Map.get(:id)
     end
 
     test "returns empty list if no backends exist" do
-      insert_list(3, :target)
-      results = Spade.list_targets(1)
+      insert_list(3, :ward)
+      results = Spade.list_wards(1)
       assert [] == results
     end
   end
 
-  describe "get_target!/1" do
-    test "with valid id, returns a target" do
-      target = insert(:target)
+  describe "get_ward!/1" do
+    test "with valid id, returns a ward" do
+      ward = insert(:ward)
 
-      result = Spade.get_target!(target.id)
-      assert result.id == target.id
-      assert result.name == target.name
+      result = Spade.get_ward!(ward.id)
+      assert result.id == ward.id
+      assert result.name == ward.name
     end
 
     test "with invalid id, raises an error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.get_target!(0) end
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward!(0) end
     end
   end
 
-  describe "delete_target/1" do
-    test "with valid id, deletes a target and returns the deleted target" do
-      target = insert(:target)
+  describe "delete_ward/1" do
+    test "with valid id, deletes a ward and returns the deleted ward" do
+      ward = insert(:ward)
 
-      {:ok, result} = Spade.delete_target(target.id)
-      assert result.id == target.id
-      assert_raise Ecto.NoResultsError, fn -> Spade.get_target!(target.id) end
+      {:ok, result} = Spade.delete_ward(ward.id)
+      assert result.id == ward.id
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward!(ward.id) end
     end
 
     test "with invalid id, raises NoResultsError" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.delete_target(0) end
+      assert_raise Ecto.NoResultsError, fn -> Spade.delete_ward(0) end
     end
   end
 
-  describe "update_target/2" do
-    test "with valid target_id and attributes, updates a target" do
-      target = insert(:target)
+  describe "update_ward/2" do
+    test "with valid ward_id and attributes, updates a ward" do
+      ward = insert(:ward)
       new_name = "New name"
 
-      {:ok, result} = Spade.update_target(target.id, %{name: new_name})
-      assert result.id == target.id
-      assert result.name != target.name
+      {:ok, result} = Spade.update_ward(ward.id, %{name: new_name})
+      assert result.id == ward.id
+      assert result.name != ward.name
       assert result.name == new_name
     end
 
     test "does not update associations" do
-      target = insert(:target)
+      ward = insert(:ward)
       new_name = "new name"
 
-      {:ok, result} = Spade.update_target(target.id, %{name: new_name, user_id: 0})
-      assert result.id == target.id
+      {:ok, result} = Spade.update_ward(ward.id, %{name: new_name, user_id: 0})
+      assert result.id == ward.id
       assert result.name == new_name
-      assert result.user_id == target.user_id != 0
+      assert result.user_id == ward.user_id != 0
     end
 
     test "with invalid params, returns changeset with errors" do
-      target = insert(:target)
+      ward = insert(:ward)
 
-      {:error, changeset} = Spade.update_target(target.id, %{name: nil})
+      {:error, changeset} = Spade.update_ward(ward.id, %{name: nil})
       assert changeset.errors |> length == 1
       assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
     end
 
-    test "with invalid target_id, raises error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.update_target(0, %{name: "Hello"}) end
+    test "with invalid ward_id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.update_ward(0, %{name: "Hello"}) end
     end
   end
 
-  ##################
-  # Target Account #
-  ##################
+  ################
+  # Ward Account #
+  ################
 
-  describe "create_target_account/1" do
-    test "with valid attributes, creates target account" do
-      target = insert(:target)
+  describe "create_ward_account/1" do
+    test "with valid attributes, creates ward account" do
+      ward = insert(:ward)
       backend = insert(:backend)
       handle = Faker.Internet.user_name
-      {:ok, result} = Spade.create_target_account(%{target_id: target.id, backend_id: backend.id, handle: handle})
+      {:ok, result} = Spade.create_ward_account(%{ward_id: ward.id, backend_id: backend.id, handle: handle})
 
-      assert result.target_id == target.id
+      assert result.ward_id == ward.id
       assert result.backend_id == backend.id
       assert result.handle == handle
     end
 
     test "with invalid attributes, returns a changeset with errors" do
-      {:error, changeset} = Spade.create_target_account(%{})
+      {:error, changeset} = Spade.create_ward_account(%{})
 
-      assert changeset.errors[:target_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:ward_id] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:backend_id] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:handle] == {"can't be blank", [validation: :required]}
     end
   end
 
-  describe "list_target_accounts/1" do
-    test "with valid target_id, returns a list of target accounts" do
-      target = insert(:target)
-      account = insert(:target_account, target: target)
-      insert_list(2, :target_account)
+  describe "list_ward_accounts/1" do
+    test "with valid ward_id, returns a list of ward accounts" do
+      ward = insert(:ward)
+      account = insert(:ward_account, ward: ward)
+      insert_list(2, :ward_account)
 
-      results = Spade.list_target_accounts(target.id)
+      results = Spade.list_ward_accounts(ward.id)
       assert results |> length == 1
       assert account.id == results |> List.first |> Map.get(:id)
     end
 
-    test "with non existant target_id returns empty list" do
-      assert [] == Spade.list_target_accounts(0)
+    test "with non existant ward_id returns empty list" do
+      assert [] == Spade.list_ward_accounts(0)
     end
   end
 
-  describe "get_target_account!/1" do
-    test "with valid target_account_id, returns a single target account" do
-      account = insert(:target_account)
+  describe "get_ward_account!/1" do
+    test "with valid ward_account_id, returns a single ward account" do
+      account = insert(:ward_account)
 
-      result = Spade.get_target_account!(account.id)
+      result = Spade.get_ward_account!(account.id)
       assert result.id == account.id
       assert result.handle == account.handle
-      assert result.target_id == account.target_id
+      assert result.ward_id == account.ward_id
       assert result.backend_id == account.backend_id
     end
 
-    test "with invalid target_account_id, raises error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.get_target_account!(0) end
+    test "with invalid ward_account_id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_account!(0) end
     end
   end
 
-  describe "delete_target_account/1" do
-    test "with valid id, deletes a target account and returns that deleted account" do
-      account = insert(:target_account)
+  describe "delete_ward_account/1" do
+    test "with valid id, deletes a ward account and returns that deleted account" do
+      account = insert(:ward_account)
 
-      {:ok, result} = Spade.delete_target_account(account.id)
+      {:ok, result} = Spade.delete_ward_account(account.id)
       assert result.id == account.id
-      assert_raise Ecto.NoResultsError, fn -> Spade.get_target_account!(account.id) end
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_account!(account.id) end
     end
 
     test "with invalid id, raises error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.delete_target_account(0) end
+      assert_raise Ecto.NoResultsError, fn -> Spade.delete_ward_account(0) end
     end
   end
 
-  describe "update_target_account/2" do
-    test "with valid target_account_id and attributes, updates target_account" do
-      account = insert(:target_account)
+  describe "update_ward_account/2" do
+    test "with valid ward_account_id and attributes, updates ward_account" do
+      account = insert(:ward_account)
       new_handle = "@things"
 
-      {:ok, result} = Spade.update_target_account(account.id, %{handle: new_handle})
+      {:ok, result} = Spade.update_ward_account(account.id, %{handle: new_handle})
       assert result.id == account.id
       assert result.handle == new_handle
     end
 
     test "does not update associations" do
-      account = insert(:target_account)
+      account = insert(:ward_account)
       new_handle = "@things"
 
-      {:ok, result} = Spade.update_target_account(account.id, %{handle: new_handle, backend_id: 0, target_id: 0})
+      {:ok, result} = Spade.update_ward_account(account.id, %{handle: new_handle, backend_id: 0, ward_id: 0})
       assert result.id == account.id
       assert result.handle == new_handle
       assert result.backend_id == account.backend_id != 0
-      assert result.target_id == account.target_id != 0
+      assert result.ward_id == account.ward_id != 0
     end
 
     test "with invalid params, returns changeset with error" do
-      account = insert(:target_account)
+      account = insert(:ward_account)
 
-      {:error, changeset} = Spade.update_target_account(account.id, %{handle: nil})
+      {:error, changeset} = Spade.update_ward_account(account.id, %{handle: nil})
       assert changeset.errors[:handle] == {"can't be blank", [validation: :required]}
     end
 
     test "with invalid id, raises error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.update_target_account(0, %{}) end
+      assert_raise Ecto.NoResultsError, fn -> Spade.update_ward_account(0, %{}) end
     end
   end
 

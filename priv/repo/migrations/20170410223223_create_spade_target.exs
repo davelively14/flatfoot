@@ -1,8 +1,8 @@
-defmodule Flatfoot.Repo.Migrations.CreateSpadeTarget do
+defmodule Flatfoot.Repo.Migrations.CreateSpadeWard do
   use Ecto.Migration
 
   def change do
-    create table(:spade_targets) do
+    create table(:spade_wards) do
       add :user_id, references(:clients_users)
       add :name, :string
       add :relationship, :string
@@ -11,6 +11,6 @@ defmodule Flatfoot.Repo.Migrations.CreateSpadeTarget do
       timestamps()
     end
 
-    create index(:spade_targets, [:user_id])
+    create index(:spade_wards, [:user_id])
   end
 end

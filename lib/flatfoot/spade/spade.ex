@@ -63,179 +63,179 @@ defmodule Flatfoot.Spade do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-  ##########
-  # Target #
-  ##########
+  ########
+  # Ward #
+  ########
 
-  alias Flatfoot.Spade.Target
+  alias Flatfoot.Spade.Ward
 
   @doc """
-  Creates a target with valid params
+  Creates a ward with valid params
 
   ## Examples
 
-      iex> create_target(%{name: "Jan Jones", relationship: "daughter", user_id: 12)
-      {:ok, %Target{name: "Jan Jones", relationship: "daughter", user_id: 12, active: true}}
+      iex> create_ward(%{name: "Jan Jones", relationship: "daughter", user_id: 12)
+      {:ok, %Ward{name: "Jan Jones", relationship: "daughter", user_id: 12, active: true}}
 
-      iex> create_target(%{})
+      iex> create_ward(%{})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_target(attrs) do
-    %Target{}
-    |> target_changeset(attrs)
+  def create_ward(attrs) do
+    %Ward{}
+    |> ward_changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Give a user_id, returns a list of targets for a given user.
+  Give a user_id, returns a list of wards for a given user.
 
   ## Examples
 
-      iex> list_targets(12)
-      [%Target{}, ...]
+      iex> list_wards(12)
+      [%Ward{}, ...]
 
   """
-  def list_targets(user_id) do
-    Repo.all from t in Target, where: t.user_id == ^user_id
+  def list_wards(user_id) do
+    Repo.all from t in Ward, where: t.user_id == ^user_id
   end
 
   @doc """
-  Returns a single target.
+  Returns a single ward.
 
-  Raises `Ecto.NoResultsError` if the Target does not exist.
+  Raises `Ecto.NoResultsError` if the Ward does not exist.
 
   ## Examples
 
-      iex> get_target!(123)
-      %Target{}
+      iex> get_ward!(123)
+      %Ward{}
 
-      iex> get_target!(456)
+      iex> get_ward!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_target!(id), do: Repo.get!(Target, id)
+  def get_ward!(id), do: Repo.get!(Ward, id)
 
   @doc """
-  Given a Target id, will delete that Target.
+  Given a Ward id, will delete that Ward.
 
   ## Examples
 
-      iex> delete_target(135)
-      {:ok, %Target{}}
+      iex> delete_ward(135)
+      {:ok, %Ward{}}
 
-      iex> delete_target(0)
+      iex> delete_ward(0)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_target(id) do
-    get_target!(id)
+  def delete_ward(id) do
+    get_ward!(id)
     |> Repo.delete
   end
 
   @doc """
-  Updates a target.
+  Updates a ward.
 
   ## Examples
 
-      iex> update_target(target, %{field: new_value})
-      {:ok, %Target{}}
+      iex> update_ward(ward, %{field: new_value})
+      {:ok, %Ward{}}
 
-      iex> update_target(target, %{field: bad_value})
+      iex> update_ward(ward, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_target(id, attrs) do
-    get_target!(id)
-    |> target_update_changeset(attrs)
+  def update_ward(id, attrs) do
+    get_ward!(id)
+    |> ward_update_changeset(attrs)
     |> Repo.update()
   end
 
-  ##################
-  # Target Account #
-  ##################
+  ################
+  # Ward Account #
+  ################
 
-  alias Flatfoot.Spade.TargetAccount
+  alias Flatfoot.Spade.WardAccount
 
   @doc """
-  Creates a target account with valid params
+  Creates a ward account with valid params
 
   ## Examples
 
-      iex> create_target_account(%{handle: "@realOneal", target_id: 4, backend_id: 12)
-      {:ok, %TargetAccount{handle: "@realOneal", target_id: 4, backend_id: 12}}
+      iex> create_ward_account(%{handle: "@realOneal", ward_id: 4, backend_id: 12)
+      {:ok, %WardAccount{handle: "@realOneal", ward_id: 4, backend_id: 12}}
 
-      iex> create_target_account(%{})
+      iex> create_ward_account(%{})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_target_account(attrs) do
-    %TargetAccount{}
-    |> target_account_changeset(attrs)
+  def create_ward_account(attrs) do
+    %WardAccount{}
+    |> ward_account_changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Give a target id, returns a list of target_accounts for a given target.
+  Give a ward id, returns a list of ward_accounts for a given ward.
 
   ## Examples
 
-      iex> list_target_accounts(12)
-      [%TargetAccount{}, ...]
+      iex> list_ward_accounts(12)
+      [%WardAccount{}, ...]
 
   """
-  def list_target_accounts(target_id) do
-    Repo.all from t in TargetAccount, where: t.target_id == ^target_id
+  def list_ward_accounts(ward_id) do
+    Repo.all from t in WardAccount, where: t.ward_id == ^ward_id
   end
 
   @doc """
-  Returns a single target account.
+  Returns a single ward account.
 
-  Raises `Ecto.NoResultsError` if the TargetAccount does not exist.
+  Raises `Ecto.NoResultsError` if the WardAccount does not exist.
 
   ## Examples
 
-      iex> get_target_account!(123)
-      %TargetAccount{}
+      iex> get_ward_account!(123)
+      %WardAccount{}
 
-      iex> get_target_account!(456)
+      iex> get_ward_account!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_target_account!(id), do: Repo.get!(TargetAccount, id)
+  def get_ward_account!(id), do: Repo.get!(WardAccount, id)
 
   @doc """
-  Given a TargetAccount id, will delete that TargetAccount.
+  Given a WardAccount id, will delete that WardAccount.
 
   ## Examples
 
-      iex> delete_target_account(135)
-      {:ok, %TargetAccount{}}
+      iex> delete_ward_account(135)
+      {:ok, %WardAccount{}}
 
-      iex> delete_target_account(0)
+      iex> delete_ward_account(0)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_target_account(id) do
-    get_target_account!(id)
+  def delete_ward_account(id) do
+    get_ward_account!(id)
     |> Repo.delete
   end
 
   @doc """
-  Updates a target_account.
+  Updates a ward_account.
 
   ## Examples
 
-      iex> update_target_account(target_account, %{field: new_value})
-      {:ok, %TargetAccount{}}
+      iex> update_ward_account(ward_account, %{field: new_value})
+      {:ok, %WardAccount{}}
 
-      iex> update_target_account(target_account, %{field: bad_value})
+      iex> update_ward_account(ward_account, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_target_account(id, attrs) do
-    get_target_account!(id)
-    |> target_acount_update_changeset(attrs)
+  def update_ward_account(id, attrs) do
+    get_ward_account!(id)
+    |> ward_acount_update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -331,26 +331,26 @@ defmodule Flatfoot.Spade do
   # Changesets #
   ##############
 
-  defp target_changeset(%Target{} = target, attrs) do
-    target
+  defp ward_changeset(%Ward{} = ward, attrs) do
+    ward
     |> cast(attrs, [:name, :relationship, :user_id])
     |> validate_required([:name, :user_id])
   end
 
-  defp target_update_changeset(%Target{} = target, attrs) do
-    target
+  defp ward_update_changeset(%Ward{} = ward, attrs) do
+    ward
     |> cast(attrs, [:name, :relationship])
     |> validate_required([:name])
   end
 
-  defp target_account_changeset(%TargetAccount{} = target_account, attrs) do
-    target_account
-    |> cast(attrs, [:handle, :target_id, :backend_id])
-    |> validate_required([:handle, :target_id, :backend_id])
+  defp ward_account_changeset(%WardAccount{} = ward_account, attrs) do
+    ward_account
+    |> cast(attrs, [:handle, :ward_id, :backend_id])
+    |> validate_required([:handle, :ward_id, :backend_id])
   end
 
-  defp target_acount_update_changeset(%TargetAccount{} = target_account, attrs) do
-    target_account
+  defp ward_acount_update_changeset(%WardAccount{} = ward_account, attrs) do
+    ward_account
     |> cast(attrs, [:handle])
     |> validate_required([:handle])
   end

@@ -56,8 +56,8 @@ defmodule Flatfoot.Factory do
     }
   end
 
-  def target_factory do
-    %Flatfoot.Spade.Target{
+  def ward_factory do
+    %Flatfoot.Spade.Ward{
       name: Faker.Name.name,
       relationship: Faker.Team.creature,
       active: [true, false] |> Enum.random,
@@ -65,10 +65,10 @@ defmodule Flatfoot.Factory do
     }
   end
 
-  def target_account_factory do
-    %Flatfoot.Spade.TargetAccount{
+  def ward_account_factory do
+    %Flatfoot.Spade.WardAccount{
       handle: Faker.Internet.user_name,
-      target: build(:target),
+      ward: build(:ward),
       backend: build(:backend)
     }
   end
