@@ -90,6 +90,14 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def suspect_account_factory do
+    %Flatfoot.Spade.SuspectAccount{
+      handle: Faker.Internet.user_name,
+      suspect: build(:suspect),
+      backend: build(:backend)
+    }
+  end
+
   #####################
   # Private Functions #
   #####################
