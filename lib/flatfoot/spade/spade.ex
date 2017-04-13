@@ -351,6 +351,19 @@ defmodule Flatfoot.Spade do
     |> Repo.insert()
   end
 
+  @doc """
+  Give a watchlist id, returns a list of watchlists for a given user.
+
+  ## Examples
+
+      iex> list_suspects(12)
+      [%Suspect{}, ...]
+
+  """
+  def list_suspects(watchlist_id) do
+    Repo.all from t in Suspect, where: t.watchlist_id == ^watchlist_id
+  end
+
   ##############
   # Changesets #
   ##############

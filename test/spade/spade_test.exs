@@ -401,9 +401,21 @@ defmodule Flatfoot.SpadeTest do
   end
 
   describe "list_suspects/1" do
-    test "with valid watchlist id, returns all associated suspects" do
+    test "with valid watchlist_id, returns all associated suspects" do
       watchlist = insert(:watchlist)
-      _suspect = insert(:suspect, watchlist: watchlist)
+      suspect = insert(:suspect, watchlist: watchlist)
+      insert_list(3, :suspect)
+
+      results = Spade.list_suspects(watchlist.id)
+      assert results |> length == 1
+      assert results |> List.first |> Map.get(:id) == suspect.id
+    end
+
+    test "with watchlist_id with no suspects, returns empty list" do
+      watchlist = insert(:watchlist)
+      insert_list(3, :suspect)
+
+      assert [] == Spade.list_suspects(watchlist.id)
     end
   end
 
