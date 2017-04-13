@@ -80,6 +80,16 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def suspect_factory do
+    %Flatfoot.Spade.Suspect{
+      name: Faker.Name.name,
+      category: Faker.Lorem.word,
+      notes: Faker.Lorem.Shakespeare.hamlet,
+      status: true,
+      user: build(:user)
+    }
+  end
+
   #####################
   # Private Functions #
   #####################
