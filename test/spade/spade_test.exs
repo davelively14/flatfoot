@@ -419,12 +419,17 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
-  #
-  # describe "get_suspect!/1" do
-  #   test "will valid id, will return a single suspect" do
-  #     suspect = insert(:suspect)
-  #
-  #
-  #   end
-  # end
+  describe "get_suspect!/1" do
+    test "with valid id, will return a single suspect" do
+      suspect = insert(:suspect)
+
+      assert %Spade.Suspect{} = result = Spade.get_suspect!(suspect.id)
+      assert result.id == suspect.id
+      assert result.name == suspect.name
+    end
+
+    test "with invalid id, will raise error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect!(0) end
+    end
+  end
 end

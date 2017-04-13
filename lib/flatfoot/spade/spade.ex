@@ -364,6 +364,22 @@ defmodule Flatfoot.Spade do
     Repo.all from t in Suspect, where: t.watchlist_id == ^watchlist_id
   end
 
+  @doc """
+  Returns a single suspect.
+
+  Raises `Ecto.NoResultsError` if the Suspect does not exist.
+
+  ## Examples
+
+      iex> get_suspect!(123)
+      %Suspect{}
+
+      iex> get_suspect!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_suspect!(id), do: Repo.get!(Suspect, id)
+
   ##############
   # Changesets #
   ##############
