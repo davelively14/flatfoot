@@ -476,4 +476,106 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.update_suspect(0, %{}) end
     end
   end
+
+  ###################
+  # Suspect Account #
+  ###################
+
+  describe "create_suspect_account/1" do
+    test "with valid attributes, will create a suspect account" do
+      suspect = insert(:suspect)
+      backend = insert(:backend)
+      attrs = %{handle: Faker.Internet.user_name, backend_id: backend.id, suspect_id: suspect.id}
+
+      {:ok, result} = Spade.create_suspect_account(attrs)
+      assert result.handle == attrs.handle
+      assert result.backend_id == attrs.backend_id
+      assert result.suspect_id == attrs.suspect_id
+    end
+
+    test "with invalid attributes, will return a changeset with errors" do
+      {:error, changeset} = Spade.create_suspect_account(%{})
+
+      assert changeset.errors[:handle] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:suspect_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:backend_id] == {"can't be blank", [validation: :required]}
+    end
+  end
+
+  # describe "list_suspects/1" do
+  #   test "with valid watchlist_id, returns all associated suspects" do
+  #     watchlist = insert(:watchlist)
+  #     suspect = insert(:suspect, watchlist: watchlist)
+  #     insert_list(3, :suspect)
+  #
+  #     results = Spade.list_suspects(watchlist.id)
+  #     assert results |> length == 1
+  #     assert results |> List.first |> Map.get(:id) == suspect.id
+  #   end
+  #
+  #   test "with watchlist_id with no suspects, returns empty list" do
+  #     watchlist = insert(:watchlist)
+  #     insert_list(3, :suspect)
+  #
+  #     assert [] == Spade.list_suspects(watchlist.id)
+  #   end
+  # end
+  #
+  # describe "get_suspect!/1" do
+  #   test "with valid id, will return a single suspect" do
+  #     suspect = insert(:suspect)
+  #
+  #     assert %Suspect{} = result = Spade.get_suspect!(suspect.id)
+  #     assert result.id == suspect.id
+  #     assert result.name == suspect.name
+  #   end
+  #
+  #   test "with invalid id, will raise error" do
+  #     assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect!(0) end
+  #   end
+  # end
+  #
+  # describe "delete_suspect/1" do
+  #   test "with valid id, deletes and returns a suspect" do
+  #     suspect = insert(:suspect)
+  #
+  #     assert {:ok, %Suspect{} = result} = Spade.delete_suspect(suspect.id)
+  #     assert result.id == suspect.id
+  #
+  #     assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect!(suspect.id) end
+  #   end
+  #
+  #   test "with invalid id, raises error" do
+  #     assert_raise Ecto.NoResultsError, fn -> Spade.delete_suspect(0) end
+  #   end
+  # end
+  #
+  # describe "update_suspect/1" do
+  #   test "with valid id and attrs, updates a suspect" do
+  #     suspect = insert(:suspect)
+  #     new_name = "New name"
+  #
+  #     assert {:ok, %Suspect{} = result} = Spade.update_suspect(suspect.id, %{name: new_name})
+  #     assert suspect.id == result.id
+  #     assert suspect.name != result.name
+  #     assert new_name == result.name
+  #   end
+  #
+  #   test "with valid id and attrs, ignores association change, updates a suspect" do
+  #     suspect = insert(:suspect)
+  #     new_name = "New name"
+  #     new_watchlist_id = 0
+  #
+  #     assert {:ok, %Suspect{} = result} = Spade.update_suspect(suspect.id, %{name: new_name, watchlist_id: new_watchlist_id})
+  #     assert suspect.id == result.id
+  #     assert suspect.name != result.name
+  #     assert new_name == result.name
+  #     assert suspect.watchlist_id == result.watchlist_id
+  #     assert new_watchlist_id != result.watchlist_id
+  #   end
+  #
+  #   test "with invalid id, raises error" do
+  #     assert_raise Ecto.NoResultsError, fn -> Spade.update_suspect(0, %{}) end
+  #   end
+  # end
 end

@@ -415,6 +415,94 @@ defmodule Flatfoot.Spade do
     |> Repo.update()
   end
 
+  ###################
+  # Suspect Account #
+  ###################
+
+  alias Flatfoot.Spade.SuspectAccount
+
+  @doc """
+  Creates a suspect account with valid params
+
+  ## Examples
+
+      iex> create_suspect_account(%{handle: "@bully", suspect_id: 4, backend_id: 3)
+      {:ok, %SuspectAccount{handle: "@bully", suspect_id: 4, backend_id: 3}}
+
+      iex> create_suspect_account(%{})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_suspect_account(attrs) do
+    %SuspectAccount{}
+    |> suspect_account_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  # @doc """
+  # Give a watchlist id, returns a list of watchlists for a given user.
+  #
+  # ## Examples
+  #
+  #     iex> list_suspects(12)
+  #     [%Suspect{}, ...]
+  #
+  # """
+  # def list_suspects(watchlist_id) do
+  #   Repo.all from t in Suspect, where: t.watchlist_id == ^watchlist_id
+  # end
+  #
+  # @doc """
+  # Returns a single suspect.
+  #
+  # Raises `Ecto.NoResultsError` if the Suspect does not exist.
+  #
+  # ## Examples
+  #
+  #     iex> get_suspect!(123)
+  #     %Suspect{}
+  #
+  #     iex> get_suspect!(456)
+  #     ** (Ecto.NoResultsError)
+  #
+  # """
+  # def get_suspect!(id), do: Repo.get!(Suspect, id)
+  #
+  # @doc """
+  # Given a Suspect id, will delete that Suspect.
+  #
+  # ## Examples
+  #
+  #     iex> delete_suspect(135)
+  #     {:ok, %Suspect{}}
+  #
+  #     iex> delete_suspect(0)
+  #     {:error, %Ecto.Changeset{}}
+  #
+  # """
+  # def delete_suspect(id) do
+  #   get_suspect!(id)
+  #   |> Repo.delete
+  # end
+  #
+  # @doc """
+  # With a valid suspect id and attributes, updates a suspect.
+  #
+  # ## Examples
+  #
+  #     iex> update_suspect(suspect_id, %{field: new_value})
+  #     {:ok, %Suspect{}}
+  #
+  #     iex> update_suspect(suspect_id, %{field: bad_value})
+  #     {:error, %Ecto.Changeset{}}
+  #
+  # """
+  # def update_suspect(id, attrs) do
+  #   get_suspect!(id)
+  #   |> suspect_update_changeset(attrs)
+  #   |> Repo.update()
+  # end
+
   ##############
   # Changesets #
   ##############
@@ -465,5 +553,11 @@ defmodule Flatfoot.Spade do
     suspect
     |> cast(attrs, [:name, :category, :notes, :active])
     |> validate_required([:name, :watchlist_id])
+  end
+
+  defp suspect_account_changeset(%SuspectAccount{} = suspect, attrs) do
+    suspect
+    |> cast(attrs, [:handle, :suspect_id, :backend_id])
+    |> validate_required([:handle, :suspect_id, :backend_id])
   end
 end
