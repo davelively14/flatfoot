@@ -380,6 +380,23 @@ defmodule Flatfoot.Spade do
   """
   def get_suspect!(id), do: Repo.get!(Suspect, id)
 
+  @doc """
+  Given a Suspect id, will delete that Suspect.
+
+  ## Examples
+
+      iex> delete_suspect(135)
+      {:ok, %Suspect{}}
+
+      iex> delete_suspect(0)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_suspect(id) do
+    get_suspect!(id)
+    |> Repo.delete
+  end
+
   ##############
   # Changesets #
   ##############

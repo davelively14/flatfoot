@@ -432,4 +432,19 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect!(0) end
     end
   end
+
+  describe "delete_suspect/1" do
+    test "with valid id, deletes and returns a suspect" do
+      suspect = insert(:suspect)
+
+      assert {:ok, %Spade.Suspect{} = result} = Spade.delete_suspect(suspect.id)
+      assert result.id == suspect.id
+
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect!(suspect.id) end
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.delete_suspect(0) end
+    end
+  end
 end
