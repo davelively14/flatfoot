@@ -467,41 +467,41 @@ defmodule Flatfoot.Spade do
 
   """
   def get_suspect_account!(id), do: Repo.get!(SuspectAccount, id)
-  #
-  # @doc """
-  # Given a Suspect id, will delete that Suspect.
-  #
-  # ## Examples
-  #
-  #     iex> delete_suspect(135)
-  #     {:ok, %Suspect{}}
-  #
-  #     iex> delete_suspect(0)
-  #     {:error, %Ecto.Changeset{}}
-  #
-  # """
-  # def delete_suspect(id) do
-  #   get_suspect!(id)
-  #   |> Repo.delete
-  # end
-  #
-  # @doc """
-  # With a valid suspect id and attributes, updates a suspect.
-  #
-  # ## Examples
-  #
-  #     iex> update_suspect(suspect_id, %{field: new_value})
-  #     {:ok, %Suspect{}}
-  #
-  #     iex> update_suspect(suspect_id, %{field: bad_value})
-  #     {:error, %Ecto.Changeset{}}
-  #
-  # """
-  # def update_suspect(id, attrs) do
-  #   get_suspect!(id)
-  #   |> suspect_update_changeset(attrs)
-  #   |> Repo.update()
-  # end
+
+  @doc """
+  Given a SuspectAccount id, will delete that SuspectAccount.
+
+  ## Examples
+
+      iex> delete_suspect_account(135)
+      {:ok, %SuspectAccount{}}
+
+      iex> delete_suspect_account(0)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_suspect_account(id) do
+    get_suspect_account!(id)
+    |> Repo.delete
+  end
+
+  @doc """
+  With a valid suspect account id and attributes, updates a suspect account.
+
+  ## Examples
+
+      iex> update_suspect_account(suspect_account_id, %{field: new_value})
+      {:ok, %SuspectAccount{}}
+
+      iex> update_suspect_account(suspect_account_id, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_suspect_account(id, attrs) do
+    get_suspect_account!(id)
+    |> suspect_account_update_changeset(attrs)
+    |> Repo.update()
+  end
 
   ##############
   # Changesets #
@@ -558,6 +558,12 @@ defmodule Flatfoot.Spade do
   defp suspect_account_changeset(%SuspectAccount{} = suspect, attrs) do
     suspect
     |> cast(attrs, [:handle, :suspect_id, :backend_id])
+    |> validate_required([:handle, :suspect_id, :backend_id])
+  end
+
+  defp suspect_account_update_changeset(%SuspectAccount{} = suspect, attrs) do
+    suspect
+    |> cast(attrs, [:handle])
     |> validate_required([:handle, :suspect_id, :backend_id])
   end
 end

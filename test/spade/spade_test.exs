@@ -535,47 +535,50 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
-  # describe "delete_suspect/1" do
-  #   test "with valid id, deletes and returns a suspect" do
-  #     suspect = insert(:suspect)
-  #
-  #     assert {:ok, %Suspect{} = result} = Spade.delete_suspect(suspect.id)
-  #     assert result.id == suspect.id
-  #
-  #     assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect!(suspect.id) end
-  #   end
-  #
-  #   test "with invalid id, raises error" do
-  #     assert_raise Ecto.NoResultsError, fn -> Spade.delete_suspect(0) end
-  #   end
-  # end
-  #
-  # describe "update_suspect/1" do
-  #   test "with valid id and attrs, updates a suspect" do
-  #     suspect = insert(:suspect)
-  #     new_name = "New name"
-  #
-  #     assert {:ok, %Suspect{} = result} = Spade.update_suspect(suspect.id, %{name: new_name})
-  #     assert suspect.id == result.id
-  #     assert suspect.name != result.name
-  #     assert new_name == result.name
-  #   end
-  #
-  #   test "with valid id and attrs, ignores association change, updates a suspect" do
-  #     suspect = insert(:suspect)
-  #     new_name = "New name"
-  #     new_watchlist_id = 0
-  #
-  #     assert {:ok, %Suspect{} = result} = Spade.update_suspect(suspect.id, %{name: new_name, watchlist_id: new_watchlist_id})
-  #     assert suspect.id == result.id
-  #     assert suspect.name != result.name
-  #     assert new_name == result.name
-  #     assert suspect.watchlist_id == result.watchlist_id
-  #     assert new_watchlist_id != result.watchlist_id
-  #   end
-  #
-  #   test "with invalid id, raises error" do
-  #     assert_raise Ecto.NoResultsError, fn -> Spade.update_suspect(0, %{}) end
-  #   end
-  # end
+  describe "delete_suspect_account/1" do
+    test "with valid id, deletes and returns a suspect account" do
+      suspect_account = insert(:suspect_account)
+
+      assert {:ok, %SuspectAccount{} = result} = Spade.delete_suspect_account(suspect_account.id)
+      assert result.id == suspect_account.id
+
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect_account!(suspect_account.id) end
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.delete_suspect_account(0) end
+    end
+  end
+
+  describe "update_suspect_account/1" do
+    test "with valid id and attrs, updates a suspect_account" do
+      suspect_account = insert(:suspect_account)
+      new_handle = "New name"
+
+      assert {:ok, %SuspectAccount{} = result} = Spade.update_suspect_account(suspect_account.id, %{handle: new_handle})
+      assert suspect_account.id == result.id
+      assert suspect_account.handle != result.handle
+      assert new_handle == result.handle
+    end
+
+    test "with valid id and attrs, ignores association changes, updates a suspect_account" do
+      suspect_account = insert(:suspect_account)
+      new_handle = "New name"
+      new_backend_id = 0
+      new_suspect_id = 0
+
+      assert {:ok, %SuspectAccount{} = result} = Spade.update_suspect_account(suspect_account.id, %{handle: new_handle, backend_id: new_backend_id, suspect_id: new_suspect_id})
+      assert suspect_account.id == result.id
+      assert suspect_account.handle != result.handle
+      assert new_handle == result.handle
+      assert suspect_account.backend_id == result.backend_id
+      assert new_backend_id != result.backend_id
+      assert suspect_account.suspect_id == result.suspect_id
+      assert new_suspect_id != result.suspect_id
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.update_suspect_account(0, %{}) end
+    end
+  end
 end
