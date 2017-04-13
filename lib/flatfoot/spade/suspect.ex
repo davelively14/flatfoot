@@ -8,7 +8,7 @@ defmodule Flatfoot.Spade.Suspect do
     field :name, :string
     field :category, :string
     field :notes, :string
-    field :status, :boolean, default: true
+    field :active, :boolean, default: true
 
     timestamps()
   end

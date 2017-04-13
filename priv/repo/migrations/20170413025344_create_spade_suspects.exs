@@ -7,7 +7,7 @@ defmodule Flatfoot.Repo.Migrations.CreateSpadeSuspects do
       add :name, :string
       add :category, :string
       add :notes, :text
-      add :status, :boolean
+      add :active, :boolean
 
       timestamps()
     end
