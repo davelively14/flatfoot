@@ -327,6 +327,30 @@ defmodule Flatfoot.Spade do
     |> Repo.update()
   end
 
+  ###########
+  # Suspect #
+  ###########
+
+  alias Flatfoot.Spade.Suspect
+
+  @doc """
+  Creates a suspect with valid params
+
+  ## Examples
+
+      iex> create_suspect(%{name: "Bullies", category: "not nice", user_id: 4)
+      {:ok, %Suspect{name: "Bullies", category: "not nice", notes: nil, status: true, user_id: 4}}
+
+      iex> create_suspect(%{})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_suspect(attrs) do
+    %Suspect{}
+    |> suspect_changeset(attrs)
+    |> Repo.insert()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -365,5 +389,11 @@ defmodule Flatfoot.Spade do
     watchlist
     |> cast(attrs, [:name])
     |> validate_required([:user_id, :name])
+  end
+
+  defp suspect_changeset(%Suspect{} = suspect, attrs) do
+    suspect
+    |> cast(attrs, [:name, :category, :notes, :active, :user_id])
+    |> validate_required([:name, :user_id])
   end
 end
