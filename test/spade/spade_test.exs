@@ -381,22 +381,38 @@ defmodule Flatfoot.SpadeTest do
 
   describe "create_suspect/1" do
     test "with valid attributes, will create a suspect" do
-      user = insert(:user)
-      attrs = %{name: Faker.Name.name, category: Faker.Lorem.word, notes: Faker.Lorem.Shakespeare.hamlet, active: true, user_id: user.id}
+      watchlist = insert(:watchlist)
+      attrs = %{name: Faker.Name.name, category: Faker.Lorem.word, notes: Faker.Lorem.Shakespeare.hamlet, active: true, watchlist_id: watchlist.id}
 
       {:ok, result} = Spade.create_suspect(attrs)
       assert result.name == attrs.name
       assert result.category == attrs.category
       assert result.notes == attrs.notes
       assert result.active == attrs.active
-      assert result.user_id == attrs.user_id
+      assert result.watchlist_id == attrs.watchlist_id
     end
 
     test "with invalid attributes, will return a changeset with errors" do
       {:error, changeset} = Spade.create_suspect(%{})
 
       assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
-      assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:watchlist_id] == {"can't be blank", [validation: :required]}
     end
   end
+
+  describe "list_suspects/1" do
+    test "with valid watchlist id, returns all associated suspects" do
+      watchlist = insert(:watchlist)
+      _suspect = insert(:suspect, watchlist: watchlist)
+    end
+  end
+
+  #
+  # describe "get_suspect!/1" do
+  #   test "will valid id, will return a single suspect" do
+  #     suspect = insert(:suspect)
+  #
+  #
+  #   end
+  # end
 end

@@ -393,7 +393,7 @@ defmodule Flatfoot.Spade do
 
   defp suspect_changeset(%Suspect{} = suspect, attrs) do
     suspect
-    |> cast(attrs, [:name, :category, :notes, :active, :user_id])
-    |> validate_required([:name, :user_id])
+    |> cast(attrs, [:name, :category, :notes, :active, :watchlist_id])
+    |> validate_required([:name, :watchlist_id])
   end
 end
