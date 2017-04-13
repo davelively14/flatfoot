@@ -1,7 +1,7 @@
 defmodule Flatfoot.SpadeTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.{Spade, Spade.Suspect}
+  alias Flatfoot.{Spade, Spade.Suspect, Spade.SuspectAccount}
 
   ###########
   # Backend #
@@ -502,39 +502,39 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
-  # describe "list_suspects/1" do
-  #   test "with valid watchlist_id, returns all associated suspects" do
-  #     watchlist = insert(:watchlist)
-  #     suspect = insert(:suspect, watchlist: watchlist)
-  #     insert_list(3, :suspect)
-  #
-  #     results = Spade.list_suspects(watchlist.id)
-  #     assert results |> length == 1
-  #     assert results |> List.first |> Map.get(:id) == suspect.id
-  #   end
-  #
-  #   test "with watchlist_id with no suspects, returns empty list" do
-  #     watchlist = insert(:watchlist)
-  #     insert_list(3, :suspect)
-  #
-  #     assert [] == Spade.list_suspects(watchlist.id)
-  #   end
-  # end
-  #
-  # describe "get_suspect!/1" do
-  #   test "with valid id, will return a single suspect" do
-  #     suspect = insert(:suspect)
-  #
-  #     assert %Suspect{} = result = Spade.get_suspect!(suspect.id)
-  #     assert result.id == suspect.id
-  #     assert result.name == suspect.name
-  #   end
-  #
-  #   test "with invalid id, will raise error" do
-  #     assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect!(0) end
-  #   end
-  # end
-  #
+  describe "list_suspect_accounts/1" do
+    test "with valid suspect id, returns all associated suspect accounts" do
+      suspect = insert(:suspect)
+      account = insert(:suspect_account, suspect: suspect)
+      insert_list(3, :suspect_account)
+
+      results = Spade.list_suspect_accounts(suspect.id)
+      assert results |> length == 1
+      assert results |> List.first |> Map.get(:id) == account.id
+    end
+
+    test "with suspect id with no suspects, returns empty list" do
+      suspect = insert(:suspect)
+      insert_list(3, :suspect_account)
+
+      assert [] == Spade.list_suspect_accounts(suspect.id)
+    end
+  end
+
+  describe "get_suspect_account!/1" do
+    test "with valid id, will return a single suspect" do
+      suspect_account = insert(:suspect_account)
+
+      assert %SuspectAccount{} = result = Spade.get_suspect_account!(suspect_account.id)
+      assert result.id == suspect_account.id
+      assert result.handle == suspect_account.handle
+    end
+
+    test "with invalid id, will raise error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect_account!(0) end
+    end
+  end
+
   # describe "delete_suspect/1" do
   #   test "with valid id, deletes and returns a suspect" do
   #     suspect = insert(:suspect)

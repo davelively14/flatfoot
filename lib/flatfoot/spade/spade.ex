@@ -439,34 +439,34 @@ defmodule Flatfoot.Spade do
     |> Repo.insert()
   end
 
-  # @doc """
-  # Give a watchlist id, returns a list of watchlists for a given user.
-  #
-  # ## Examples
-  #
-  #     iex> list_suspects(12)
-  #     [%Suspect{}, ...]
-  #
-  # """
-  # def list_suspects(watchlist_id) do
-  #   Repo.all from t in Suspect, where: t.watchlist_id == ^watchlist_id
-  # end
-  #
-  # @doc """
-  # Returns a single suspect.
-  #
-  # Raises `Ecto.NoResultsError` if the Suspect does not exist.
-  #
-  # ## Examples
-  #
-  #     iex> get_suspect!(123)
-  #     %Suspect{}
-  #
-  #     iex> get_suspect!(456)
-  #     ** (Ecto.NoResultsError)
-  #
-  # """
-  # def get_suspect!(id), do: Repo.get!(Suspect, id)
+  @doc """
+  Give a suspect id, returns a list of suspect accounts for a given user.
+
+  ## Examples
+
+      iex> list_suspect_accounts(12)
+      [%SuspectAccount{}, ...]
+
+  """
+  def list_suspect_accounts(suspect_id) do
+    Repo.all from t in SuspectAccount, where: t.suspect_id == ^suspect_id
+  end
+
+  @doc """
+  Returns a single suspect account.
+
+  Raises `Ecto.NoResultsError` if the SuspectAccount does not exist.
+
+  ## Examples
+
+      iex> get_suspect_account!(123)
+      %SuspectAccount{}
+
+      iex> get_suspect_account!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_suspect_account!(id), do: Repo.get!(SuspectAccount, id)
   #
   # @doc """
   # Given a Suspect id, will delete that Suspect.
