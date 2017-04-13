@@ -1,7 +1,7 @@
 defmodule Flatfoot.SpadeTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.{Spade}
+  alias Flatfoot.{Spade, Spade.Suspect}
 
   ###########
   # Backend #
@@ -423,7 +423,7 @@ defmodule Flatfoot.SpadeTest do
     test "with valid id, will return a single suspect" do
       suspect = insert(:suspect)
 
-      assert %Spade.Suspect{} = result = Spade.get_suspect!(suspect.id)
+      assert %Suspect{} = result = Spade.get_suspect!(suspect.id)
       assert result.id == suspect.id
       assert result.name == suspect.name
     end
@@ -437,7 +437,7 @@ defmodule Flatfoot.SpadeTest do
     test "with valid id, deletes and returns a suspect" do
       suspect = insert(:suspect)
 
-      assert {:ok, %Spade.Suspect{} = result} = Spade.delete_suspect(suspect.id)
+      assert {:ok, %Suspect{} = result} = Spade.delete_suspect(suspect.id)
       assert result.id == suspect.id
 
       assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect!(suspect.id) end
@@ -445,6 +445,35 @@ defmodule Flatfoot.SpadeTest do
 
     test "with invalid id, raises error" do
       assert_raise Ecto.NoResultsError, fn -> Spade.delete_suspect(0) end
+    end
+  end
+
+  describe "update_suspect/1" do
+    test "with valid id and attrs, updates a suspect" do
+      suspect = insert(:suspect)
+      new_name = "New name"
+
+      assert {:ok, %Suspect{} = result} = Spade.update_suspect(suspect.id, %{name: new_name})
+      assert suspect.id == result.id
+      assert suspect.name != result.name
+      assert new_name == result.name
+    end
+
+    test "with valid id and attrs, ignores association change, updates a suspect" do
+      suspect = insert(:suspect)
+      new_name = "New name"
+      new_watchlist_id = 0
+
+      assert {:ok, %Suspect{} = result} = Spade.update_suspect(suspect.id, %{name: new_name, watchlist_id: new_watchlist_id})
+      assert suspect.id == result.id
+      assert suspect.name != result.name
+      assert new_name == result.name
+      assert suspect.watchlist_id == result.watchlist_id
+      assert new_watchlist_id != result.watchlist_id
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.update_suspect(0, %{}) end
     end
   end
 end

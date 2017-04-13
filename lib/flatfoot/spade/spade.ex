@@ -397,6 +397,24 @@ defmodule Flatfoot.Spade do
     |> Repo.delete
   end
 
+  @doc """
+  With a valid suspect id and attributes, updates a suspect.
+
+  ## Examples
+
+      iex> update_suspect(suspect_id, %{field: new_value})
+      {:ok, %Suspect{}}
+
+      iex> update_suspect(suspect_id, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_suspect(id, attrs) do
+    get_suspect!(id)
+    |> suspect_update_changeset(attrs)
+    |> Repo.update()
+  end
+
   ##############
   # Changesets #
   ##############
@@ -440,6 +458,12 @@ defmodule Flatfoot.Spade do
   defp suspect_changeset(%Suspect{} = suspect, attrs) do
     suspect
     |> cast(attrs, [:name, :category, :notes, :active, :watchlist_id])
+    |> validate_required([:name, :watchlist_id])
+  end
+
+  defp suspect_update_changeset(%Suspect{} = suspect, attrs) do
+    suspect
+    |> cast(attrs, [:name, :category, :notes, :active])
     |> validate_required([:name, :watchlist_id])
   end
 end
