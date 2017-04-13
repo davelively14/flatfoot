@@ -85,7 +85,7 @@ defmodule Flatfoot.Factory do
       name: Faker.Name.name,
       category: Faker.Lorem.word,
       notes: Faker.Lorem.Shakespeare.hamlet,
-      status: true,
+      active: true,
       user: build(:user)
     }
   end
