@@ -3,7 +3,7 @@ defmodule Flatfoot.Spade.Watchlist do
 
   schema "spade_watchlists" do
     belongs_to :user, Flatfoot.Spade.User
-    # has_many :wards, Flatfoot.Spade.Ward, on_delete: :delete_all
+    has_many :suspects, Flatfoot.Spade.Suspect, on_delete: :delete_all
 
     field :name, :string
 
