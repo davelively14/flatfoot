@@ -6,7 +6,7 @@ defmodule Flatfoot.Web.SuspectAccount do
     %{
       id: suspect_account.id,
       handle: suspect_account.handle,
-      backend: suspect_account.backend.name
+      network: suspect_account.backend.name
     }
   end
 end
