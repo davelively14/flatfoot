@@ -3,7 +3,7 @@ defmodule Flatfoot.Spade.Suspect do
 
   schema "spade_suspects" do
     belongs_to :watchlist, Flatfoot.Spade.Watchlist
-    # has_many :suspect_accounts
+    has_many :suspect_accounts, Flatfoot.Spade.SuspectAccount
 
     field :name, :string
     field :category, :string
