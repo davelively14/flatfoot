@@ -345,7 +345,7 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
-  describe "get_watchlist/1" do
+  describe "get_watchlist!/1" do
     test "with valid id, returns a watchlist" do
       watchlist = insert(:watchlist)
 
@@ -356,6 +356,28 @@ defmodule Flatfoot.SpadeTest do
 
     test "with invalid id, raises error" do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_watchlist!(0) end
+    end
+  end
+
+  describe "get_watchlist_preload!/1" do
+    test "with valid id, returns a watchlist" do
+      watchlist = insert(:watchlist)
+      suspect = insert(:suspect, watchlist: watchlist)
+      suspect_account = insert(:suspect_account, suspect: suspect)
+
+      result = Spade.get_watchlist_preload!(watchlist.id)
+      assert result.id == watchlist.id
+
+      [result_suspects] = result.suspects
+      assert result_suspects.id == suspect.id
+
+      [result_accounts] = result_suspects.suspect_accounts
+      assert result_accounts.id == suspect_account.id
+      assert %Flatfoot.Archer.Backend{} = result_accounts.backend
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_watchlist_preload!(0) end
     end
   end
 

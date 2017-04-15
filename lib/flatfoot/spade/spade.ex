@@ -312,6 +312,30 @@ defmodule Flatfoot.Spade do
   def get_watchlist!(id), do: Repo.get!(Watchlist, id)
 
   @doc """
+  Returns a single watchlist and preloads all by default.
+
+  Raises `Ecto.NoResultsError` if the Watchlist does not exist.
+
+  ## Examples
+
+      iex> get_watchlist!(123)
+      %Watchlist{}
+
+      iex> get_watchlist!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_watchlist_preload!(id) do
+    Watchlist
+    |> where([watchlist], watchlist.id == ^id)
+    |> join(:left, [watchlist], _ in assoc(watchlist, :suspects))
+    |> join(:left, [_, suspects], _ in assoc(suspects, :suspect_accounts))
+    |> join(:left, [_, _, suspect_accounts], _ in assoc(suspect_accounts, :backend))
+    |> preload([_, suspects, suspect_accounts, backend], [suspects: {suspects, suspect_accounts: {suspect_accounts, backend: backend}}])
+    |> Repo.one!
+  end
+
+  @doc """
   Given a Watchlist id, will delete that Watchlist.
 
   ## Examples
