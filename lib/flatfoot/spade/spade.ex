@@ -264,7 +264,7 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a user id, returns a list of watchlists for a given user.
+  Give a user id, returns a list of watchlists for a given user. Preloads suspects by default.
 
   ## Examples
 
@@ -273,7 +273,26 @@ defmodule Flatfoot.Spade do
 
   """
   def list_watchlists(user_id) do
-    Repo.all from t in Watchlist, where: t.user_id == ^user_id
+    Repo.all from w in Watchlist, where: w.user_id == ^user_id
+  end
+
+  @doc """
+  Give a user id, returns a list of watchlists for a given user and preloads all by default.
+
+  ## Examples
+
+      iex> list_watchlists_preload(12)
+      [%Watchlist{}, ...]
+
+  """
+  def list_watchlists_preload(user_id) do
+    Watchlist
+    |> where([watchlist], watchlist.user_id == ^user_id)
+    |> join(:left, [watchlist], _ in assoc(watchlist, :suspects))
+    |> join(:left, [_, suspects], _ in assoc(suspects, :suspect_accounts))
+    |> join(:left, [_, _, suspect_accounts], _ in assoc(suspect_accounts, :backend))
+    |> preload([_, suspects, suspect_accounts, backend], [suspects: {suspects, suspect_accounts: {suspect_accounts, backend: backend}}])
+    |> Repo.all
   end
 
   @doc """

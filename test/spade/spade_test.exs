@@ -319,6 +319,32 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "list_watchlist_preload/1" do
+    test "with valid user id, loads watchlist and all preloads" do
+      user = insert(:user)
+      watchlist = insert(:watchlist, user: user)
+      suspect = insert(:suspect, watchlist: watchlist)
+      suspect_account = insert(:suspect_account, suspect: suspect)
+
+      [result] = Spade.list_watchlists_preload(user.id)
+      assert result.id == watchlist.id
+
+      [result_suspects] = result.suspects
+      assert result_suspects.id == suspect.id
+
+      [result_accounts] = result_suspects.suspect_accounts
+      assert result_accounts.id == suspect_account.id
+      assert %Flatfoot.Archer.Backend{} = result_accounts.backend
+    end
+
+    test "with user_id with no watchlists, returns empty list" do
+      user = insert(:user)
+      insert_list(3, :watchlist)
+
+      assert [] == Spade.list_watchlists_preload(user.id)
+    end
+  end
+
   describe "get_watchlist/1" do
     test "with valid id, returns a watchlist" do
       watchlist = insert(:watchlist)
