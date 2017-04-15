@@ -1,4 +1,4 @@
-defmodule Flatfoot.Web.SuspectAccount do
+defmodule Flatfoot.Web.SuspectAccountView do
   use Flatfoot.Web, :view
 
   # Requires backend to be preloaded.
