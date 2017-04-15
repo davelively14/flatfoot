@@ -408,6 +408,24 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
+  Give a watchlist id, returns a list of watchlists for a given user.
+
+  ## Examples
+
+      iex> list_suspects_preload(12)
+      [%Suspect{}, ...]
+
+  """
+  def list_suspects_preload(watchlist_id) do
+    Suspect
+    |> where([suspects], suspects.watchlist_id == ^watchlist_id)
+    |> join(:left, [suspects], _ in assoc(suspects, :suspect_accounts))
+    |> join(:left, [_, suspect_accounts], _ in assoc(suspect_accounts, :backend))
+    |> preload([_, suspect_accounts, backend], [suspect_accounts: {suspect_accounts, backend: backend}])
+    |> Repo.all
+  end
+
+  @doc """
   Returns a single suspect.
 
   Raises `Ecto.NoResultsError` if the Suspect does not exist.

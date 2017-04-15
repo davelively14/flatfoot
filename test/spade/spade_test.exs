@@ -467,6 +467,28 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "list_suspects_preload/1" do
+    test "with valid watchlist_id, returns all associated suspects and preloaded associations" do
+      watchlist = insert(:watchlist)
+      suspect = insert(:suspect, watchlist: watchlist)
+      suspect_account = insert(:suspect_account, suspect: suspect)
+
+      [result] = Spade.list_suspects_preload(watchlist.id)
+      assert result.id == suspect.id
+
+      [result_accounts] = result.suspect_accounts
+      assert result_accounts.id == suspect_account.id
+      assert %Flatfoot.Archer.Backend{} = result_accounts.backend
+    end
+
+    test "with watchlist_id and no suspects, returns empty list" do
+      watchlist = insert(:watchlist)
+      insert_list(3, :suspect)
+
+      assert [] = Spade.list_suspects_preload(watchlist.id)
+    end
+  end
+
   describe "get_suspect!/1" do
     test "with valid id, will return a single suspect" do
       suspect = insert(:suspect)
