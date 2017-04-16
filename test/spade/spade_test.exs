@@ -503,6 +503,24 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "get_suspect_preload!/1" do
+    test "with valid id, returns a single suspect and preloaded associations" do
+      suspect = insert(:suspect)
+      suspect_account = insert(:suspect_account, suspect: suspect)
+
+      result = Spade.get_suspect_preload!(suspect.id)
+      assert result.id == suspect.id
+
+      [result_accounts] = result.suspect_accounts
+      assert result_accounts.id == suspect_account.id
+      assert %Flatfoot.Archer.Backend{} = result_accounts.backend
+    end
+
+    test "with invalid id, will raise error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_suspect_preload!(0) end
+    end
+  end
+
   describe "delete_suspect/1" do
     test "with valid id, deletes and returns a suspect" do
       suspect = insert(:suspect)

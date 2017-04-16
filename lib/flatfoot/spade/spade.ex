@@ -318,10 +318,10 @@ defmodule Flatfoot.Spade do
 
   ## Examples
 
-      iex> get_watchlist!(123)
+      iex> get_watchlist_preload!(123)
       %Watchlist{}
 
-      iex> get_watchlist!(456)
+      iex> get_watchlist_preload!(456)
       ** (Ecto.NoResultsError)
 
   """
@@ -440,6 +440,29 @@ defmodule Flatfoot.Spade do
 
   """
   def get_suspect!(id), do: Repo.get!(Suspect, id)
+
+  @doc """
+  Returns a single suspect and preloads all associationsby default.
+
+  Raises `Ecto.NoResultsError` if the Suspect does not exist.
+
+  ## Examples
+
+      iex> get_suspect_preload!(123)
+      %Suspect{}
+
+      iex> get_suspect_preload!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_suspect_preload!(id) do
+    Suspect
+    |> where([suspects], suspects.id == ^id)
+    |> join(:left, [suspects], _ in assoc(suspects, :suspect_accounts))
+    |> join(:left, [_, suspect_accounts], _ in assoc(suspect_accounts, :backend))
+    |> preload([_, suspect_accounts, backend], [suspect_accounts: {suspect_accounts, backend: backend}])
+    |> Repo.one!
+  end
 
   @doc """
   Given a Suspect id, will delete that Suspect.
