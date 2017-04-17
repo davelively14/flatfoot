@@ -113,6 +113,28 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "list_wards_preload/1" do
+    test "with valid user_id, returns all associated wards and preloaded associations" do
+      user = insert(:user)
+      ward = insert(:ward, user: user)
+      ward_account = insert(:ward_account, ward: ward)
+
+      [result] = Spade.list_wards_preload(user.id)
+      assert result.id == ward.id
+
+      [result_accounts] = result.ward_accounts
+      assert result_accounts.id == ward_account.id
+      assert %Flatfoot.Spade.Backend{} = result_accounts.backend
+    end
+
+    test "with watchlist_id and no suspects, returns empty list" do
+      user = insert(:user)
+      insert_list(3, :ward)
+
+      assert [] = Spade.list_suspects_preload(user.id)
+    end
+  end
+
   describe "get_ward!/1" do
     test "with valid id, returns a ward" do
       ward = insert(:ward)
@@ -334,7 +356,7 @@ defmodule Flatfoot.SpadeTest do
 
       [result_accounts] = result_suspects.suspect_accounts
       assert result_accounts.id == suspect_account.id
-      assert %Flatfoot.Archer.Backend{} = result_accounts.backend
+      assert %Flatfoot.Spade.Backend{} = result_accounts.backend
     end
 
     test "with user_id with no watchlists, returns empty list" do
@@ -373,7 +395,7 @@ defmodule Flatfoot.SpadeTest do
 
       [result_accounts] = result_suspects.suspect_accounts
       assert result_accounts.id == suspect_account.id
-      assert %Flatfoot.Archer.Backend{} = result_accounts.backend
+      assert %Flatfoot.Spade.Backend{} = result_accounts.backend
     end
 
     test "with invalid id, raises error" do
@@ -478,7 +500,7 @@ defmodule Flatfoot.SpadeTest do
 
       [result_accounts] = result.suspect_accounts
       assert result_accounts.id == suspect_account.id
-      assert %Flatfoot.Archer.Backend{} = result_accounts.backend
+      assert %Flatfoot.Spade.Backend{} = result_accounts.backend
     end
 
     test "with watchlist_id and no suspects, returns empty list" do
@@ -513,7 +535,7 @@ defmodule Flatfoot.SpadeTest do
 
       [result_accounts] = result.suspect_accounts
       assert result_accounts.id == suspect_account.id
-      assert %Flatfoot.Archer.Backend{} = result_accounts.backend
+      assert %Flatfoot.Spade.Backend{} = result_accounts.backend
     end
 
     test "with invalid id, will raise error" do

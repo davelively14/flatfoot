@@ -101,6 +101,24 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
+  Give a user_id, returns a list of wards for a given user and preloads all associations.
+
+  ## Examples
+
+      iex> list_wards_preload(12)
+      [%Ward{}, ...]
+
+  """
+  def list_wards_preload(user_id) do
+    Ward
+    |> where([wards], wards.user_id == ^user_id)
+    |> join(:left, [wards], _ in assoc(wards, :ward_accounts))
+    |> join(:left, [_, ward_accounts], _ in assoc(ward_accounts, :backend))
+    |> preload([_, ward_accounts, backend], [ward_accounts: {ward_accounts, backend: backend}])
+    |> Repo.all
+  end
+
+  @doc """
   Returns a single ward.
 
   Raises `Ecto.NoResultsError` if the Ward does not exist.
