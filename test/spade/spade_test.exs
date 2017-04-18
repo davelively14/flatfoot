@@ -71,7 +71,7 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
-  describe "get_user_preload!/1" do
+  describe "get_user_preload/1" do
     test "with valid id returns a user" do
       user = insert(:user)
       backend = insert(:backend)
@@ -83,7 +83,7 @@ defmodule Flatfoot.SpadeTest do
       ward = insert(:ward, user: user)
       ward_account = insert(:ward_account, ward: ward)
 
-      result = Spade.get_user_preload!(user.id)
+      result = Spade.get_user_preload(user.id)
       assert result.id == user.id
 
       [result_wards] = result.wards
@@ -104,8 +104,8 @@ defmodule Flatfoot.SpadeTest do
       assert %Flatfoot.Spade.Backend{} = result_accounts.backend
     end
 
-    test "with invalid id raises an error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.get_user_preload!(0) end
+    test "with invalid id returns nil" do
+      refute Spade.get_user_preload(0)
     end
   end
 
