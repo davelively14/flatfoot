@@ -71,6 +71,44 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "get_user_preload!/1" do
+    test "with valid id returns a user" do
+      user = insert(:user)
+      backend = insert(:backend)
+
+      watchlist = insert(:watchlist, user: user)
+      suspect = insert(:suspect, watchlist: watchlist)
+      suspect_account = insert(:suspect_account, suspect: suspect, backend: backend)
+
+      ward = insert(:ward, user: user)
+      ward_account = insert(:ward_account, ward: ward)
+
+      result = Spade.get_user_preload!(user.id)
+      assert result.id == user.id
+
+      [result_wards] = result.wards
+      assert result_wards.id == ward.id
+
+      [result_accounts] = result_wards.ward_accounts
+      assert result_accounts.id == ward_account.id
+      assert %Flatfoot.Spade.Backend{} = result_accounts.backend
+
+      [result_watchlists] = result.watchlists
+      assert result_watchlists.id == watchlist.id
+
+      [result_suspects] = result_watchlists.suspects
+      assert result_suspects.id == suspect.id
+
+      [result_accounts] = result_suspects.suspect_accounts
+      assert result_accounts.id == suspect_account.id
+      assert %Flatfoot.Spade.Backend{} = result_accounts.backend
+    end
+
+    test "with invalid id raises an error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_user_preload!(0) end
+    end
+  end
+
   ########
   # Ward #
   ########

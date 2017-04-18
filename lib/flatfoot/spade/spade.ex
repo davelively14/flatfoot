@@ -63,6 +63,34 @@ defmodule Flatfoot.Spade do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  @doc """
+  Returns a single user with all associations preloaded throughout the depth.
+
+  Raises `Ecto.NoResultsError` if the User does not exist.
+
+  ## Examples
+
+      iex> get_user_preload!(123)
+      %User{}
+
+      iex> get_user_preload!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_preload!(id) do
+    User
+    |> where([user], user.id == ^id)
+    |> join(:left, [user], _ in assoc(user, :wards))
+    |> join(:left, [_user, wards], _ in assoc(wards, :ward_accounts))
+    |> join(:left, [_user, _wards, ward_accounts], _ in assoc(ward_accounts, :backend))
+    |> join(:left, [user, _wards, _ward_accounts, _backend], _ in assoc(user, :watchlists))
+    |> join(:left, [_user, _wards, _ward_accounts, _backend, watchlists], _ in assoc(watchlists, :suspects))
+    |> join(:left, [_user, _wards, _ward_accounts, _backend, _watchlists, suspects], _ in assoc(suspects, :suspect_accounts))
+    |> join(:left, [_user, _wards, _ward_accounts, _backend, _watchlists, _suspects, suspect_accounts], _ in assoc(suspect_accounts, :backend))
+    |> preload([_user, wards, ward_accounts, backend, watchlists, suspects, suspect_accounts, backend_suspects], [watchlists: {watchlists, suspects: {suspects, suspect_accounts: {suspect_accounts, backend: backend}}}, wards: {wards, ward_accounts: {ward_accounts, backend: backend}}])
+    |> Repo.one!
+  end
+
   ########
   # Ward #
   ########
