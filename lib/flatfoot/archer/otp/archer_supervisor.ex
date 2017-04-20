@@ -1,22 +1,22 @@
-defmodule Flatfoot.Archer.Supervisor do
+defmodule Flatfoot.Archer.ArcherSupervisor do
   use Supervisor
 
   #######
   # API #
   #######
 
-  def start_link(fidos_config) do
-    Supervisor.start_link(__MODULE__, fidos_config, name: __MODULE__)
+  def start_link do
+    Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
   #############
   # Callbacks #
   #############
 
-  def init(fidos_config) do
+  def init(_) do
     children = [
       supervisor(Flatfoot.Archer.FidoSupervisor, []),
-      worker(Flatfoot.Archer.Server, [fidos_config])
+      worker(Flatfoot.Archer.Server, [ self() ])
     ]
 
     options = [
