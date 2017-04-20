@@ -1,6 +1,6 @@
 defmodule Flatfoot.Archer.ServerTest do
   use Flatfoot.DataCase
-  alias Flatfoot.Archer.{ArcherSupervisor, Server, Backends.Twitter}
+  alias Flatfoot.Archer.{ArcherSupervisor, Server, Backend.Twitter}
 
   describe "get_state/0" do
     test "starts up and returns state" do
@@ -10,11 +10,13 @@ defmodule Flatfoot.Archer.ServerTest do
   end
 
   describe "fetch_data/1" do
-    IO.inspect %{server_test_pid: self()}
-    assert ArcherSupervisor.start_link()
-    config = [
-      %{mfa: {Twitter, :start_link, ["hello world"]}}
-    ]
-    Server.fetch_data(config)
+    test "sends hello world back to process that calls it" do
+      ArcherSupervisor.start_link()
+      config = [
+        %{mfa: {Twitter, :fetch, [self()]}}
+      ]
+      Server.fetch_data(config)
+      assert_receive("hello world", 500)
+    end
   end
 end

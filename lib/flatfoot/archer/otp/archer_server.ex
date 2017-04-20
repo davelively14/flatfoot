@@ -1,7 +1,6 @@
 defmodule Flatfoot.Archer.Server do
   use GenServer
-  import Supervisor.Spec
-  alias Flatfoot.Archer.FidoSupervisor
+  alias Flatfoot.Archer.{FidoSupervisor}
 
   defmodule State do
     defstruct sup: nil
@@ -11,8 +10,8 @@ defmodule Flatfoot.Archer.Server do
   # API #
   #######
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  def start_link(sup) do
+    GenServer.start_link(__MODULE__, [sup], name: __MODULE__)
   end
 
   @doc """
@@ -43,13 +42,12 @@ defmodule Flatfoot.Archer.Server do
   # Callbacks #
   #############
 
-  def init(sup) do
+  def init([sup]) do
     state = %State{sup: sup}
     {:ok, state}
   end
 
-  def handle_cast({:fetch_data, config}, %{sup: sup} = state) do
-    IO.inspect %{server_pid: self()}
+  def handle_cast({:fetch_data, config}, state) do
     dispatch_fido(config)
     {:noreply, state}
   end
@@ -64,19 +62,9 @@ defmodule Flatfoot.Archer.Server do
 
   defp dispatch_fido([]), do: nil
   defp dispatch_fido([config | tail]) do
-    Supervisor.start_child(FidoSupervisor, fido_spec(config))
+    {mod, fun, args} = config.mfa
+
+    {:ok, _pid} = Task.Supervisor.start_child(FidoSupervisor, mod, fun, args)
     dispatch_fido(tail)
-  end
-
-  defp fido_spec(config) do
-    {module, function, attributes} = config.mfa
-
-    options = [
-      id:  System.unique_integer(),
-      function: function,
-      restart: :transient
-    ]
-
-    worker(module, attributes, options)
   end
 end

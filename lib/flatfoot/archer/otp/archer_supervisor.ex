@@ -15,7 +15,7 @@ defmodule Flatfoot.Archer.ArcherSupervisor do
 
   def init(_) do
     children = [
-      supervisor(Flatfoot.Archer.FidoSupervisor, []),
+      supervisor(Task.Supervisor, [[name: Flatfoot.Archer.FidoSupervisor]]),
       worker(Flatfoot.Archer.Server, [ self() ])
     ]
 
