@@ -22,10 +22,10 @@ defmodule Flatfoot.Archer.Server do
 
     iex> config =
     iex> [
-    iex> mfa: {Archer.Twitter, :start_link, [channel: pid]},
-    iex> mfa: {Archer.Facebook, :start_link, [channel: pid]}
+    iex> mfa: {Archer.Twitter, :start_link, [channel_pid]},
+    iex> mfa: {Archer.Facebook, :start_link, [channel_pid]}
     iex> ]
-    [mfa: {Archer.Twitter, :start_link, [channel: pid]}, mfa: {Archer.Facebook, :start_link, [channel: pid]}]
+    [mfa: {Archer.Twitter, :start_link, [channel_pid]}, mfa: {Archer.Facebook, :start_link, [channel_pid]}]
     iex> fetch_data(config)
 
 
@@ -48,9 +48,9 @@ defmodule Flatfoot.Archer.Server do
   end
 
   def handle_cast({:fetch_data, config}, %{fido_sup: fido_sup} = state) do
+    IO.inspect %{server_pid: self()}
     dispatch_fido(fido_sup, config)
-
-    {:no_reply, state}
+    {:noreply, state}
   end
 
   def handle_call(:get_state, _from, state) do
@@ -63,6 +63,7 @@ defmodule Flatfoot.Archer.Server do
 
   defp dispatch_fido(_, []), do: nil
   defp dispatch_fido(fido_sup, [config | tail]) do
+    IO.inspect %{fido_sup_pid: fido_sup}
     Supervisor.start_child(fido_sup, fido_spec(config))
     dispatch_fido(fido_sup, tail)
   end
