@@ -10,7 +10,7 @@ defmodule Flatfoot.Archer.ServerTest do
   end
 
   describe "fetch_data/1" do
-    test "sends hello world back to process that calls it" do
+    test "with correct params, sends hello world back to process that calls it" do
       ArcherSupervisor.start_link()
       config = [
         %{mfa: {Twitter, :fetch, [self()]}}
