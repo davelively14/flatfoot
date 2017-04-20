@@ -14,7 +14,7 @@ defmodule Flatfoot.Archer.FidoSupervisor do
   #############
 
   def init(_) do
-    options = [ strategy: :one_for_one ]
+    options = [ strategy: :one_for_one, restart: :transient ]
     supervise([], options)
   end
 end

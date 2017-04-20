@@ -1,9 +1,10 @@
 defmodule Flatfoot.Archer.Server do
   use GenServer
   import Supervisor.Spec
+  alias Flatfoot.Archer.FidoSupervisor
 
   defmodule State do
-    defstruct fido_sup: nil
+    defstruct sup: nil
   end
 
   #######
@@ -42,14 +43,14 @@ defmodule Flatfoot.Archer.Server do
   # Callbacks #
   #############
 
-  def init(fido_sup) do
-    state = %State{fido_sup: fido_sup}
+  def init(sup) do
+    state = %State{sup: sup}
     {:ok, state}
   end
 
-  def handle_cast({:fetch_data, config}, %{fido_sup: fido_sup} = state) do
+  def handle_cast({:fetch_data, config}, %{sup: sup} = state) do
     IO.inspect %{server_pid: self()}
-    dispatch_fido(fido_sup, config)
+    dispatch_fido(config)
     {:noreply, state}
   end
 
@@ -61,11 +62,10 @@ defmodule Flatfoot.Archer.Server do
   # Private Functions #
   #####################
 
-  defp dispatch_fido(_, []), do: nil
-  defp dispatch_fido(fido_sup, [config | tail]) do
-    IO.inspect %{fido_sup_pid: fido_sup}
-    Supervisor.start_child(fido_sup, fido_spec(config))
-    dispatch_fido(fido_sup, tail)
+  defp dispatch_fido([]), do: nil
+  defp dispatch_fido([config | tail]) do
+    Supervisor.start_child(FidoSupervisor, fido_spec(config))
+    dispatch_fido(tail)
   end
 
   defp fido_spec(config) do
