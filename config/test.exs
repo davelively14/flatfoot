@@ -19,3 +19,5 @@ config :flatfoot, Flatfoot.Repo,
   database: "flatfoot_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+import_config "dev.secret.exs"
