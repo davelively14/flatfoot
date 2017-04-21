@@ -770,4 +770,22 @@ defmodule Flatfoot.SpadeTest do
       assert changeset.errors[:rating] == {"is invalid", [validation: :inclusion]}
     end
   end
+
+  describe "list_ward_results/1" do
+    test "with valid ward id, returns all associated ward accounts" do
+      ward = insert(:ward)
+      ward_result = insert(:ward_result, ward: ward)
+      insert_list(3, :ward_result)
+
+      assert [result] = Spade.list_ward_results(ward.id)
+      assert result.id == ward_result.id
+    end
+
+    test "with ward id with no ward results, returns empty list" do
+      ward = insert(:ward)
+      insert_list(3, :ward_result)
+
+      assert [] == Spade.list_ward_results(ward.id)
+    end
+  end
 end

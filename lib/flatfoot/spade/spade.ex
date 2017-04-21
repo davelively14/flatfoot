@@ -657,6 +657,19 @@ defmodule Flatfoot.Spade do
     |> Repo.insert()
   end
 
+  @doc """
+  Given a ward id, returns a list of ward results for that ward.
+
+  ## Examples
+
+      iex> list_ward_results(12)
+      [%SuspectAccount{}, ...]
+
+  """
+  def list_ward_results(ward_id) do
+    Repo.all from r in WardResult, where: r.ward_id == ^ward_id
+  end
+
   ##############
   # Changesets #
   ##############
