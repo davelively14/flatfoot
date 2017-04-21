@@ -13,7 +13,7 @@ defmodule Flatfoot.Archer.ServerTest do
     test "with correct params, sends hello world back to process that calls it" do
       ArcherSupervisor.start_link()
       config = [
-        %{mfa: {Twitter, :fetch, [self()]}}
+        %{mfa: {Twitter, :fetch, [self(), "hello world"]}}
       ]
       Server.fetch_data(config)
       assert_receive("hello world", 500)

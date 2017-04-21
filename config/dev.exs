@@ -55,3 +55,5 @@ config :flatfoot, Flatfoot.Repo,
   database: "flatfoot_dev",
   hostname: "localhost",
   pool_size: 10
+
+import "dev.secret.exs"

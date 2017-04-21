@@ -17,7 +17,7 @@ defmodule Flatfoot.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Flatfoot.Application, []},
-     extra_applications: [:logger, :runtime_tools, :ex_machina, :comeonin]]
+     extra_applications: [:logger, :runtime_tools, :ex_machina, :comeonin, :httpoison]]
   end
 
   # Specifies which paths to compile per environment.
@@ -41,6 +41,7 @@ defmodule Flatfoot.Mixfile do
      {:poison, "~> 3.0"},
      {:cors_plug, "~> 1.2"},
      {:secure_random, "~> 0.5"},
+     {:httpoison, "~> 0.11.1"},
      {:cowboy, "~> 1.0"}]
   end
 
