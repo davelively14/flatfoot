@@ -663,11 +663,44 @@ defmodule Flatfoot.Spade do
   ## Examples
 
       iex> list_ward_results(12)
-      [%SuspectAccount{}, ...]
+      [%WardResult{}, ...]
 
   """
   def list_ward_results(ward_id) do
     Repo.all from r in WardResult, where: r.ward_id == ^ward_id
+  end
+
+  @doc """
+  Returns a single ward result.
+
+  Raises `Ecto.NoResultsError` if the WardResult does not exist.
+
+  ## Examples
+
+      iex> get_ward_result!(123)
+      %WardResult{}
+
+      iex> get_ward_result!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_ward_result!(id), do: Repo.get!(WardResult, id)
+
+  @doc """
+  Given a WardResult id, will delete that WardResult.
+
+  ## Examples
+
+      iex> delete_ward_result(135)
+      {:ok, %WardResult{}}
+
+      iex> delete_ward_result(0)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_ward_result(id) do
+    get_ward_result!(id)
+    |> Repo.delete
   end
 
   ##############

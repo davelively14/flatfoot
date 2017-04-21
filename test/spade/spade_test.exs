@@ -1,7 +1,7 @@
 defmodule Flatfoot.SpadeTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.{Spade, Spade.Suspect, Spade.SuspectAccount}
+  alias Flatfoot.{Spade, Spade.Suspect, Spade.SuspectAccount, Spade.WardResult}
 
   ###########
   # Backend #
@@ -786,6 +786,35 @@ defmodule Flatfoot.SpadeTest do
       insert_list(3, :ward_result)
 
       assert [] == Spade.list_ward_results(ward.id)
+    end
+  end
+
+  describe "get_ward_result!/1" do
+    test "with valid id, will return a single ward result" do
+      ward_result = insert(:ward_result)
+
+      assert %WardResult{} = result = Spade.get_ward_result!(ward_result.id)
+      assert result.id == ward_result.id
+      assert result.ward_id == ward_result.ward_id
+    end
+
+    test "with invalid id, will raise error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_result!(0) end
+    end
+  end
+
+  describe "delete_ward_result/1" do
+    test "with valid id, deletes and returns a ward result" do
+      ward_result = insert(:ward_result)
+
+      assert {:ok, %WardResult{} = result} = Spade.delete_ward_result(ward_result.id)
+      assert result.id == ward_result.id
+
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_account!(ward_result.id) end
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.delete_ward_result(0) end
     end
   end
 end
