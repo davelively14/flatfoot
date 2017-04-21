@@ -202,7 +202,7 @@ defmodule Flatfoot.ClientsTest do
       user = insert(:user)
       insert(:notification_record, user: user)
 
-      result = Clients.get_notification_record!(1, user.id)
+      result = Clients.get_notification_record!(0, user.id)
       assert result == nil
     end
   end
