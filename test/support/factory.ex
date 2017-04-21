@@ -98,6 +98,17 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def ward_result do
+    %Flatfoot.Spade.WardResult{
+      rating: Enum.random(0..100),
+      from: Faker.Internet.user_name,
+      msg_id: Enum.random(1000..1999) |> to_string,
+      msg_text: Faker.Lorem.Shakespeare.hamlet,
+      ward: build(:ward),
+      backend: build(:backend)
+    }
+  end
+
   #####################
   # Private Functions #
   #####################
