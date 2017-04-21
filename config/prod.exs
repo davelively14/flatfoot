@@ -21,6 +21,8 @@ config :flatfoot, Flatfoot.Web.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :flatfoot, :twitter, token: System.get_env("TWITTER_TOKEN")
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
