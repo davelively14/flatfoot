@@ -36,6 +36,7 @@ defmodule Flatfoot.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:comeonin, "~> 3.0"},
+     {:exvcr, "~> 0.8", only: :test},
      {:faker, "~> 0.7", only: [:dev, :test]},
      {:ex_machina, "~> 2.0"},
      {:poison, "~> 3.0"},
