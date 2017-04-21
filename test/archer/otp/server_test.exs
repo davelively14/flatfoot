@@ -16,7 +16,7 @@ defmodule Flatfoot.Archer.ServerTest do
         %{mfa: {Twitter, :fetch, [self(), %{q: "hello world"}]}}
       ]
       Server.fetch_data(config)
-      assert_receive(%{q: "hello world"}, 500)
+      assert_receive(%{"search_metadata" => _}, 500)
     end
   end
 end

@@ -6,7 +6,7 @@ defmodule Flatfoot.Archer.Backend.TwitterTest do
     test "with valid parameters, will send us results" do
       query = %{q: "to:sarahinatlanta", since_id: "852856862471069696"}
       Twitter.fetch(self(), query)
-      assert_receive(query, 250)
+      assert_receive(%{"search_metadata" => _}, 500)
     end
   end
 end

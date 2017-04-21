@@ -16,7 +16,7 @@ defmodule Flatfoot.Archer.Backend.Twitter do
     url = query |> build_url
     headers = ["Authorization": "Bearer #{@token}"]
     {:ok, result} = HTTPoison.get(url, headers)
-    send(channel_pid, query)
+    send(channel_pid, result |> Map.get(:body) |> Poison.decode!)
   end
 
   #####################
