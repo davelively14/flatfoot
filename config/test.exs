@@ -20,6 +20,8 @@ config :flatfoot, Flatfoot.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-  if File.exists?("config/dev.secret.exs") do
-    import_config "dev.secret.exs"
-  end
+if File.exists?("config/dev.secret.exs") do
+  import_config "dev.secret.exs"
+else
+  config :flatfoot, :twitter, token: System.get_env("TWITTER_TOKEN")
+end
