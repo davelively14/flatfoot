@@ -30,6 +30,25 @@ defmodule Flatfoot.SpadeInspector do
     |> Repo.insert()
   end
 
+  ###########
+  # Backend #
+  ###########
+
+  alias Flatfoot.SpadeInspector.Backend
+
+  @doc """
+  Returns the list of backends.
+
+  ## Examples
+
+      iex> list_backends()
+      [%Backend{}, ...]
+
+  """
+  def list_backends do
+    Repo.all(Backend)
+  end
+
   ##############
   # Changesets #
   ##############
