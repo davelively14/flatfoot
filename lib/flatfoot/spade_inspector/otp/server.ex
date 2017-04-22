@@ -1,7 +1,7 @@
 defmodule Flatfoot.SpadeInspector.Server do
   use GenServer
 
-  defmodule State do
+  defmodule InspectorState do
     defstruct sup: nil
   end
 
@@ -22,7 +22,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   #############
 
   def init([sup]) do
-    state = %State{sup: sup}
+    state = %InspectorState{sup: sup}
     {:ok, state}
   end
 
