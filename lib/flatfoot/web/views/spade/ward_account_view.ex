@@ -5,7 +5,8 @@ defmodule Flatfoot.Web.WardAccountView do
     %{
       id: ward_account.id,
       handle: ward_account.handle,
-      network: ward_account.backend.name
+      network: ward_account.backend.name,
+      backend_module: ward_account.backend.module
     }
   end
 end
