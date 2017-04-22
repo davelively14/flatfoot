@@ -1,4 +1,4 @@
-defmodule Flatfoot.Archer.ArcherSupervisor do
+defmodule Flatfoot.SpadeInspector.SpadeInspectorSupervisor do
   use Supervisor
 
   #######
@@ -15,8 +15,7 @@ defmodule Flatfoot.Archer.ArcherSupervisor do
 
   def init(_) do
     children = [
-      supervisor(Task.Supervisor, [[name: Flatfoot.Archer.FidoSupervisor]]),
-      worker(Flatfoot.Archer.Server, [ self() ])
+      worker(Flatfoot.SpadeInspector.Server, [ self() ])
     ]
 
     options = [
