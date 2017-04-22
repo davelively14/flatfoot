@@ -11,7 +11,7 @@ defmodule Flatfoot.Archer.ServerTest do
   describe "get_state/0" do
     test "starts up and returns state" do
       ArcherSupervisor.start_link()
-      assert %Server.State{} = _ = Server.get_state()
+      assert %Server.ArcherState{} = _ = Server.get_state()
     end
   end
 

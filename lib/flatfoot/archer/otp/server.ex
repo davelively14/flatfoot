@@ -2,7 +2,7 @@ defmodule Flatfoot.Archer.Server do
   use GenServer
   alias Flatfoot.Archer.{FidoSupervisor}
 
-  defmodule State do
+  defmodule ArcherState do
     defstruct sup: nil
   end
 
@@ -43,7 +43,7 @@ defmodule Flatfoot.Archer.Server do
   #############
 
   def init([sup]) do
-    state = %State{sup: sup}
+    state = %ArcherState{sup: sup}
     {:ok, state}
   end
 
