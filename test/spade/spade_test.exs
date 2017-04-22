@@ -24,7 +24,6 @@ defmodule Flatfoot.SpadeTest do
       assert result.url == backend.url
 
       assert_raise KeyError, fn -> result.name_snake end
-      assert_raise KeyError, fn -> result.module end
     end
 
     test "will return empty list if no backends stored" do
@@ -42,7 +41,6 @@ defmodule Flatfoot.SpadeTest do
       assert result.url == backend.url
 
       assert_raise KeyError, fn -> result.name_snake end
-      assert_raise KeyError, fn -> result.module end
     end
 
     test "with invalid id raises error" do
@@ -184,6 +182,24 @@ defmodule Flatfoot.SpadeTest do
 
     test "with invalid id, raises an error" do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_ward!(0) end
+    end
+  end
+
+  describe "get_ward_preload!/1" do
+    test "with valid id, returns a ward with all preloads" do
+      ward = insert(:ward)
+      ward_account = insert(:ward_account, ward: ward)
+
+      result = Spade.get_ward_preload!(ward.id)
+      assert result.id == ward.id
+
+      [result_accounts] = result.ward_accounts
+      assert result_accounts.id == ward_account.id
+      assert %Flatfoot.Spade.Backend{} = result_accounts.backend
+    end
+
+    test "with invalid id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_preload!(0) end
     end
   end
 
