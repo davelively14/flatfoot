@@ -3,7 +3,7 @@ defmodule Flatfoot.Repo.Migrations.CreateSpadeWardResults do
 
   def change do
     create table(:spade_ward_results) do
-      add :ward_id, references(:spade_wards)
+      add :ward_account_id, references(:spade_ward_accounts)
       add :backend_id, references(:archer_backends)
       add :rating, :integer
       add :from, :string
@@ -13,7 +13,7 @@ defmodule Flatfoot.Repo.Migrations.CreateSpadeWardResults do
       timestamps()
     end
 
-    create index(:spade_ward_results, [:ward_id])
+    create index(:spade_ward_results, [:ward_account_id])
     create index(:spade_ward_results, [:backend_id])
   end
 end
