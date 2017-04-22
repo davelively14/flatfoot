@@ -10,7 +10,8 @@ defmodule Flatfoot.Application do
     children = [
       supervisor(Flatfoot.Repo, []),
       supervisor(Flatfoot.Web.Endpoint, []),
-      supervisor(Flatfoot.SpadeInspector.SpadeInspectorSupervisor, [])
+      supervisor(Flatfoot.SpadeInspector.SpadeInspectorSupervisor, []),
+      supervisor(Flatfoot.Archer.ArcherSupervisor, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
