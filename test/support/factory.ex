@@ -104,7 +104,7 @@ defmodule Flatfoot.Factory do
       from: Faker.Internet.user_name,
       msg_id: Enum.random(1000..1999) |> to_string,
       msg_text: Faker.Lorem.Shakespeare.hamlet,
-      ward: build(:ward),
+      ward_account: build(:ward_account),
       backend: build(:backend)
     }
   end

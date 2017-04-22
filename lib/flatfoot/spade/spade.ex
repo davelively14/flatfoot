@@ -671,8 +671,8 @@ defmodule Flatfoot.Spade do
       [%WardResult{}, ...]
 
   """
-  def list_ward_results(ward_id) do
-    Repo.all from r in WardResult, where: r.ward_id == ^ward_id
+  def list_ward_results(ward_account_id) do
+    Repo.all from r in WardResult, where: r.ward_account_id == ^ward_account_id
   end
 
   @doc """

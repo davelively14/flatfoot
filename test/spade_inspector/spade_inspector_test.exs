@@ -8,14 +8,14 @@ defmodule Flatfoot.SpadeInspectorTest do
 
   describe "create_ward_result/1" do
     test "with valid attributes, will create a suspect account" do
-      ward = insert(:ward)
+      ward_account = insert(:ward_account)
       backend = insert(:backend)
       attrs = %{
         rating: Enum.random(0..100),
         from: Faker.Internet.user_name,
         msg_id: Enum.random(1000..1999) |> to_string,
         msg_text: Faker.Lorem.Shakespeare.hamlet,
-        ward_id: ward.id,
+        ward_account_id: ward_account.id,
         backend_id: backend.id
       }
 
@@ -25,7 +25,7 @@ defmodule Flatfoot.SpadeInspectorTest do
       assert result.msg_text == attrs.msg_text
       assert result.from == attrs.from
       assert result.backend_id == attrs.backend_id
-      assert result.ward_id == attrs.ward_id
+      assert result.ward_account_id == attrs.ward_account_id
     end
 
     test "with invalid attributes, will return a changeset with errors" do
@@ -35,7 +35,7 @@ defmodule Flatfoot.SpadeInspectorTest do
       assert changeset.errors[:msg_id] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:msg_text] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:from] == {"can't be blank", [validation: :required]}
-      assert changeset.errors[:ward_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:ward_account_id] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:backend_id] == {"can't be blank", [validation: :required]}
 
       {:error, changeset} = SpadeInspector.create_ward_result(%{rating: 105})

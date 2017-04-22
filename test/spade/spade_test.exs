@@ -751,20 +751,20 @@ defmodule Flatfoot.SpadeTest do
   ###############
 
   describe "list_ward_results/1" do
-    test "with valid ward id, returns all associated ward accounts" do
-      ward = insert(:ward)
-      ward_result = insert(:ward_result, ward: ward)
+    test "with valid ward_account id, returns all associated ward_account accounts" do
+      ward_account = insert(:ward_account)
+      ward_result = insert(:ward_result, ward_account: ward_account)
       insert_list(3, :ward_result)
 
-      assert [result] = Spade.list_ward_results(ward.id)
+      assert [result] = Spade.list_ward_results(ward_account.id)
       assert result.id == ward_result.id
     end
 
-    test "with ward id with no ward results, returns empty list" do
-      ward = insert(:ward)
+    test "with ward_account id with no ward_account results, returns empty list" do
+      ward_account = insert(:ward_account)
       insert_list(3, :ward_result)
 
-      assert [] == Spade.list_ward_results(ward.id)
+      assert [] == Spade.list_ward_results(ward_account.id)
     end
   end
 
@@ -774,7 +774,7 @@ defmodule Flatfoot.SpadeTest do
 
       assert %WardResult{} = result = Spade.get_ward_result!(ward_result.id)
       assert result.id == ward_result.id
-      assert result.ward_id == ward_result.ward_id
+      assert result.ward_account_id == ward_result.ward_account_id
     end
 
     test "with invalid id, will raise error" do

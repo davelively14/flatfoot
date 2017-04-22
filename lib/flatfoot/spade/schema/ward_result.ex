@@ -2,7 +2,7 @@ defmodule Flatfoot.Spade.WardResult do
   use Ecto.Schema
 
   schema "spade_ward_results" do
-    belongs_to :ward, Flatfoot.Spade.Ward
+    belongs_to :ward_account, Flatfoot.Spade.WardAccount
     belongs_to :backend, Flatfoot.Spade.Backend
 
     field :rating, :integer
