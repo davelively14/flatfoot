@@ -18,5 +18,12 @@ defmodule Flatfoot.Archer.Backend.TwitterTest do
         assert user.id == user_id
       end
     end
+
+    test "with invalid parameters, raises errors" do
+      assert_raise UndefinedFunctionError, fn -> Twitter.fetch(nil, nil) end
+      assert_raise FunctionClauseError, fn -> Twitter.fetch(self(), 1, "hello world") end
+      assert_raise FunctionClauseError, fn -> Twitter.fetch(self(), "abc", %{q: "hello world"}) end
+      assert_raise FunctionClauseError, fn -> Twitter.fetch(12, 1, %{q: "hello world"}) end
+    end
   end
 end
