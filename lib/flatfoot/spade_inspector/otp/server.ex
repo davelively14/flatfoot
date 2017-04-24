@@ -36,12 +36,17 @@ defmodule Flatfoot.SpadeInspector.Server do
     {:reply, state, state}
   end
 
+  # For each ward_account (i.e. social media account being monitored), this will
+  # asynchronously run an update on all activity to look for warning signs.
+  # Returns :noreply. The SpadeInspector will send an update notice to the
+  # channel via the pattern "spade:#{user_id}" once it completes analysis on the
+  # tweets.
   def handle_call({:fetch_update, ward_id}, _from, state) do
     ward = Flatfoot.Spade.get_ward_preload!(ward_id)
     config =
       ward.ward_accounts
       |> Enum.map(fn ward_account ->
-        %{mfa: {ward_account.backend.module, :fetch, [self(), Query.build(ward_account)]}}
+        %{mfa: {ward_account.backend.module, :fetch, [self(), ward.user_id, Query.build(ward_account)]}}
       end)
     Archer.Server.fetch_data(config)
     {:noreply, state}

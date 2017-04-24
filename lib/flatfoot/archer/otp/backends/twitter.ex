@@ -7,16 +7,16 @@ defmodule Flatfoot.Archer.Backend.Twitter do
   #######
 
   @doc """
-  Provided a from and a query, will return the results from Twitter's API in JSON format.
+  Provided a from, the user_id and a query, will return the results from Twitter's API in JSON format.
 
   query should be a map with the following parameters:
   %{q: "search string"}
   """
-  def fetch(from, query) do
+  def fetch(from, user_id, query) do
     url = query |> build_url
     headers = ["Authorization": "Bearer #{@token}"]
     {:ok, result} = HTTPoison.get(url, headers)
-    send(from, result |> Map.get(:body) |> Poison.decode!)
+    send(from, {:result, user_id, result |> Map.get(:body) |> Poison.decode!})
   end
 
   #####################
