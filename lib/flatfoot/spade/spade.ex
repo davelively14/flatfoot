@@ -274,6 +274,28 @@ defmodule Flatfoot.Spade do
   def get_ward_account!(id), do: Repo.get!(WardAccount, id)
 
   @doc """
+  Returns a single WardAccount with backend association preloaded.
+
+  Raises `Ecto.NoResultsError` if the WardAccount does not exist.
+
+  ## Examples
+
+      iex> get_ward_account_preload!(123)
+      %WardAccount{}
+
+      iex> get_ward_account_preload!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_ward_account_preload!(id) do
+    WardAccount
+    |> where([ward_account], ward_account.id == ^id)
+    |> join(:left, [ward_account], _ in assoc(ward_account, :backend))
+    |> preload([_, backend], [backend: backend])
+    |> Repo.one!
+  end
+
+  @doc """
   Given a WardAccount id, will delete that WardAccount.
 
   ## Examples

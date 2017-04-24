@@ -308,6 +308,22 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "get_ward_account_preload!/1" do
+    test "with valid ward_account_id, returns a single ward account with backload preloaded" do
+      backend = insert(:backend)
+      account = insert(:ward_account, backend: backend)
+
+      result = Spade.get_ward_account_preload!(account.id)
+      assert account.id == result.id
+      assert result.backend.id == backend.id
+      assert result.backend.name == backend.name
+    end
+
+    test "with invalid ward_account_id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_account!(0) end
+    end
+  end
+
   describe "delete_ward_account/1" do
     test "with valid id, deletes a ward account and returns that deleted account" do
       account = insert(:ward_account)
