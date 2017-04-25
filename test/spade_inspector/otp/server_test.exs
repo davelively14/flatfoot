@@ -22,6 +22,11 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       insert(:ward_account, ward: ward, backend: backend, handle: "@sarahinatlanta")
 
       assert Server.fetch_update(ward.id) == :ok
+
+      # TODO fix this async issue
+      # If I don't put this in, the server will quit before the Archer system
+      # can return the results and it will raise an error. The tests sill pass,
+      # but the error is ugly.
       :timer.sleep(25)
     end
   end
