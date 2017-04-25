@@ -16,15 +16,12 @@ defmodule Flatfoot.Archer.ServerTest do
 
   describe "fetch_data/3" do
     test "with correct params, sends hello world back to process that calls it" do
-      user = insert(:user)
-
       use_cassette "twitter.fetch" do
         config = [
-          %{mfa: {Twitter, :fetch, [self(), user.id, %{q: "hello world"}]}}
+          %{mfa: {Twitter, :fetch, [self(), %{test: "test"}, %{q: "hello world"}]}}
         ]
         Server.fetch_data(config)
-        assert_receive({:result, user_id, %{"search_metadata" => _}}, 2_000)
-        assert user_id == user.id
+        assert_receive({:result, %{test: "test"}, %{"search_metadata" => _}}, 2_000)
       end
     end
   end

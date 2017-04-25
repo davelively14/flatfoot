@@ -19,7 +19,7 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       user = insert(:user)
       ward = insert(:ward, user: user)
       backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
-      insert(:ward_account, ward: ward, backend: backend, handle: "@sarahinatlanta")
+      ward_account = insert(:ward_account, ward: ward, backend: backend, handle: "@sarahinatlanta")
 
       assert Server.fetch_update(ward.id) == :ok
 
@@ -27,7 +27,10 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       # If I don't put this in, the server will quit before the Archer system
       # can return the results and it will raise an error. The tests sill pass,
       # but the error is ugly.
-      :timer.sleep(25)
+      :timer.sleep(800)
+      result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.first
+      assert result.backend_id == backend.id
+      assert result.ward_account_id == ward_account.id
     end
   end
 end

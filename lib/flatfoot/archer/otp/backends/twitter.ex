@@ -12,11 +12,11 @@ defmodule Flatfoot.Archer.Backend.Twitter do
   query should be a map with the following parameters:
   %{q: "search string"}
   """
-  def fetch(from, user_id, query) when is_pid(from) and is_integer(user_id) and is_map(query) do
+  def fetch(from, ids, query) when is_pid(from) and is_map(ids) and is_map(query) do
     url = query |> build_url
     headers = ["Authorization": "Bearer #{@token}"]
     {:ok, result} = HTTPoison.get(url, headers)
-    send(from, {:result, user_id, result |> Map.get(:body) |> Poison.decode!})
+    send(from, {:result, ids, result |> Map.get(:body) |> Poison.decode!})
   end
 
   #####################

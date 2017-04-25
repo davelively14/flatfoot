@@ -10,12 +10,10 @@ defmodule Flatfoot.Archer.Backend.TwitterTest do
 
   describe "fetch/1" do
     test "with valid parameters, will send us results" do
-      user = insert(:user)
       use_cassette "twitter.fetch" do
         query = %{q: "to:sarahinatlanta", since_id: "852856862471069696"}
-        Twitter.fetch(self(), user.id, query)
-        assert_receive({:result, user_id, %{"search_metadata" => _}}, 2_000)
-        assert user.id == user_id
+        Twitter.fetch(self(), %{test: "test"}, query)
+        assert_receive({:result, %{test: "test"}, %{"search_metadata" => _}}, 2_000)
       end
     end
 
