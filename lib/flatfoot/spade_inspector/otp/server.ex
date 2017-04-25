@@ -77,8 +77,20 @@ defmodule Flatfoot.SpadeInspector.Server do
         }
       end)
 
-    results |> Enum.each(&SpadeInspector.create_ward_result(&1))
+    results |> Enum.each(&parse_result(&1))
 
     {:noreply, state}
+  end
+
+  #####################
+  # Private Functions #
+  #####################
+
+  defp parse_result(result) do
+    result |> store_result
+  end
+
+  defp store_result(result) do
+    SpadeInspector.create_ward_result(result)
   end
 end
