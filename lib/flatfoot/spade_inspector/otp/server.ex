@@ -86,11 +86,9 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Private Functions #
   #####################
 
-  defp parse_result(result) do
+  def parse_result(result) do
     result |> store_result
   end
 
-  defp store_result(result) do
-    SpadeInspector.create_ward_result(result)
-  end
+  def store_result(result), do: SpadeInspector.create_ward_result(result)
 end

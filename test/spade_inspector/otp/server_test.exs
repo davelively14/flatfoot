@@ -28,9 +28,20 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       # can return the results and it will raise an error. The tests sill pass,
       # but the error is ugly.
       :timer.sleep(800)
-      result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.first
+      result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
       assert result.backend_id == backend.id
       assert result.ward_account_id == ward_account.id
+    end
+  end
+
+  describe "parse_result/1" do
+    test "parses and stores result" do
+      ward_result = insert(:ward_result) |> Map.from_struct |> Map.put(:id, nil)
+
+      {:ok, %Flatfoot.SpadeInspector.WardResult{} = result} = Server.parse_result(ward_result)
+      assert result == Flatfoot.SpadeInspector.WardResult |> Flatfoot.Repo.all |> List.last
+      assert result.backend_id == ward_result.backend_id
+      assert result.ward_account_id == ward_result.ward_account_id
     end
   end
 end
