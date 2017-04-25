@@ -21,7 +21,8 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
       insert(:ward_account, ward: ward, backend: backend, handle: "@sarahinatlanta")
 
-      assert Server.fetch_update(ward.id)
+      assert Server.fetch_update(ward.id) == :ok
+      :timer.sleep(25)
     end
   end
 end
