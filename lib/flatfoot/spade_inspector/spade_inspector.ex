@@ -24,9 +24,9 @@ defmodule Flatfoot.SpadeInspector do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_ward_result(attrs) do
-    %WardResult{}
-    |> ward_result_changeset(attrs)
+  def create_ward_result(ward_result) do
+    ward_result
+    |> ward_result_changeset(%{})
     |> Repo.insert()
   end
 
