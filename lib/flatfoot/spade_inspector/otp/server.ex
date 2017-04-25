@@ -53,7 +53,6 @@ defmodule Flatfoot.SpadeInspector.Server do
   end
 
   def handle_info({:result, user_id, result}, state) do
-    IO.inspect %{result: result}
     {:noreply, state}
   end
 end
