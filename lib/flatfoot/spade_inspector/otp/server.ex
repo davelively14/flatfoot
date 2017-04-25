@@ -20,7 +20,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   end
 
   def fetch_update(ward_id) do
-    GenServer.call(__MODULE__, {:fetch_update, ward_id})
+    GenServer.cast(__MODULE__, {:fetch_update, ward_id})
   end
 
   #############
@@ -41,14 +41,19 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Returns :noreply. The SpadeInspector will send an update notice to the
   # channel via the pattern "spade:#{user_id}" once it completes analysis on the
   # tweets.
-  def handle_call({:fetch_update, ward_id}, _from, state) do
+  def handle_cast({:fetch_update, ward_id}, state) do
     ward = Flatfoot.Spade.get_ward_preload!(ward_id)
     config =
       ward.ward_accounts
       |> Enum.map(fn ward_account ->
-        %{mfa: {ward_account.backend.module, :fetch, [self(), ward.user_id, Query.build(ward_account)]}}
+        %{mfa: {ward_account.backend.module |> String.to_atom, :fetch, [self(), ward.user_id, Query.build(ward_account)]}}
       end)
     Archer.Server.fetch_data(config)
+    {:noreply, state}
+  end
+
+  def handle_info({:result, user_id, result}, state) do
+    IO.inspect %{result: result}
     {:noreply, state}
   end
 end
