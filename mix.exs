@@ -43,6 +43,7 @@ defmodule Flatfoot.Mixfile do
      {:cors_plug, "~> 1.2"},
      {:secure_random, "~> 0.5"},
      {:httpoison, "~> 0.11.1"},
+     {:csv, "~> 1.4.2"},
      {:cowboy, "~> 1.0"}]
   end
 
