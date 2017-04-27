@@ -20,6 +20,8 @@ config :flatfoot, Flatfoot.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
+# Loads either the dev.secret.exs and imports keys from there or, if located
+# remotely (i.e. on Travis) it will load the secret tokens from the system.
 if File.exists?("config/dev.secret.exs") do
   import_config "dev.secret.exs"
 else
