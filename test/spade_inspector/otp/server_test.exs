@@ -10,7 +10,10 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
 
   describe "get_state/0" do
     test "returns state" do
-      assert %Server.InspectorState{} = _ = Server.get_state()
+      assert %Server.InspectorState{} = state = Server.get_state()
+      assert state.sup |> is_pid
+      assert state.negative_words |> Map.get("haskdfj") == nil
+      assert state.negative_words |> Map.get("dick") == 5
     end
   end
 
