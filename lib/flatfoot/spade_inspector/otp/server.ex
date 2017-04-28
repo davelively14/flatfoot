@@ -3,7 +3,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   alias Flatfoot.{SpadeInspector, SpadeInspector.Query, Archer}
 
   defmodule InspectorState do
-    defstruct sup: nil
+    defstruct sup: nil, negative_words: nil
   end
 
   #######
@@ -27,8 +27,20 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Callbacks #
   #############
 
+  # Inits state and loads the negative words library into an :ets table
   def init([sup]) do
-    state = %InspectorState{sup: sup}
+    if :ets.info(:negative_words) == :undefined, do: :ets.new(:negative_words, [:set, :private, :named_table])
+
+    # TODO see if we can avoid two iterations of the list (ie not Enum.map |> List.foldl)
+    negative_words =
+      File.stream!("lib/flatfoot/data/negative_words.csv")
+      |> CSV.decode
+      |> Enum.map(&(&1))
+      |> List.foldl(%{}, fn row, map ->
+        Map.put(map, row |> List.first, row |> List.last |> String.to_integer)
+      end)
+
+    state = %InspectorState{sup: sup, negative_words: negative_words}
     {:ok, state}
   end
 
