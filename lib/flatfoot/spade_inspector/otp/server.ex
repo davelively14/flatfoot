@@ -94,13 +94,23 @@ defmodule Flatfoot.SpadeInspector.Server do
     {:noreply, state}
   end
 
-  #####################
-  # Private Functions #
-  #####################
+  ####################
+  # Helper Functions #
+  ####################
 
   def parse_result(result) do
+    IO.inspect result.msg_text |> split_and_rate
     result |> store_result
   end
 
-  def store_result(result), do: SpadeInspector.create_ward_result(result)
+  # Takes a string, splits it by spaces, removes punctuation, evaluates each
+  # word, returns a list of any mentions (people) or hashtags
+  defp split_and_rate(str), do: split_and_rate(str |> String.split, [])
+  defp split_and_rate([], result), do: result
+  defp split_and_rate([head | tail], result) do
+    head |> String.replace(~r/[\p{P}\p{S}]/, "")
+    split_and_rate(tail, [head | result])
+  end
+
+  defp store_result(result), do: SpadeInspector.create_ward_result(result)
 end
