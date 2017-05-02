@@ -89,7 +89,7 @@ defmodule Flatfoot.SpadeInspector.Server do
         }
       end)
 
-    results |> Enum.each(&parse_result(&1))
+    results |> Enum.each(&parse_result(&1, state.negative_words))
 
     {:noreply, state}
   end
@@ -98,18 +98,25 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Helper Functions #
   ####################
 
-  def parse_result(result) do
-    IO.inspect result.msg_text |> rate_message
-    result |> store_result
+  def parse_result(result, negative_words) do
+    rating = result.msg_text |> rate_message(negative_words)
+    result |> Map.update!(:rating, &(&1 = rating)) |> store_result
   end
 
   # Takes a string, splits it by spaces, removes punctuation, evaluates each
   # word, returns a list of any mentions (people) or hashtags
-  defp rate_message(str), do: rate_message(str |> String.split, 0)
-  defp rate_message([], result), do: result
-  defp rate_message([head | tail], result) do
-    head |> String.replace(~r/[\p{P}\p{S}]/, "")
-    rate_message(tail, [head | result])
+  defp rate_message(str, negative_words), do: rate_message(str |> String.split, negative_words, 0)
+  defp rate_message([], _negative_words, result), do: result
+  defp rate_message([head | tail], negative_words, result) do
+    word = head |> String.replace(~r/[\p{P}\p{S}]/, "")
+    if word_rating = Map.get(negative_words, word) do
+      new_result = result + word_rating
+      if new_result > 99 do
+        rate_message(tail, negative_words, new_result)
+      else
+        100
+      end
+    end
   end
 
   defp store_result(result), do: SpadeInspector.create_ward_result(result)
