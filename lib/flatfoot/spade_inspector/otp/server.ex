@@ -100,7 +100,7 @@ defmodule Flatfoot.SpadeInspector.Server do
 
   def parse_result(result, negative_words) do
     rating = result.msg_text |> rate_message(negative_words)
-    result |> Map.update!(:rating, &(&1 = rating)) |> store_result
+    result |> Map.put(:rating, rating) |> store_result
   end
 
   # Takes a string, splits it by spaces, removes punctuation, evaluates each
@@ -116,6 +116,8 @@ defmodule Flatfoot.SpadeInspector.Server do
       else
         100
       end
+    else
+      rate_message(tail, negative_words, result)
     end
   end
 

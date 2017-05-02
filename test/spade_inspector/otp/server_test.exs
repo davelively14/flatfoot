@@ -41,7 +41,7 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
     test "parses and stores result" do
       ward_result = insert(:ward_result) |> Map.from_struct |> Map.put(:id, nil)
 
-      {:ok, %Flatfoot.SpadeInspector.WardResult{} = result} = Server.parse_result(ward_result)
+      {:ok, %Flatfoot.SpadeInspector.WardResult{} = result} = Server.parse_result(ward_result, Server.get_state |> Map.get(:negative_words))
       assert result == Flatfoot.SpadeInspector.WardResult |> Flatfoot.Repo.all |> List.last
       assert result.backend_id == ward_result.backend_id
       assert result.ward_account_id == ward_result.ward_account_id
