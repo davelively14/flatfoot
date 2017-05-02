@@ -3,7 +3,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   alias Flatfoot.{SpadeInspector, SpadeInspector.Query, Archer}
 
   defmodule InspectorState do
-    defstruct sup: nil, negative_words: nil
+    defstruct sup: nil
   end
 
   #######
@@ -19,6 +19,10 @@ defmodule Flatfoot.SpadeInspector.Server do
     GenServer.call(__MODULE__, :get_state)
   end
 
+  def get_rating(str) do
+    GenServer.call(__MODULE__, {:get_rating, str})
+  end
+
   def fetch_update(ward_id) do
     GenServer.cast(__MODULE__, {:fetch_update, ward_id})
   end
@@ -32,20 +36,28 @@ defmodule Flatfoot.SpadeInspector.Server do
     if :ets.info(:negative_words) == :undefined, do: :ets.new(:negative_words, [:set, :private, :named_table])
 
     # TODO see if we can avoid two iterations of the list (ie not Enum.map |> List.foldl)
-    negative_words =
-      File.stream!("lib/flatfoot/data/negative_words.csv")
-      |> CSV.decode
-      |> Enum.map(&(&1))
-      |> List.foldl(%{}, fn row, map ->
-        Map.put(map, row |> List.first, row |> List.last |> String.to_integer)
-      end)
+    # negative_words_map =
+    File.stream!("lib/flatfoot/data/negative_words.csv")
+    |> CSV.decode
+    |> Enum.map(fn row ->
+      :ets.insert(:negative_words, {row |> List.first, row |> List.last |> String.to_integer})
+    end)
+      # |> Enum.map(&(&1))
+      # |> List.foldl(%{}, fn row, map ->
+      #   Map.put(map, row |> List.first, row |> List.last |> String.to_integer)
+      # end)
+      # |> Enum.each(:ets.insert(:negative_words, ))
 
-    state = %InspectorState{sup: sup, negative_words: negative_words}
+    state = %InspectorState{sup: sup}
     {:ok, state}
   end
 
   def handle_call(:get_state, _from, state) do
     {:reply, state, state}
+  end
+
+  def handle_call({:get_rating, str}, _from, state) do
+    {:reply, rate_message(str), state}
   end
 
   # For each ward_account (i.e. social media account being monitored), this will
@@ -89,35 +101,38 @@ defmodule Flatfoot.SpadeInspector.Server do
         }
       end)
 
-    results |> Enum.each(&parse_result(&1, state.negative_words))
+    results |> Enum.each(&parse_result(&1))
 
     {:noreply, state}
   end
 
-  ####################
-  # Helper Functions #
-  ####################
+  #####################
+  # Private Functions #
+  #####################
 
-  def parse_result(result, negative_words) do
-    rating = result.msg_text |> rate_message(negative_words)
+  defp parse_result(result) do
+    rating = result.msg_text |> rate_message()
     result |> Map.put(:rating, rating) |> store_result
   end
 
   # Takes a string, splits it by spaces, removes punctuation, evaluates each
   # word, returns a list of any mentions (people) or hashtags
-  defp rate_message(str, negative_words), do: rate_message(str |> String.split, negative_words, 0)
-  defp rate_message([], _negative_words, result), do: result
-  defp rate_message([head | tail], negative_words, result) do
-    word = head |> String.replace(~r/[\p{P}\p{S}]/, "")
-    if word_rating = Map.get(negative_words, word) do
-      new_result = result + word_rating
-      if new_result > 99 do
-        rate_message(tail, negative_words, new_result)
-      else
+  defp rate_message(str), do: rate_message(str |> String.split, 0)
+  defp rate_message([], rating), do: rating
+  defp rate_message([head | tail], rating) do
+    word = head |> String.replace(~r/[\p{P}\p{S}]/, "") |> String.downcase
+
+    if :ets.lookup(:negative_words, word) != [] do
+      [{_, word_rating}] = :ets.lookup(:negative_words, word)
+      new_rating = rating + (word_rating * word_rating)
+
+      if new_rating > 99 do
         100
+      else
+        rate_message(tail, new_rating)
       end
     else
-      rate_message(tail, negative_words, result)
+      rate_message(tail, rating)
     end
   end
 

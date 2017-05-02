@@ -12,8 +12,6 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
     test "returns state" do
       assert %Server.InspectorState{} = state = Server.get_state()
       assert state.sup |> is_pid
-      assert state.negative_words |> Map.get("haskdfj") == nil
-      assert state.negative_words |> Map.get("dick") == 5
     end
   end
 
@@ -24,27 +22,32 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
       ward_account = insert(:ward_account, ward: ward, backend: backend, handle: "@sarahinatlanta")
 
-      assert Server.fetch_update(ward.id) == :ok
+      use_cassette "twitter.fetch" do
+        assert Server.fetch_update(ward.id) == :ok
 
-      # TODO fix this async issue
-      # If I don't put this in, the server will quit before the Archer system
-      # can return the results and it will raise an error. The tests sill pass,
-      # but the error is ugly.
-      :timer.sleep(800)
-      result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
-      assert result.backend_id == backend.id
-      assert result.ward_account_id == ward_account.id
+        # TODO fix this async issue
+        # If I don't put this in, the server will quit before the Archer system
+        # can return the results and it will raise an error. The tests sill pass,
+        # but the error is ugly.
+        :timer.sleep(800)
+        result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
+        assert result.backend_id == backend.id
+        assert result.ward_account_id == ward_account.id
+        assert result.rating == 38
+      end
     end
   end
 
-  describe "parse_result/1" do
-    test "parses and stores result" do
-      ward_result = insert(:ward_result) |> Map.from_struct |> Map.put(:id, nil)
+  describe "rate_message/1" do
+    test "rates string correctly" do
+      result = Server.get_rating("bastard")
+      assert result |> is_integer
+      assert result == 25
+    end
 
-      {:ok, %Flatfoot.SpadeInspector.WardResult{} = result} = Server.parse_result(ward_result, Server.get_state |> Map.get(:negative_words))
-      assert result == Flatfoot.SpadeInspector.WardResult |> Flatfoot.Repo.all |> List.last
-      assert result.backend_id == ward_result.backend_id
-      assert result.ward_account_id == ward_result.ward_account_id
+    test "rates high end words correctly" do
+      result = Server.get_rating("bully bullies bastard")
+      assert result == 100
     end
   end
 end
