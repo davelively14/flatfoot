@@ -42,6 +42,33 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "get_user" do
+    @tag :full_spec
+    test "will return a fully preloaded user json", %{user: user} do
+      {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+      assert socket |> is_map
+
+      push socket, "get_user", %{"user_id" => user.id}
+      assert_broadcast "user_data", payload
+
+      assert payload.id == user.id
+      assert payload == Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user})
+
+      leave socket
+    end
+
+    @tag :full_spec
+    test "will return error if user does not exist", %{user: user} do
+      {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+      assert socket |> is_map
+
+      ref = push socket, "get_user", %{"user_id" => 0}
+      assert_reply ref, :error
+
+      leave socket
+    end
+  end
+
   #####################
   # Private Functions #
   #####################
