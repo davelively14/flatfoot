@@ -185,12 +185,12 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
-  describe "get_ward_preload!/1" do
+  describe "get_ward_preload/1" do
     test "with valid id, returns a ward with all preloads" do
       ward = insert(:ward)
       ward_account = insert(:ward_account, ward: ward)
 
-      result = Spade.get_ward_preload!(ward.id)
+      result = Spade.get_ward_preload(ward.id)
       assert result.id == ward.id
 
       [result_accounts] = result.ward_accounts
@@ -198,8 +198,8 @@ defmodule Flatfoot.SpadeTest do
       assert %Flatfoot.Spade.Backend{} = result_accounts.backend
     end
 
-    test "with invalid id, raises error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_preload!(0) end
+    test "with invalid id, returns nil" do
+      assert nil == Spade.get_ward_preload(0)
     end
   end
 
