@@ -704,14 +704,14 @@ defmodule Flatfoot.Spade do
 
   ## Examples
 
-      iex> get_ward_result!(123)
+      iex> get_ward_result(123)
       %WardResult{}
 
-      iex> get_ward_result!(456)
+      iex> get_ward_result(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_ward_result!(id), do: Repo.get!(WardResult, id)
+  def get_ward_result(id), do: Repo.get(WardResult, id)
 
   @doc """
   Given a WardResult id, will delete that WardResult.
@@ -726,7 +726,7 @@ defmodule Flatfoot.Spade do
 
   """
   def delete_ward_result(id) do
-    get_ward_result!(id)
+    get_ward_result(id)
     |> Repo.delete
   end
 
