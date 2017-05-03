@@ -784,17 +784,17 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
-  describe "get_ward_result!/1" do
+  describe "get_ward_result/1" do
     test "with valid id, will return a single ward result" do
       ward_result = insert(:ward_result)
 
-      assert %WardResult{} = result = Spade.get_ward_result!(ward_result.id)
+      assert %WardResult{} = result = Spade.get_ward_result(ward_result.id)
       assert result.id == ward_result.id
       assert result.ward_account_id == ward_result.ward_account_id
     end
 
-    test "with invalid id, will raise error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_result!(0) end
+    test "with invalid id, will return nil" do
+      assert nil == Spade.get_ward_result(0)
     end
   end
 
@@ -809,7 +809,7 @@ defmodule Flatfoot.SpadeTest do
     end
 
     test "with invalid id, raises error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.delete_ward_result(0) end
+      assert_raise FunctionClauseError, fn -> Spade.delete_ward_result(0) end
     end
   end
 end
