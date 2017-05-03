@@ -5,7 +5,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   @doc """
   On join, will return a fully preloaded user JSON response.
 
-  Provide the channel name (i.e. "spade:0") and the socket. Params are unused
+  Provide the channel name (i.e. "spade:0") and the socket. Params are unused.
   """
   def join("spade:" <> user_id, _params, socket) do
     if user = Spade.get_user_preload(user_id) do
@@ -19,6 +19,9 @@ defmodule Flatfoot.Web.SpadeChannel do
   On order, will fetch and return a fully preloaded user JSON response.
 
   Must include the "get_user" message, a valid user_id within params object, and the socket.
+
+  Params requirement:
+  "user_id": integer
   """
   def handle_in("get_user", params, socket) do
     if user = Spade.get_user_preload(params["user_id"]) do
@@ -34,6 +37,9 @@ defmodule Flatfoot.Web.SpadeChannel do
   On order, will fetch and return a fully preloaded ward JSON response.
 
   Must include the "get_ward" message, a valid ward_id within params object, and the socket.
+
+  Params requirement:
+  "ward_id": integer
   """
   def handle_in("get_ward", params, socket) do
     if ward = Spade.get_ward_preload(params["ward_id"]) do
