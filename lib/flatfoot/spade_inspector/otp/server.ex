@@ -70,7 +70,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   # callback, a map of required ids (user_id, ward_account_id, and backend_id),
   # and the query (i.e. search parameters) to be sent to the backend.
   def handle_cast({:fetch_update, ward_id}, state) do
-    ward = Flatfoot.Spade.get_ward_preload!(ward_id)
+    ward = Flatfoot.Spade.get_ward_preload(ward_id)
     config =
       ward.ward_accounts |> Enum.map(fn ward_account ->
         %{mfa: {

@@ -69,6 +69,35 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "get_ward" do
+    @tag :full_spec
+    test "will return a fully preloaded ward json", %{user: user} do
+      {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+      assert socket |> is_map
+
+      ward = user.wards |> List.first
+      push socket, "get_ward", %{"ward_id" => ward.id}
+
+      assert_broadcast message, payload
+      assert message == "ward_#{ward.id}_data"
+      assert payload.id == ward.id
+      assert payload == Phoenix.View.render(Flatfoot.Web.WardView, "ward.json", %{ward: ward})
+
+      leave socket
+    end
+
+    @tag :full_spec
+    test "will raise error if ward does not exist", %{user: user} do
+      {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+      assert socket |> is_map
+
+      ref = push socket, "get_ward", %{"ward_id" => 0}
+      assert_reply ref, :error
+
+      leave socket
+    end
+  end
+
   #####################
   # Private Functions #
   #####################

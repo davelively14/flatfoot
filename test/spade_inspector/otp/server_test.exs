@@ -29,7 +29,7 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
         # If I don't put this in, the server will quit before the Archer system
         # can return the results and it will raise an error. The tests sill pass,
         # but the error is ugly.
-        :timer.sleep(800)
+        :timer.sleep(50)
         result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
         assert result.backend_id == backend.id
         assert result.ward_account_id == ward_account.id
