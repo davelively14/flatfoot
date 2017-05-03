@@ -169,20 +169,20 @@ defmodule Flatfoot.Spade do
 
   ## Examples
 
-      iex> get_ward_preload!(123)
+      iex> get_ward_preload(123)
       %Ward{}
 
-      iex> get_ward_preload!(456)
+      iex> get_ward_preload(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_ward_preload!(id) do
+  def get_ward_preload(id) do
     Ward
     |> where([wards], wards.id == ^id)
     |> join(:left, [wards], _ in assoc(wards, :ward_accounts))
     |> join(:left, [_, ward_accounts], _ in assoc(ward_accounts, :backend))
     |> preload([_, ward_accounts, backend], [ward_accounts: {ward_accounts, backend: backend}])
-    |> Repo.one!
+    |> Repo.one
   end
 
   @doc """
