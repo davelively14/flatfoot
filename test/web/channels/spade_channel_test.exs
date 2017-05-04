@@ -7,10 +7,11 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
     cond do
       config[:full_spec] ->
-        watchlists = generate_and_preload_watchlists(user)
-        wards = generate_and_preload_wards(user)
+        generate_and_preload_watchlists(user)
+        generate_and_preload_wards(user)
         user = Spade.get_user_preload(user.id)
-        {:ok, %{user: user, wards: wards, watchlists: watchlists}}
+        {:ok, resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+        {:ok, %{user: user, resp: resp, socket: socket}}
 
       config[:user_preloaded] ->
         generate_and_preload_watchlists(user)
@@ -44,10 +45,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
   describe "get_user" do
     @tag :full_spec
-    test "will return a fully preloaded user json", %{user: user} do
-      {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
-      assert socket |> is_map
-
+    test "will return a fully preloaded user json", %{user: user, socket: socket} do
       push socket, "get_user", %{"user_id" => user.id}
       assert_broadcast "user_data", payload
 
@@ -58,10 +56,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
 
     @tag :full_spec
-    test "will return error if user does not exist", %{user: user} do
-      {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
-      assert socket |> is_map
-
+    test "will return error if user does not exist", %{socket: socket} do
       ref = push socket, "get_user", %{"user_id" => 0}
       assert_reply ref, :error
 
@@ -71,10 +66,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
   describe "get_ward" do
     @tag :full_spec
-    test "will return a fully preloaded ward json", %{user: user} do
-      {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
-      assert socket |> is_map
-
+    test "will return a fully preloaded ward json", %{user: user, socket: socket} do
       ward = user.wards |> List.first
       push socket, "get_ward", %{"ward_id" => ward.id}
 
@@ -87,14 +79,18 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
 
     @tag :full_spec
-    test "will raise error if ward does not exist", %{user: user} do
-      {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
-      assert socket |> is_map
-
+    test "will raise error if ward does not exist", %{socket: socket} do
       ref = push socket, "get_ward", %{"ward_id" => 0}
       assert_reply ref, :error
 
       leave socket
+    end
+  end
+
+  describe "get_ward_account_results" do
+    @tag :full_spec
+    test "will return multiple results", %{resp: resp, socket: socket} do
+
     end
   end
 
@@ -123,10 +119,16 @@ defmodule Flatfoot.Web.SpadeChannelTest do
   defp generate_and_preload_wards(user) do
     wards = insert_list(2, :ward, user: user)
     backend = insert(:backend)
-    _ward_accounts =
+    ward_accounts =
       wards
       |> Enum.map(fn (ward) ->
         insert_list(2, :ward_account, ward: ward, backend: backend)
+      end)
+    _ward_results =
+      ward_accounts
+      |> List.flatten
+      |> Enum.map(fn (ward_account) ->
+        insert_list(2, :ward_result, backend: backend, ward_account: ward_account)
       end)
 
     Spade.list_wards_preload(user.id)
