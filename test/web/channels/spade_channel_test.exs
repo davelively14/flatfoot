@@ -7,17 +7,21 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
     cond do
       config[:full_spec] ->
-        generate_and_preload_watchlists(user)
-        generate_and_preload_wards(user)
+        {:ok, watchlist_data} = generate_and_return_watchlist_data(user)
+        {:ok, ward_data} = generate_and_return_ward_data(user)
         user = Spade.get_user_preload(user.id)
         {:ok, resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
-        {:ok, %{user: user, resp: resp, socket: socket}}
+        {:ok, %{user: user, resp: resp, socket: socket, ward_data: ward_data, watchlist_data: watchlist_data}}
 
       config[:user_preloaded] ->
-        generate_and_preload_watchlists(user)
-        generate_and_preload_wards(user)
+        generate_and_return_watchlist_data(user)
+        generate_and_return_ward_data(user)
         user = Spade.get_user_preload(user.id)
         {:ok, %{user: user}}
+
+      config[:socket_only] ->
+        {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+        {:ok, %{socket: socket}}
 
       config[:empty_user_only] ->
         {:ok, %{user: user}}
@@ -55,7 +59,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       leave socket
     end
 
-    @tag :full_spec
+    @tag :socket_only
     test "will return error if user does not exist", %{socket: socket} do
       ref = push socket, "get_user", %{"user_id" => 0}
       assert_reply ref, :error
@@ -78,7 +82,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       leave socket
     end
 
-    @tag :full_spec
+    @tag :socket_only
     test "will raise error if ward does not exist", %{socket: socket} do
       ref = push socket, "get_ward", %{"ward_id" => 0}
       assert_reply ref, :error
@@ -89,8 +93,36 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
   describe "get_ward_account_results" do
     @tag :full_spec
-    test "will return multiple results", %{resp: resp, socket: socket} do
+    test "will return all results for an account by default", %{ward_data: ward_data, socket: socket} do
+      ward_account_id = ward_data.ward_accounts |> List.first |> Map.get(:id)
+      ward_results = get_ward_results_for_account(ward_data.ward_results, ward_account_id)
 
+      push socket, "get_ward_account_results", %{"ward_account_id" => ward_account_id}
+      assert_broadcast message, payload
+      assert message == "ward_account_#{ward_account_id}_results"
+      assert payload == Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results})
+    end
+
+    @tag :socket_only
+    test "will return an empty list for a non-existent ward_account", %{socket: socket} do
+      push socket, "get_ward_account_results", %{"ward_account_id" => 0}
+      assert_broadcast "ward_account_0_results", %{ward_results: []}
+    end
+
+    @tag :full_spec
+    test "will return only the results for a given ward_account after a specified as_of date", %{ward_data: ward_data, socket: socket} do
+      ward_account_id = ward_data.ward_accounts |> List.first |> Map.get(:id)
+      ward_results = get_ward_results_for_account(ward_data.ward_results, ward_account_id)
+
+      push socket, "get_ward_account_results", %{"ward_account_id" => ward_account_id, "as_of" => "2017-01-01"}
+      assert_broadcast message, payload
+      assert message == "ward_account_#{ward_account_id}_results"
+      assert payload == Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results})
+
+      push socket, "get_ward_account_results", %{"ward_account_id" => ward_account_id, "as_of" => "2224-01-01"}
+      assert_broadcast message, payload
+      assert message == "ward_account_#{ward_account_id}_results"
+      assert payload == %{ward_results: []}
     end
   end
 
@@ -98,7 +130,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
   # Private Functions #
   #####################
 
-  defp generate_and_preload_watchlists(user) do
+  defp generate_and_return_watchlist_data(user) do
     watchlists = insert_list(2, :watchlist, user: user)
     backend = insert(:backend)
     suspects =
@@ -106,17 +138,17 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       |> Enum.map(fn (watchlist) ->
         insert_list(2, :suspect, watchlist: watchlist)
       end)
-    _suspect_accounts =
+    suspect_accounts =
       suspects
       |> List.flatten
       |> Enum.map(fn (suspect) ->
         insert_list(2, :suspect_account, suspect: suspect, backend: backend)
       end)
 
-    Spade.list_watchlists_preload(user.id)
+    {:ok, %{watchlists: watchlists, backend: backend, suspects: suspects |> List.flatten, suspect_accounts: suspect_accounts |> List.flatten}}
   end
 
-  defp generate_and_preload_wards(user) do
+  defp generate_and_return_ward_data(user) do
     wards = insert_list(2, :ward, user: user)
     backend = insert(:backend)
     ward_accounts =
@@ -124,13 +156,20 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       |> Enum.map(fn (ward) ->
         insert_list(2, :ward_account, ward: ward, backend: backend)
       end)
-    _ward_results =
+    ward_results =
       ward_accounts
       |> List.flatten
       |> Enum.map(fn (ward_account) ->
         insert_list(2, :ward_result, backend: backend, ward_account: ward_account)
       end)
 
-    Spade.list_wards_preload(user.id)
+    {:ok, %{wards: wards, backend: backend, ward_accounts: ward_accounts |> List.flatten, ward_results: ward_results |> List.flatten}}
+  end
+
+  defp get_ward_results_for_account(ward_results, ward_account_id) do
+    ward_results
+    |> List.foldl([], fn (ward_result, acc) ->
+      if ward_result.ward_account_id == ward_account_id, do: [ward_result | acc], else: acc
+    end)
   end
 end

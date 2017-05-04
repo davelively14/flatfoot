@@ -697,6 +697,16 @@ defmodule Flatfoot.Spade do
     Repo.all from r in WardResult, where: r.ward_account_id == ^ward_account_id
   end
 
+  def list_ward_results(ward_account_id, as_of) do
+    as_of_dtg = NaiveDateTime.from_iso8601!("#{as_of} 00:00:00.00")
+
+    if as_of_dtg do
+      Repo.all from r in WardResult, where: r.ward_account_id == ^ward_account_id and r.inserted_at > ^as_of_dtg
+    else
+      nil
+    end
+  end
+
   @doc """
   Returns a single ward result.
 

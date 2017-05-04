@@ -18,7 +18,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   @doc """
   On order, will fetch and return a fully preloaded user JSON response.
 
-  Must include the "get_user" message, a valid user_id within params object, and the socket.
+  Must include the "get_user" message, and a valid user_id within params object.
 
   Params requirement:
   "user_id": integer
@@ -36,7 +36,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   @doc """
   On order, will fetch and return a fully preloaded ward JSON response.
 
-  Must include the "get_ward" message, a valid ward_id within params object, and the socket.
+  Must include the "get_ward" message, and a valid ward_id within params object.
 
   Params requirement:
   "ward_id": integer
@@ -49,5 +49,31 @@ defmodule Flatfoot.Web.SpadeChannel do
     else
       {:reply, :error, socket}
     end
+  end
+
+  @doc """
+  On order, fetches recently stored results for a given ward_account_id
+
+  Must include the "get_ward_account_results" message and a valid ward_account_id within params object.
+
+  Params requirement:
+  "ward_account_id": integer (required)
+  "as_of": ISO date YYYY-MM-DD (optional)
+  """
+  def handle_in("get_ward_account_results", %{"ward_account_id" => id, "as_of" => as_of}, socket) do
+    if Regex.match?(~r/\d{4}-\d{2}-\d{2}/, as_of) do
+      results = Spade.list_ward_results(id, as_of)
+      broadcast! socket, "ward_account_#{id}_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+
+      {:reply, :ok, socket}
+    else
+      {:reply, :error, socket}
+    end
+  end
+  def handle_in("get_ward_account_results", %{"ward_account_id" => id}, socket) do
+    results = Spade.list_ward_results(id)
+    broadcast! socket, "ward_account_#{id}_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+
+    {:reply, :ok, socket}
   end
 end
