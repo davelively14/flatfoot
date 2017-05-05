@@ -1,6 +1,6 @@
 defmodule Flatfoot.Web.SpadeChannel do
   use Flatfoot.Web, :channel
-  alias Flatfoot.{Spade}
+  alias Flatfoot.{Spade, Archer}
 
   @doc """
   On join, will return a fully preloaded user JSON response.
@@ -73,6 +73,24 @@ defmodule Flatfoot.Web.SpadeChannel do
   def handle_in("get_ward_account_results", %{"ward_account_id" => id}, socket) do
     results = Spade.list_ward_results(id)
     broadcast! socket, "ward_account_#{id}_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+
+    {:reply, :ok, socket}
+  end
+
+  @doc """
+  On order, fetches new results for a given ward_account
+
+  Must include the "fetch_new_ward_results" message and a valid ward_account_id.
+
+  Params requirement:
+  "ward_account_id": integer (required)
+  """
+  def handle_in("fetch_new_ward_results", %{"ward_account_id" => id}, socket) do
+    ward_account = Spade.get_ward_account_preload!(id)
+    config = [
+      %{mfa: {ward_account.backend.module, :fetch, [self(), socket, %{q: ward_account.handle}]}}
+    ]
+    Archer.Server.fetch_data(config)
 
     {:reply, :ok, socket}
   end
