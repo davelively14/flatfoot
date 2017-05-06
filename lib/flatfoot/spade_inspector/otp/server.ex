@@ -87,6 +87,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Once the Archer system finishes retrieving the results, it will send the
   # results to this process via the passed pid (see :fetch_update above). This
   # function will parse and store.
+  # TODO move result logic to Twitter. Twitter should return complete results map.
   def handle_info({:result, ids, result}, state) do
 
     results =
@@ -102,6 +103,8 @@ defmodule Flatfoot.SpadeInspector.Server do
       end)
 
     results |> Enum.each(&parse_result(&1))
+
+    # TODO broadcast result to the channel
 
     {:noreply, state}
   end
