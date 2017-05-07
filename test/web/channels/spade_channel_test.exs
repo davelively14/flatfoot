@@ -130,7 +130,6 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
   describe "fetch_new_ward_results" do
     @tag :full_spec
-    @tag :current_test
     test "will return new results", %{socket: socket, ward_data: ward_data} do
       ward_id = ward_data.wards |> List.first |> Map.get(:id)
 
@@ -138,6 +137,12 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast message, payload, 1000
       assert message == "new_ward_results"
       assert payload |> is_map
+    end
+
+    @tag :socket_only
+    test "will not return any results with bad ward_id", %{socket: socket} do
+      push socket, "fetch_new_ward_results", %{"ward_id" => 0}
+      refute_broadcast "new_ward_results", _payload, 200
     end
   end
 
