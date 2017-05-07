@@ -60,9 +60,13 @@ defmodule Flatfoot.SpadeInspector.Server do
     {:reply, rate_message(str), state}
   end
 
-  # For each ward_account (i.e. social media account being monitored), this will
-  # asynchronously run an update on all activity to look for warning signs.
-  # Returns :noreply.
+  # When a client subscribed to a SpadeChannel calls the fetch_new_ward_results
+  # and passes a ward_id, the channel will call this function.
+  #
+  # For each ward_account (i.e. social media account being monitored) that
+  # belongs to the passed ward_id, this function will create an mfa config. This
+  # function will then pass the list of configs to the Archer system via the
+  # server call "fetch_data". 
   #
   # Note: mfa stands for (m)odule, (f)unction, and (a)rguments. The module is
   # the backend module to be called, the function is the function to be called
@@ -71,7 +75,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   # and the query (i.e. search parameters) to be sent to the backend.
   def handle_cast({:fetch_update, ward_id}, state) do
     ward = Flatfoot.Spade.get_ward_preload(ward_id)
-    config =
+    configs =
       ward.ward_accounts |> Enum.map(fn ward_account ->
         %{mfa: {
             ward_account.backend.module |> String.to_atom,
@@ -80,7 +84,7 @@ defmodule Flatfoot.SpadeInspector.Server do
           }
         }
       end)
-    Archer.Server.fetch_data(config)
+    Archer.Server.fetch_data(configs)
     {:noreply, state}
   end
 
