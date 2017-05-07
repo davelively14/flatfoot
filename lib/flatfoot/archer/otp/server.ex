@@ -47,8 +47,12 @@ defmodule Flatfoot.Archer.Server do
     {:ok, state}
   end
 
-  def handle_cast({:fetch_data, config}, state) do
-    dispatch_fido(config)
+  # Receives a list of mfa configs, in this case from the SpadeInspector
+  # :fetch_update call. This function will call the private function
+  # dispatch_fido, which takes a list of configs and asynchronously instructs
+  # the FidoSupervisor to spawn backend workers that will each fetch the data.
+  def handle_cast({:fetch_data, configs}, state) do
+    dispatch_fido(configs)
     {:noreply, state}
   end
 
@@ -64,6 +68,8 @@ defmodule Flatfoot.Archer.Server do
   defp dispatch_fido([config | tail]) do
     {mod, fun, args} = config.mfa
 
+    # Task.Supervisor.start_child/4 provides a supervisor, module, function for
+    # that module, and any arguments in a list.
     {:ok, _pid} = Task.Supervisor.start_child(FidoSupervisor, mod, fun, args)
     dispatch_fido(tail)
   end
