@@ -69,7 +69,9 @@ defmodule Flatfoot.Archer.Server do
     {mod, fun, args} = config.mfa
 
     # Task.Supervisor.start_child/4 provides a supervisor, module, function for
-    # that module, and any arguments in a list.
+    # that module, and any arguments in a list. Note that FidoSupervisor only
+    # exists as a named Task.Supervisor child within ArcherSupervisor - you
+    # won't find a separate fido_supervisor.ex.
     {:ok, _pid} = Task.Supervisor.start_child(FidoSupervisor, mod, fun, args)
     dispatch_fido(tail)
   end
