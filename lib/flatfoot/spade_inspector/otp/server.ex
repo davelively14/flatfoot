@@ -66,7 +66,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   # For each ward_account (i.e. social media account being monitored) that
   # belongs to the passed ward_id, this function will create an mfa config. This
   # function will then pass the list of configs to the Archer system via the
-  # server call "fetch_data". 
+  # server call "fetch_data".
   #
   # Note: mfa stands for (m)odule, (f)unction, and (a)rguments. The module is
   # the backend module to be called, the function is the function to be called
@@ -106,9 +106,9 @@ defmodule Flatfoot.SpadeInspector.Server do
         }
       end)
 
-    results |> Enum.each(&parse_result(&1))
+    results |> Enum.each(&parse_and_store_result(&1))
 
-    # TODO broadcast result to the channel
+    Flatfoot.Web.Endpoint.broadcast("spade:#{ids.user_id}", "new_ward_results", %{results: results})
 
     {:noreply, state}
   end
@@ -117,7 +117,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Private Functions #
   #####################
 
-  defp parse_result(result) do
+  defp parse_and_store_result(result) do
     rating = result.msg_text |> rate_message()
     result |> Map.put(:rating, rating) |> store_result
   end

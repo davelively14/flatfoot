@@ -1,8 +1,10 @@
 defmodule Flatfoot.Web.SpadeChannelTest do
   use Flatfoot.Web.ChannelCase
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
   alias Flatfoot.{Web.SpadeChannel, Spade}
 
   setup config do
+    ExVCR.Config.cassette_library_dir("test/support/vcr_cassettes")
     user = insert(:user)
 
     cond do
@@ -126,13 +128,26 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "fetch_new_ward_results" do
+    @tag :full_spec
+    @tag :current_test
+    test "will return new results", %{socket: socket, ward_data: ward_data} do
+      ward_id = ward_data.wards |> List.first |> Map.get(:id)
+
+      push socket, "fetch_new_ward_results", %{"ward_id" => ward_id}
+      assert_broadcast message, payload, 1000
+      assert message == "new_ward_results"
+      assert payload |> is_map
+    end
+  end
+
   #####################
   # Private Functions #
   #####################
 
   defp generate_and_return_watchlist_data(user) do
     watchlists = insert_list(2, :watchlist, user: user)
-    backend = insert(:backend)
+    backend = insert(:backend, module: "Flatfoot.Archer.Backend.Twitter")
     suspects =
       watchlists
       |> Enum.map(fn (watchlist) ->
@@ -150,7 +165,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
   defp generate_and_return_ward_data(user) do
     wards = insert_list(2, :ward, user: user)
-    backend = insert(:backend)
+    backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
     ward_accounts =
       wards
       |> Enum.map(fn (ward) ->

@@ -14,7 +14,7 @@ defmodule Flatfoot.Archer.ServerTest do
     end
   end
 
-  describe "fetch_data/3" do
+  describe "fetch_data/1" do
     test "with correct params, sends hello world back to process that calls it" do
       use_cassette "twitter.fetch" do
         config = [
