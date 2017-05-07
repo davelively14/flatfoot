@@ -78,7 +78,8 @@ defmodule Flatfoot.Web.SpadeChannel do
   end
 
   @doc """
-  On order, fetches new results for a given ward
+  On order, fetches new results for a given ward. Will automaticaly load results
+  for all associated ward_accounts.
 
   Must include the "fetch_new_ward_results" message and a valid ward_id.
 
