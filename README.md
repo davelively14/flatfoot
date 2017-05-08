@@ -75,7 +75,7 @@ HTTP call (no authorization headers required):
 POST http://localhost:4000/api/login?user_params[username]=dlively&user_params[password]=password
 ```
 
-Returb body:
+Return body:
 ```json
 {
     "data": {
@@ -479,7 +479,7 @@ GET http://localhost:4000/api/settings
 Authorization: Token token="dzJ0Mmd4R2tpcnhwZXRkTTZzQXE3QT09"
 ```
 
-Result body:
+Return body:
 ```json
 {
     "data": {
@@ -514,7 +514,7 @@ PUT http://localhost:4000/api/settings?params[global_threshold]=25
 Authorization: Token token="dzJ0Mmd4R2tpcnhwZXRkTTZzQXE3QT09"
 ```
 
-Result body:
+Return body:
 ```json
 {
     "data": {
