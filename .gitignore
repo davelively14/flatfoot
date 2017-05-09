@@ -5,6 +5,7 @@
 /*.ez
 assets/node_modules
 .DS_Store
+/priv/static/js/application.js
 
 # Generated on crash by the VM
 erl_crash.dump
