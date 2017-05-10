@@ -19,8 +19,8 @@ var config = module.exports = {
   },
 
   resolve: {
-    extensions: ['.js'],
-    modules: ['node_modules']
+    extensions: ['.js', '.jsx'],
+    modules: ['assets/node_modules']
   },
 
   module: {
