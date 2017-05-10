@@ -7,7 +7,10 @@ module.exports = {
       "eslint:recommended"
     ],
     "parserOptions": {
-        "sourceType": "module"
+        "sourceType": "module",
+        "ecmaFeatures": {
+          "jsx": true
+        }
     },
     "rules": {
         "indent": [
