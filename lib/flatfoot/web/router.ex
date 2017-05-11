@@ -44,4 +44,12 @@ defmodule Flatfoot.Web.Router do
 
     resources "/blackout_options", BlackoutOptionController, only: [:index, :show, :create, :update, :delete]
   end
+
+  # Want every other path to go back to root. This allows React router to handle
+  # nested urls via links.
+  scope "/*path", Flatfoot.Web do
+    pipe_through :browser # Use the default browser stack
+
+    get "/", PageController, :index
+  end
 end
