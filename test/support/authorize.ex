@@ -13,6 +13,7 @@ defmodule Flatfoot.Authorize do
     conn
     |> put_req_header("authorization", "Token token=\"#{session.token}\"")
     |> assign(:current_user, user)
+    |> assign(:token, session.token)
   end
 
   def login_user_setup(context) do
@@ -24,6 +25,6 @@ defmodule Flatfoot.Authorize do
 
     not_logged_in = build_conn()
 
-    {:ok, %{logged_in: conn, not_logged_in: not_logged_in, password: @password}}
+    {:ok, %{logged_in: conn, not_logged_in: not_logged_in, password: @password, token: conn.assigns.token}}
   end
 end
