@@ -28,6 +28,7 @@ defmodule Flatfoot.Web.Router do
 
     resources "/login", SessionController, only: [:create]
     resources "/new_user", UserController, only: [:create]
+    get "/users/:token", UserController, :show
   end
 
   scope "/api", Flatfoot.Web do
@@ -36,7 +37,6 @@ defmodule Flatfoot.Web.Router do
     get "/token", SessionController, :get_ws_token
 
     resources "/users", UserController, only: [:index, :update, :delete]
-    get "/users/:token", UserController, :show
     resources "/notification_records", NotificationRecordController, only: [:create, :index, :show, :update, :delete]
 
     resources "/settings", SettingsController, only: [:create]
