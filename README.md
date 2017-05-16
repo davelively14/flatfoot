@@ -152,20 +152,17 @@ Return body:
 
 ### <a name="user-show"></a>User#show
 
-Provided a user id in the url and user's information will be returned. Takes no parameters. Does not return password. Authorization token is required.
+Provide a session token in the url and user's information will be returned. Takes no parameters. Does not return password. Authorization token is NOT required.
 
-API path pattern: `api/users/:user_id/`
-- Provide `:user_id` (integer)
+API path pattern: `api/users/:token/`
+- Provide valid `:token` (string) that matches a corresponding session token.
 - Sent via the http `GET` method.
-- Include authorization token for a user's session in header.
 
 ##### Example:
 
 HTTP call with authorization header:
 ```code
-http://localhost:4000/api/users/1
-...
-Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+http://localhost:4000/api/users/VHpnSTFaUU01SExoQkJMRVZXUUgvQT09
 ```
 Return body:
 ```json
