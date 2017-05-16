@@ -13,19 +13,20 @@ defmodule Flatfoot.Web.UserController do
     render(conn, "index.json", users: users)
   end
 
+  # NOTE: deleted put_resp_header - no idea what it was used for.
   def create(conn, %{"user_params" => user_params}) do
     with {:ok, %User{} = user} <- Clients.create_user(user_params) do
       {:ok, session} = Clients.login(%{user_id: user.id})
 
       conn
       |> put_status(:created)
-      |> put_resp_header("location", user_path(conn, :show, user))
+      # |> put_resp_header("location", user_path(conn, :show, user))
       |> render(Flatfoot.Web.SessionView, "show.json", session: session)
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    user = Clients.get_user!(id)
+  def show(conn, %{"token" => token}) do
+    user = Clients.get_user_by_token(token)
     render(conn, "show.json", user: user)
   end
 

@@ -212,14 +212,15 @@ defmodule Flatfoot.Clients do
   ## Examples
 
     iex> get_user_by_token(valid_token)
-    {:ok, %Session{}}
+    {:ok, %User{}}
 
     iex> get_user_by_token(invalid_token)
     :error
   """
   def get_user_by_token(token) do
-    session = Session |> Repo.get_by(token: token)
-    User |> Repo.get(session.user_id)
+    if session = Session |> Repo.get_by(token: token) do
+      User |> Repo.get(session.user_id)
+    end
   end
 
   @doc """
