@@ -154,15 +154,15 @@ Return body:
 
 Provide a session token in the url and user's information will be returned. Takes no parameters. Does not return password. Authorization token is NOT required.
 
-API path pattern: `api/users/:token/`
-- Provide valid `:token` (string) that matches a corresponding session token.
+API path pattern: `api/users/token/token=token`
+- Provide valid `token` (string) that matches a corresponding session token.
 - Sent via the http `GET` method.
 
 ##### Example:
 
 HTTP call:
 ```code
-http://localhost:4000/api/users/VHpnSTFaUU01SExoQkJMRVZXUUgvQT09
+http://localhost:4000/api/users/token?token=VHpnSTFaUU01SExoQkJMRVZXUUgvQT09
 ```
 Return body:
 ```json

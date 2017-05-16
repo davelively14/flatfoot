@@ -37,12 +37,12 @@ defmodule Flatfoot.Web.UserControllerTest do
     setup [:login_user_setup]
 
     test "with a valid token, renders a single user", %{not_logged_in: conn, logged_in: logged_in_conn, token: token} do
-      conn = get conn, user_path(conn, :show, token)
+      conn = get conn, user_path(conn, :show), token: token
       assert json_response(conn, 200) == render_json("show.json", user: logged_in_conn.assigns.current_user)
     end
 
     test "with invalid token, returns a JSON object with data set to nil", %{not_logged_in: conn} do
-      conn = get conn, user_path(conn, :show, "123")
+      conn = get conn, user_path(conn, :show), token: "123"
       assert json_response(conn, 200) == render_json("show.json", user: nil)
     end
   end

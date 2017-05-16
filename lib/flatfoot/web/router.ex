@@ -28,7 +28,7 @@ defmodule Flatfoot.Web.Router do
 
     resources "/login", SessionController, only: [:create]
     resources "/new_user", UserController, only: [:create]
-    get "/users/:token", UserController, :show
+    get "/users/token", UserController, :show
   end
 
   scope "/api", Flatfoot.Web do
