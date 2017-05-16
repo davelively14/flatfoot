@@ -160,7 +160,7 @@ API path pattern: `api/users/:token/`
 
 ##### Example:
 
-HTTP call with authorization header:
+HTTP call:
 ```code
 http://localhost:4000/api/users/VHpnSTFaUU01SExoQkJMRVZXUUgvQT09
 ```
