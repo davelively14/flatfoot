@@ -177,7 +177,7 @@ Return body:
 
 ### <a name="user-update"></a>User#update
 
-Given a user's id and a list of parameters, update a user's information. Authorization token is required.
+Given a user's token and a list of parameters, update a user's information. Authorization token is required.
 
 Accepted parameters for the `user_params` object.
 
@@ -188,9 +188,10 @@ Name | Required | Type | Notes
 *new_password* | no | string | Must be between 6 and 100 characters. MUST be accompanied by `current_password` or it will be ignored.
 *current_password* | no | string | Current password. Only required if providing a `new_password`.
 
-API path pattern: `api/users/:user_id?user_params[param]=param_value&user_params[param]=param`
-- Provide `:user_id` (integer)
-- Provide params to the `user_params` object using the table above. Use the `&` operator to string together additional params.
+API path pattern: `api/users?token=token&user_params[param]=param_value&user_params[param]=param`
+- Provide params, separated by the `&` operator:
+  - Provide `token` to the `token` parameter (string)
+  - Provide params to the `user_params` object using the table above. Use the `&` operator to string together additional params.
 - Sent via the http `PUT` method.
 - Include authorization token for a user's session in header.
 
@@ -198,7 +199,7 @@ API path pattern: `api/users/:user_id?user_params[param]=param_value&user_params
 
 HTTP call with authorization header:
 ```code
-PUT http://localhost:4000/api/users/1?user_params[username]=kbob12
+PUT http://localhost:4000/api/users?token=eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09&user_params[username]=kbob12
 ...
 Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 ```
