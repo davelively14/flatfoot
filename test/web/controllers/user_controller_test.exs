@@ -101,9 +101,9 @@ defmodule Flatfoot.Web.UserControllerTest do
   describe "PUT update" do
     setup [:login_user_setup]
 
-    test "updates user and renders user data when valid", %{logged_in: conn} do
+    test "updates user and renders user data when valid", %{logged_in: conn, token: token} do
       user = conn.assigns.current_user
-      local_conn = put conn, user_path(conn, :update, user), user_params: %{email: @new_email}
+      local_conn = put conn, user_path(conn, :update), token: token, user_params: %{email: @new_email}
 
       assert %{"data" => updated_user} = json_response(local_conn, 200)
       assert updated_user["username"] == user.username
@@ -111,31 +111,29 @@ defmodule Flatfoot.Web.UserControllerTest do
       assert updated_user["email"] == @new_email
     end
 
-    test "does not update chosen user and renders errors when data is invalid", %{logged_in: conn} do
-      conn = put conn, user_path(conn, :update, conn.assigns.current_user), user_params: %{username: "", email: ""}
+    test "does not update chosen user and renders errors when data is invalid", %{logged_in: conn, token: token} do
+      conn = put conn, user_path(conn, :update), token: token, user_params: %{username: "", email: ""}
       assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"]}
     end
 
-    test "will accept and update password when old password is provided", %{logged_in: conn, password: password} do
+    test "will accept and update password when old password is provided", %{logged_in: conn, password: password, token: token} do
       new_password = "newpassword"
       user = conn.assigns.current_user
-      conn = put conn, user_path(conn, :update, user), user_params: %{current_password: password, new_password: new_password}
+      conn = put conn, user_path(conn, :update), token: token, user_params: %{current_password: password, new_password: new_password}
       assert conn.status == 200
 
       conn = post conn, session_path(conn, :create), user_params: %{username: user.username, password: new_password}
       assert conn.status == 201
     end
 
-    test "will return an error when attempting to change password with an incorrect current password", %{logged_in: conn} do
+    test "will return an error when attempting to change password with an incorrect current password", %{logged_in: conn, token: token} do
       new_password = "newpassword"
-      user = conn.assigns.current_user
-      conn = put conn, user_path(conn, :update, user), user_params: %{current_password: "not correct", new_password: new_password}
+      conn = put conn, user_path(conn, :update), token: token, user_params: %{current_password: "not correct", new_password: new_password}
       assert %{"errors" => "Current password is invalid."} = json_response(conn, 401)
     end
 
-    test "with invalid token returns 401 and halts", %{not_logged_in: conn} do
-      user = insert(:user)
-      conn = put conn, user_path(conn, :update, user), user_params: %{email: @new_email}
+    test "with invalid token returns 401 and halts", %{not_logged_in: conn, token: token} do
+      conn = put conn, user_path(conn, :update), token: token, user_params: %{email: @new_email}
       assert conn.status == 401
       assert conn.halted
     end

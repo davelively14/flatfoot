@@ -30,8 +30,8 @@ defmodule Flatfoot.Web.UserController do
     render(conn, "show.json", user: user)
   end
 
-  def update(conn, %{"id" => id, "user_params" => user_params}) do
-    user = Clients.get_user!(id)
+  def update(conn, %{"token" => token, "user_params" => user_params}) do
+    user = Clients.get_user_by_token(token)
 
     if user_params["current_password"] && user_params["new_password"] do
 

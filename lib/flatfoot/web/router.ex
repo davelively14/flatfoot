@@ -36,7 +36,9 @@ defmodule Flatfoot.Web.Router do
 
     get "/token", SessionController, :get_ws_token
 
-    resources "/users", UserController, only: [:index, :update, :delete]
+    resources "/users", UserController, only: [:index, :delete]
+    put "/users", UserController, :update
+    patch "/users", UserController, :update
     resources "/notification_records", NotificationRecordController, only: [:create, :index, :show, :update, :delete]
 
     resources "/settings", SettingsController, only: [:create]
