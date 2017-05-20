@@ -433,6 +433,7 @@ defmodule Flatfoot.Clients do
     |> validate_required([:username, :email])
     |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
     |> validate_length(:username, max: 30)
+    |> validate_inclusion(:global_threshold, 0..100)
     |> unique_constraint(:username)
     |> unique_constraint(:email)
   end

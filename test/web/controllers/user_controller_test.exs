@@ -6,9 +6,10 @@ defmodule Flatfoot.Web.UserControllerTest do
   @username Faker.Internet.user_name
   @email Faker.Internet.free_email
   @password Faker.Code.isbn
+  @global_threshold Enum.random(0..100)
   @new_email Faker.Internet.free_email
 
-  @create_attrs %{email: @email, password: @password, username: @username}
+  @create_attrs %{email: @email, password: @password, username: @username, global_threshold: @global_threshold}
 
   describe "GET index" do
     setup [:login_user_setup]
@@ -58,6 +59,7 @@ defmodule Flatfoot.Web.UserControllerTest do
       user = Clients.get_user_by_token(token)
       assert user.username == @username
       assert user.email == @email
+      assert user.global_threshold == @global_threshold
     end
 
     test "does not create user with no email" do
@@ -77,8 +79,15 @@ defmodule Flatfoot.Web.UserControllerTest do
     test "does not create user with no password" do
       conn = build_conn()
 
-      conn = post conn, user_path(conn, :create), user_params: %{email: @email, username: @username }
+      conn = post conn, user_path(conn, :create), user_params: %{email: @email, username: @username}
       assert json_response(conn, 422)["errors"] == %{"password" => ["can't be blank"]}
+    end
+
+    test "does not create user with a global_threshold outside of the range" do
+      conn = build_conn()
+
+      conn = post conn, user_path(conn, :create), user_params: %{email: @email, password: @password, username: @username, global_threshold: 101}
+      assert json_response(conn, 422)["errors"] == %{"global_threshold" => ["is invalid"]}
     end
 
     test "only accepts valid email address" do
@@ -112,8 +121,8 @@ defmodule Flatfoot.Web.UserControllerTest do
     end
 
     test "does not update chosen user and renders errors when data is invalid", %{logged_in: conn, token: token} do
-      conn = put conn, user_path(conn, :update), token: token, user_params: %{username: "", email: ""}
-      assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"]}
+      conn = put conn, user_path(conn, :update), token: token, user_params: %{username: "", email: "", global_threshold: -21}
+      assert json_response(conn, 422)["errors"] == %{"username" => ["can't be blank"], "email" => ["can't be blank"], "global_threshold" => ["is invalid"]}
     end
 
     test "will accept and update password when old password is provided", %{logged_in: conn, password: password, token: token} do
