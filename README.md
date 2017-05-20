@@ -30,6 +30,7 @@ Name | Required | Type | Notes
 *username* | yes | string | Must be unique and no more than 30 characters.
 *email* | yes | string | Must be unique and in a valid email format.
 *password* | yes | string | Must be between 6 and 100 characters. Will be hashed on server.
+*global_threshold* | no | integer | Must be between 0 and 100 inclusively. Default is 0.
 
 API path pattern: `api/new_user?user_params[param]=param_value&user_params[param]=param_value...`
 - Provide params to the `user_params` object using the table above. Use the `&` operator to string together additional params.
@@ -132,16 +133,19 @@ Return body:
         {
             "username": "katarina2027",
             "id": 1,
+            "global_threshold": 0,
             "email": "connor.runolfsson@gmail.com"
         },
         {
             "username": "sabina2065",
             "id": 2,
+            "global_threshold": 0,
             "email": "dorris2027@gmail.com"
         },
         {
             "username": "jwilkins",
             "id": 3,
+            "global_threshold": 0,
             "email": "jwilkins@gmail.com"
         }
     ]
@@ -168,6 +172,7 @@ Return body:
     "data": {
         "username": "katarina2027",
         "id": 1,
+        "global_threshold": 0,
         "email": "connor.runolfsson@gmail.com"
     }
 }
@@ -183,6 +188,7 @@ Name | Required | Type | Notes
 --- | :---: | :---: | ---
 *username* | no | string | Must be unique and no more than 30 characters.
 *email* | no | string | Must be unique and in a valid email format.
+*global_threshold* | no | integer | Must be between 0 and 100 inclusively.
 *new_password* | no | string | Must be between 6 and 100 characters. MUST be accompanied by `current_password` or it will be ignored.
 *current_password* | no | string | Current password. Only required if providing a `new_password`.
 
@@ -208,6 +214,7 @@ Return body:
     "data": {
         "username": "kbob12",
         "id": 1,
+        "global_threshold": 0,
         "email": "connor.runolfsson@gmail.com"
     }
 }
