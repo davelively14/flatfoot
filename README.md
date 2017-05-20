@@ -9,7 +9,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [Logging in](#login)
 * [Getting a socket token](#get-token)
 * [User API](#user-api)
-  * [Index](#user-index) | [Show](#user-show) | [Update](#user-update) | [Delete](#user-delete)
+  * [Index](#user-index) | [Show](#user-show) | [Update](#user-update) | [Delete](#user-delete) | [Validate User](#user-validate)
 * [NotificationRecord](#notification-record)
   * [Create](#notification-record-create) | [Index](#notification-record-index) | [Show](#notification-record-show)  | [Update](#notification-record-update) | [Delete](#notification-record-delete)
 * [BlackoutOption API](#blackout-option)
@@ -239,6 +239,54 @@ Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 ```
 
 This function will not return any data, only a `204` status.
+
+### <a name="user-validate"></a>User#validate_user
+
+Provided a username and password, will return a JSON object that indicates if that is an authorized user or not. No sessions are created or updated when run.
+
+Both parameters below are required.
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*username* | yes | string | Must match an existing username.
+*password* | yes | string | Must match the password for the username.
+
+API path pattern: `api/users/validate?username=username&password=password`
+- Provide individual params, separated by the `&` operator:
+- Sent via the http `GET` method.
+- Include authorization token for a user's session in header.
+
+##### Example:
+
+HTTP call with authorization header:
+```code
+GET http://localhost:4000/api/users/validate?username=dlively&password=password
+...
+Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
+```
+
+Return body on success:
+```json
+{
+    "authorized": true
+}
+```
+
+Return body with invalid password:
+```json
+{
+    "error": "password was incorrect",
+    "authorized": false
+}
+```
+
+Return body with invalid username:
+```json
+{
+    "error": "username does not exist",
+    "authorized": false
+}
+```
 
 ## <a name="notification-record"></a>Notification Record API
 
