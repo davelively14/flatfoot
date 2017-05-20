@@ -6,6 +6,7 @@ defmodule Flatfoot.Spade.User do
     has_many :wards, Flatfoot.Spade.Ward, on_delete: :delete_all
     field :email, :string
     field :username, :string
+    field :global_threshold, :integer
 
     timestamps()
   end

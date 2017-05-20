@@ -333,101 +333,6 @@ defmodule Flatfoot.Clients do
     Repo.delete(notification_record)
   end
 
-  ############
-  # Settings #
-  ############
-
-  alias Flatfoot.Clients.Settings
-
-  @doc """
-  Provide a user_id and receive the corresponding settings.
-
-  Raises `Ecto.NoResultsError` if the Settings does not exist.
-
-  ## Examples
-
-      iex> get_settings_by_user_id!(123)
-      %Settings{}
-
-      iex> get_settings_by_user_id!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_settings_by_user_id!(user_id) do
-    Repo.one! from s in Settings, where: s.user_id == ^user_id
-  end
-
-  @doc """
-  Provide a valid id and returns the corresponding settings.
-
-  Raises `Ecto.NoResultsError` if the Settings does not exist.
-
-  ## Examples
-
-      iex> get_settings!(123)
-      %Settings{}
-
-      iex> get_settings!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_settings!(id) do
-    Settings |> Repo.get!(id)
-  end
-
-  @doc """
-  Creates settings for a given user.
-
-  ## Examples
-
-      iex> create_settings(%{user_id: 12, global_threshold: 0})
-      {:ok, %Settings{}}
-
-      iex> create_settings(%{user_id: nil})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_settings(attrs \\ %{}) do
-    %Settings{}
-    |> settings_changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Pass in user_id and update associated settings.
-
-  ## Examples
-
-      iex> update_settings(user, %{global_threshold: new_value})
-      {:ok, %NotificationRecord{}}
-
-      iex> update_settings(user, %{global_threshold: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_settings(user_id, attrs) do
-    get_settings_by_user_id!(user_id)
-    |> settings_changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a Settings.
-
-  ## Examples
-
-      iex> delete_settings(user_id)
-      {:ok, %Settings{}}
-
-      iex> delete_settings(invalid_user_id)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_settings(user_id) do
-    settings = get_settings_by_user_id!(user_id)
-    Repo.delete(settings)
-  end
-
   ###################
   # Blackout Option #
   ###################
@@ -435,19 +340,19 @@ defmodule Flatfoot.Clients do
   alias Flatfoot.Clients.BlackoutOption
 
   @doc """
-  Returns a list of blackout options for a given settings.
+  Returns a list of blackout options for a given user.
 
   ## Examples
 
-      iex> list_blackout_options(settings_id)
+      iex> list_blackout_options(user_id)
       [%BlackoutOption{}, ...]
 
-      iex> list_blackout_options(bad_settings_id)
+      iex> list_blackout_options(bad_user_id)
       ** (Ecto.NoResultsError)
 
   """
-  def list_blackout_options(settings_id) do
-    Repo.all from r in BlackoutOption, where: r.settings_id == ^settings_id
+  def list_blackout_options(user_id) do
+    Repo.all from r in BlackoutOption, where: r.user_id == ^user_id
   end
 
   @doc """
@@ -467,14 +372,14 @@ defmodule Flatfoot.Clients do
   def get_blackout_option!(id), do: Repo.get!(BlackoutOption, id)
 
   @doc """
-  Creates a blackout option for a given settings.
+  Creates a blackout option for a given user.
 
   ## Examples
 
-      iex> create_blackout_option(%{settings_id: 12, threshold: 0})
+      iex> create_blackout_option(%{user_id: 12, threshold: 0})
       {:ok, %BlackoutOption{}}
 
-      iex> create_blackout_option(%{settings_id: nil})
+      iex> create_blackout_option(%{user_id: nil})
       {:error, %Ecto.Changeset{}}
 
   """
@@ -562,19 +467,11 @@ defmodule Flatfoot.Clients do
     |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
   end
 
-  defp settings_changeset(%Settings{} = settings, attrs) do
-    settings
-    |> cast(attrs, [:global_threshold, :user_id])
-    |> validate_required([:user_id])
-    |> validate_inclusion(:global_threshold, 0..100)
-    |> unique_constraint(:user_id)
-  end
-
   defp blackout_option_changeset(%BlackoutOption{} = blackout, attrs) do
     blackout
-    |> cast(attrs, [:start, :stop, :threshold, :exclude, :settings_id])
+    |> cast(attrs, [:start, :stop, :threshold, :exclude, :user_id])
     |> validate_inclusion(:threshold, 0..100)
-    |> validate_required([:start, :stop, :settings_id])
+    |> validate_required([:start, :stop, :user_id])
   end
 
   #############
@@ -583,8 +480,7 @@ defmodule Flatfoot.Clients do
 
   def owner_id(%Session{} = session), do: session.user_id
   def owner_id(%NotificationRecord{} = record), do: record.user_id
-  def owner_id(%Settings{} = settings), do: settings.user_id
-  def owner_id(%BlackoutOption{} = option), do: option |> Ecto.assoc(:settings) |> Repo.one |> Ecto.assoc(:user) |> Repo.one |> Map.get(:id)
+  def owner_id(%BlackoutOption{} = option), do: option.user_id
 
   #####################
   # Private Functions #

@@ -21,7 +21,7 @@ defmodule Flatfoot.Web.BlackoutOptionView do
       stop: blackout_option.stop,
       threshold: blackout_option.threshold,
       exclude: blackout_option.exclude,
-      settings_id: blackout_option.settings_id
+      user_id: blackout_option.user_id
     }
   end
 end

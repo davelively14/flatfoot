@@ -1,7 +1,7 @@
 defmodule Flatfoot.ClientsTest do
   use Flatfoot.DataCase
 
-  alias Flatfoot.{Clients, Clients.User, Clients.Session, Clients.NotificationRecord, Clients.Settings, Clients.BlackoutOption}
+  alias Flatfoot.{Clients, Clients.User, Clients.Session, Clients.NotificationRecord, Clients.BlackoutOption}
 
   @username Faker.Internet.user_name
   @email Faker.Internet.free_email
@@ -235,97 +235,6 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
-  ############
-  # Settings #
-  ############
-
-  describe "get_settings/1" do
-    test "with valid user_id returns settings" do
-      user = insert(:user)
-      insert(:settings, user: user)
-
-      assert %Settings{} = settings = Clients.get_settings_by_user_id!(user.id)
-      assert settings.user_id == user.id
-    end
-
-    test "with invalid user_id raises error" do
-      assert_raise Ecto.NoResultsError, fn -> Clients.get_settings_by_user_id!(0) end
-    end
-  end
-
-  describe "create_settings/1" do
-    test "with valid data creates settings" do
-      user = insert(:user)
-      assert {:ok, %Settings{} = settings} = Clients.create_settings(%{user_id: user.id})
-      assert settings.user_id == user.id
-      assert settings.global_threshold == 0
-    end
-
-    test "can only create one settings per user" do
-      user = insert(:user)
-      assert {:ok, %Settings{} = _} = Clients.create_settings(%{user_id: user.id})
-      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_settings(%{user_id: user.id})
-      assert changeset.errors[:user_id] == {"has already been taken", []}
-    end
-
-    test "with invalid data will not create settings" do
-      user = insert(:user)
-      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_settings(%{user_id: user.id, global_threshold: 101})
-      assert changeset.errors[:global_threshold] == {"is invalid", [validation: :inclusion]}
-    end
-
-    test "cannot create settings without user_id" do
-      assert {:error, %Ecto.Changeset{} = changeset} = Clients.create_settings(%{})
-      assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
-    end
-  end
-
-  describe "update_settings/2" do
-    test "with valid user_id and attributes updates settings" do
-      user = insert(:user)
-      insert(:settings, user: user)
-      new_threshold = 50
-
-      assert {:ok, %Settings{} = settings} = Clients.update_settings(user.id, %{global_threshold: new_threshold})
-      assert settings.user_id == user.id
-      assert settings.global_threshold == new_threshold
-    end
-
-    test "with invalid user_id and attributes will raise NoResultsError" do
-      new_threshold = 50
-
-      assert_raise Ecto.NoResultsError, fn -> Clients.update_settings(0, %{global_threshold: new_threshold}) end
-    end
-
-    test "with valid user_id and invalid attributes will return changeset with errors" do
-      user = insert(:user)
-      insert(:settings, user: user)
-
-      assert {:error, %Ecto.Changeset{} = changeset} = Clients.update_settings(user.id, %{global_threshold: "hello"})
-      assert changeset.errors[:global_threshold] == {"is invalid", [type: :integer, validation: :cast]}
-    end
-  end
-
-  describe "delete_settings/1" do
-    test "with valid user_id deletes settings" do
-      user = insert(:user)
-      insert(:settings, user: user)
-
-      assert {:ok, %Settings{} = settings} = Clients.delete_settings(user.id)
-      assert settings.user_id == user.id
-    end
-
-    test "raises a no result error with invalid user_id" do
-      assert_raise Ecto.NoResultsError, fn -> Clients.delete_settings(0) end
-    end
-
-    test "raises an no result error if a user does not have a settings" do
-      user = insert(:user)
-
-      assert_raise Ecto.NoResultsError, fn -> Clients.delete_settings(user.id) end
-    end
-  end
-
   ###################
   # Blackout Option #
   ###################
@@ -335,10 +244,10 @@ defmodule Flatfoot.ClientsTest do
 
     test "with valid data creates blackout option", %{params: params} do
       assert {:ok, %BlackoutOption{} = option} = Clients.create_blackout_option(params)
-      assert option.settings_id == params.settings_id
+      assert option.user_id == params.user_id
       assert option.start == params.start
       assert option.stop == params.stop
-      assert option.settings_id == params.settings_id
+      assert option.user_id == params.user_id
       assert option.exclude == params.exclude
       assert option.id != params.id
     end
@@ -348,30 +257,30 @@ defmodule Flatfoot.ClientsTest do
 
       assert changeset.errors[:start] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:stop] == {"can't be blank", [validation: :required]}
-      assert changeset.errors[:settings_id] == {"can't be blank", [validation: :required]}
+      assert changeset.errors[:user_id] == {"can't be blank", [validation: :required]}
       assert changeset.errors[:exclude] == {"is invalid", [type: :string, validation: :cast]}
     end
   end
 
   describe "list_blackout_options/1" do
-    test "with valid settings_id returns a list of all blackout_options for the settings" do
-      settings = insert(:settings)
-      options = insert_list(5, :blackout_option, settings: settings)
+    test "with valid user_id returns a list of all blackout_options for the user" do
+      user = insert(:user)
+      options = insert_list(5, :blackout_option, user: user)
       insert_list(2, :blackout_option)
 
-      results = Clients.list_blackout_options(settings.id)
+      results = Clients.list_blackout_options(user.id)
 
       assert results |> length == options |> length
     end
 
-    test "with settings_id with no blackout options returns an empty list" do
-      settings = insert(:settings)
+    test "with user_id with no blackout options returns an empty list" do
+      user = insert(:user)
       insert_list(3, :blackout_option)
 
-      assert [] = Clients.list_blackout_options(settings.id)
+      assert [] = Clients.list_blackout_options(user.id)
     end
 
-    test "with invalid settings_id returns an empty list" do
+    test "with invalid user_id returns an empty list" do
       insert_list(3, :blackout_option)
       assert [] = Clients.list_blackout_options(0)
     end
@@ -384,7 +293,7 @@ defmodule Flatfoot.ClientsTest do
       assert %BlackoutOption{} = result = Clients.get_blackout_option!(option.id)
       assert result.id == option.id
       assert result.start == option.start
-      assert result.settings_id == option.settings_id
+      assert result.user_id == option.user_id
     end
 
     test "with invalid id raises an error" do
@@ -453,8 +362,7 @@ defmodule Flatfoot.ClientsTest do
   describe "owner_id/1" do
     test "works with blackout_option" do
       user = insert(:user)
-      settings = insert(:settings, user: user)
-      option = insert(:blackout_option, settings: settings)
+      option = insert(:blackout_option, user: user)
       assert user.id == Clients.owner_id(option)
     end
 
@@ -470,19 +378,13 @@ defmodule Flatfoot.ClientsTest do
       assert user.id == Clients.owner_id(record)
     end
 
-    test "works with settings" do
-      user = insert(:user)
-      settings = insert(:settings, user: user)
-      assert user.id == Clients.owner_id(settings)
-    end
-
     test "invalid struct will return a FunctionClauseError" do
       user = insert(:user)
       assert_raise FunctionClauseError, fn -> Clients.owner_id(user) end
     end
 
     test "empty struct will return nil for owner name" do
-      assert nil == Clients.owner_id(%Settings{})
+      assert nil == Clients.owner_id(%BlackoutOption{})
     end
   end
 
@@ -491,8 +393,8 @@ defmodule Flatfoot.ClientsTest do
   ##########
 
   defp setup_blackout_option(_) do
-    settings = insert(:settings)
-    option = insert(:blackout_option, settings: settings)
+    user = insert(:user)
+    option = insert(:blackout_option, user: user)
 
     {:ok, %{blackout_option: option, params: option |> Map.from_struct}}
   end

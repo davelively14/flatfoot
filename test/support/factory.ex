@@ -7,7 +7,8 @@ defmodule Flatfoot.Factory do
     %Flatfoot.Clients.User{
       username: Faker.Internet.user_name,
       email: Faker.Internet.free_email,
-      password_hash: Comeonin.Bcrypt.hashpwsalt(pw)
+      password_hash: Comeonin.Bcrypt.hashpwsalt(pw),
+      global_threshold: Enum.random(0..100)
     }
   end
 
@@ -28,20 +29,13 @@ defmodule Flatfoot.Factory do
     }
   end
 
-  def settings_factory do
-    %Flatfoot.Clients.Settings{
-      global_threshold: Enum.random(0..100),
-      user: build(:user)
-    }
-  end
-
   def blackout_option_factory do
     %Flatfoot.Clients.BlackoutOption{
       start: random_ecto_time(),
       stop: random_ecto_time(),
       threshold: Enum.random(0..100),
       exclude: "[#{Faker.Address.state_abbr}, #{Faker.Address.state_abbr}]",
-      settings: build(:settings)
+      user: build(:user)
     }
   end
 

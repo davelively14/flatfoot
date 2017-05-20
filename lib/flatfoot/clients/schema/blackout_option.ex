@@ -6,7 +6,7 @@ defmodule Flatfoot.Clients.BlackoutOption do
     field :stop, Ecto.Time
     field :threshold, :integer, default: 100
     field :exclude, :string
-    belongs_to :settings, Flatfoot.Clients.Settings
+    belongs_to :user, Flatfoot.Clients.User
 
     timestamps()
   end
