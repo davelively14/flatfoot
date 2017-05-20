@@ -39,6 +39,7 @@ defmodule Flatfoot.Web.Router do
     resources "/users", UserController, only: [:index, :delete]
     put "/users", UserController, :update
     patch "/users", UserController, :update
+    get "/users/validate", UserController, :validate_user
     resources "/notification_records", NotificationRecordController, only: [:create, :index, :show, :update, :delete]
 
     resources "/blackout_options", BlackoutOptionController, only: [:index, :show, :create, :update, :delete]

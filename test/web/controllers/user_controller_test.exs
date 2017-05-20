@@ -165,6 +165,24 @@ defmodule Flatfoot.Web.UserControllerTest do
     end
   end
 
+  describe "GET validate_user" do
+    setup [:login_user_setup]
+
+    test "with valid username and password, returns true", %{logged_in: conn, password: password} do
+      conn = get conn, user_path(conn, :validate_user), %{username: conn.assigns.current_user.username, password: password}
+      assert json_response(conn, 200) == %{"authorized" => true}
+    end
+
+    test "with valid username and invalid password, returns false with error", %{logged_in: conn} do
+      conn = get conn, user_path(conn, :validate_user), %{username: conn.assigns.current_user.username, password: "11111"}
+      assert json_response(conn, 200) == %{"authorized" => false, "error" => "password was incorrect"}
+    end
+
+    test "with invalid username, returns false with error", %{logged_in: conn, password: password} do
+      conn = get conn, user_path(conn, :validate_user), %{username: "not_a_real_name", password: password}
+      assert json_response(conn, 200) == %{"authorized" => false, "error" => "username does not exist"}
+    end
+  end
 
   #####################
   # Private Functions #

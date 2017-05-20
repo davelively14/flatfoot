@@ -1,7 +1,7 @@
 defmodule Flatfoot.Web.UserController do
   use Flatfoot.Web, :controller
 
-  import Comeonin.Bcrypt, only: [checkpw: 2]
+  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
 
   alias Flatfoot.Clients
   alias Flatfoot.Clients.User
@@ -55,6 +55,23 @@ defmodule Flatfoot.Web.UserController do
     user = Clients.get_user!(id)
     with {:ok, %User{}} <- Clients.delete_user(user) do
       send_resp(conn, :no_content, "")
+    end
+  end
+
+  def validate_user(conn, %{"username" => username, "password" => password}) do
+    user = Clients.get_user_by_username(username)
+
+    cond do
+      user && checkpw(password, user.password_hash) ->
+        conn
+        |> render("authorized.json", %{})
+      user ->
+        conn
+        |> render("unauthorized.json", error: "password was incorrect")
+      true ->
+        dummy_checkpw()
+        conn
+        |> render("unauthorized.json", error: "username does not exist")
     end
   end
 end
