@@ -429,7 +429,7 @@ defmodule Flatfoot.Clients do
 
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:username, :email])
+    |> cast(attrs, [:username, :email, :global_threshold])
     |> validate_required([:username, :email])
     |> validate_format(:email, ~r/([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4})/)
     |> validate_length(:username, max: 30)

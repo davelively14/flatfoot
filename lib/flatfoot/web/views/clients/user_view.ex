@@ -14,6 +14,7 @@ defmodule Flatfoot.Web.UserView do
     %{
       id: user.id,
       username: user.username,
+      global_threshold: user.global_threshold,
       email: user.email
     }
   end
