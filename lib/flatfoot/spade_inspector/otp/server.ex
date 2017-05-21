@@ -35,7 +35,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   def init([sup]) do
     if :ets.info(:negative_words) == :undefined, do: :ets.new(:negative_words, [:set, :private, :named_table])
 
-    # TODO see if we can avoid two iterations of the list (ie not Enum.map |> List.foldl)
+    # TODO: see if we can avoid two iterations of the list (ie not Enum.map |> List.foldl)
     # negative_words_map =
     File.stream!("lib/flatfoot/data/negative_words.csv")
     |> CSV.decode
@@ -92,7 +92,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Once the Archer system finishes retrieving the results, it will send the
   # results to this process via the passed pid (see :fetch_update above). This
   # function will parse and store.
-  # TODO move result logic to Twitter. Twitter should return complete results map.
+  # TODO: move result logic to Twitter. Twitter should return complete results map.
   def handle_info({:result, ids, result}, state) do
 
     results =

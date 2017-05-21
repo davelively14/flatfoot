@@ -25,7 +25,7 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       use_cassette "twitter.fetch" do
         assert Server.fetch_update(ward.id) == :ok
 
-        # TODO fix this async issue
+        # TODO: fix this async issue
         # If I don't put this in, the server will quit before the Archer system
         # can return the results and it will raise an error. The tests sill pass,
         # but the error is ugly.
