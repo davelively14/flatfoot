@@ -80,3 +80,8 @@ form.link, form.button {
     border-bottom: 0;
   }
 }
+
+/* Custom link pointer */
+.text-link:hover {
+  cursor:pointer;
+}
