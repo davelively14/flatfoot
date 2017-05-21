@@ -657,6 +657,3 @@ Authorization: Token token="eWE0aEx2eVpGTTBYeHlqWnV1VnZSUT09"
 ```
 
 This function will not return any data, only a `204` status.
-
-# TODO
-- Implement replies
