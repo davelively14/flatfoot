@@ -1,4 +1,4 @@
-alias Flatfoot.{Clients, Repo, Clients.NotificationRecord, Clients.BlackoutOption}
+alias Flatfoot.{Clients, Spade, Archer, Repo, Clients.NotificationRecord, Clients.BlackoutOption, Spade.Ward, Spade.WardAccount, Archer.Backend}
 
 (1..10) |> Enum.each( fn (_) ->
   Clients.create_user(%{
@@ -22,8 +22,39 @@ users |> Enum.each(
       token: SecureRandom.urlsafe_base64(),
       user_id: user.id
     })
+
+    (1..5) |> Enum.each( fn(_) ->
+      Spade.create_ward(%{
+        name: Faker.Name.name,
+        relationship: Faker.Team.creature,
+        active: [true, false] |> Enum.random,
+        user_id: user.id
+      }) end
+  ) end
+)
+
+wards = Ward |> Repo.all
+
+Archer.create_backend(%{
+  name: "Twitter",
+  name_snake: "twitter",
+  url: "https://www.twitter.com/",
+  module: "Elixir.Flatfoot.Archer.Twitter"
+})
+
+backend = Backend |> Repo.all |> List.first
+
+wards |> Enum.each(
+  fn (ward) ->
+    Spade.create_ward_account(%{
+      handle: "@#{Faker.Internet.user_name}",
+      ward_id: ward.id,
+      backend_id: backend.id
+    })
   end
 )
+
+ward_accounts = WardAccount |> Repo.all
 
 (1..75) |> Enum.each( fn(_) ->
   Clients.create_notification_record(%{
@@ -53,3 +84,6 @@ IO.inspect "Seed complete"
 IO.inspect "#{users |> length} users created"
 IO.inspect "#{blackout_options |> length} blackout options created"
 IO.inspect "#{records |> length} notification records created"
+IO.inspect "#{wards |> length} wards created"
+IO.inspect "#{ward_accounts |> length} ward accounts created"
+IO.inspect "1 backend created"
