@@ -1,4 +1,6 @@
-alias Flatfoot.{Clients, Spade, Archer, Repo, Clients.NotificationRecord, Clients.BlackoutOption, Spade.Ward, Spade.WardAccount, Archer.Backend}
+alias Flatfoot.{Clients, Spade, Archer, Repo, Clients.NotificationRecord,
+                Clients.BlackoutOption, Spade.Ward, Spade.WardAccount,
+                SpadeInspector, SpadeInspector.WardResult, Archer.Backend}
 
 (1..10) |> Enum.each( fn (_) ->
   Clients.create_user(%{
@@ -56,6 +58,23 @@ wards |> Enum.each(
 
 ward_accounts = WardAccount |> Repo.all
 
+ward_accounts |> Enum.each(
+  fn (ward_account) ->
+    (1..10) |> Enum.each( fn(_) ->
+      SpadeInspector.create_ward_result(%{
+        rating: Enum.random(0..100),
+        from: "@#{Faker.Internet.user_name}",
+        msg_id: Enum.random(1000..1999) |> to_string,
+        msg_text: Faker.Lorem.Shakespeare.hamlet,
+        ward_account_id: ward_account.id,
+        backend_id: backend.id
+      })
+    end )
+  end
+)
+
+ward_results = WardResult |> Repo.all
+
 (1..75) |> Enum.each( fn(_) ->
   Clients.create_notification_record(%{
     nickname: Faker.Name.name,
@@ -75,8 +94,8 @@ records = NotificationRecord |> Repo.all
     threshold: Enum.random(0..100),
     exclude: "[#{Faker.Address.state_abbr}, #{Faker.Address.state_abbr}]",
     user_id: Enum.random(users) |> Map.get(:id)
-  }) end
-)
+  })
+end )
 
 blackout_options = BlackoutOption |> Repo.all
 
@@ -86,4 +105,5 @@ IO.inspect "#{blackout_options |> length} blackout options created"
 IO.inspect "#{records |> length} notification records created"
 IO.inspect "#{wards |> length} wards created"
 IO.inspect "#{ward_accounts |> length} ward accounts created"
+IO.inspect "#{ward_results |> length} ward results created"
 IO.inspect "1 backend created"
