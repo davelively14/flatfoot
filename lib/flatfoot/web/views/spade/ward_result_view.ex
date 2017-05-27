@@ -8,7 +8,8 @@ defmodule Flatfoot.Web.Spade.WardResultView do
       rating: ward_result.rating,
       from: ward_result.from,
       msg_id: ward_result.msg_id,
-      msg_text: ward_result.msg_text
+      msg_text: ward_result.msg_text,
+      timestamp: ward_result.updated_at |> NaiveDateTime.to_iso8601
     }
   end
 
