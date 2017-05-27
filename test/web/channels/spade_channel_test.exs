@@ -6,6 +6,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
   setup config do
     ExVCR.Config.cassette_library_dir("test/support/vcr_cassettes")
     user = insert(:user)
+    token = insert(:session, user: user) |> Map.get(:token)
 
     cond do
       config[:full_spec] ->
@@ -13,20 +14,20 @@ defmodule Flatfoot.Web.SpadeChannelTest do
         {:ok, ward_data} = generate_and_return_ward_data(user)
         user = Spade.get_user_preload(user.id)
         {:ok, resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
-        {:ok, %{user: user, resp: resp, socket: socket, ward_data: ward_data, watchlist_data: watchlist_data}}
+        {:ok, %{user: user, resp: resp, socket: socket, ward_data: ward_data, watchlist_data: watchlist_data, token: token}}
 
       config[:user_preloaded] ->
         generate_and_return_watchlist_data(user)
         generate_and_return_ward_data(user)
         user = Spade.get_user_preload(user.id)
-        {:ok, %{user: user}}
+        {:ok, %{user: user, token: token}}
 
       config[:socket_only] ->
         {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
         {:ok, %{socket: socket}}
 
       config[:empty_user_only] ->
-        {:ok, %{user: user}}
+        {:ok, %{user: user, token: token}}
 
       true ->
         :ok
@@ -124,6 +125,35 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       push socket, "get_ward_account_results", %{"ward_account_id" => ward_account_id, "as_of" => "2224-01-01"}
       assert_broadcast message, payload
       assert message == "ward_account_#{ward_account_id}_results"
+      assert payload == %{ward_results: []}
+    end
+  end
+
+  describe "get_ward_results_for_user" do
+    @tag :full_spec
+    test "will return all results for a user", %{socket: socket, ward_data: ward_data, token: token} do
+      expected_results = Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_data.ward_results})
+
+      push socket, "get_ward_results_for_user", %{"token" => token}
+      assert_broadcast message, payload
+      assert message == "user_ward_results"
+      assert payload.ward_results |> length == expected_results.ward_results |> length
+      assert payload.ward_results |> Enum.member?(expected_results.ward_results |> List.first)
+    end
+
+    @tag :full_spec
+    test "will return only the results for a user after a specified as_of date", %{socket: socket, ward_data: ward_data, token: token} do
+      expected_results = Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_data.ward_results})
+
+      push socket, "get_ward_results_for_user", %{"token" => token, "as_of" => "1900-01-01"}
+      assert_broadcast message, payload
+      assert message == "user_ward_results"
+      assert payload.ward_results |> length == expected_results.ward_results |> length
+      assert payload.ward_results |> Enum.member?(expected_results.ward_results |> List.first)
+
+      push socket, "get_ward_results_for_user", %{"token" => token, "as_of" => "2200-01-01"}
+      assert_broadcast message, payload
+      assert message == "user_ward_results"
       assert payload == %{ward_results: []}
     end
   end

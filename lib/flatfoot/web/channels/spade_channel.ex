@@ -78,6 +78,32 @@ defmodule Flatfoot.Web.SpadeChannel do
   end
 
   @doc """
+  On order, fetches the newest results for all active wards of a given user. Results are returned in order of newest to oldest.
+
+  Must include the "get_ward_results_for_user" message and a valid user token within the params object.
+
+  Params requirement:
+  "token": string (required)
+  "as_of": ISO date YYYY-MM-DD (optional)
+  """
+  def handle_in("get_ward_results_for_user", %{"token" => token, "as_of" => as_of}, socket) do
+    if Regex.match?(~r/\d{4}-\d{2}-\d{2}/, as_of) do
+      results = Spade.list_ward_results_by_user(token, as_of)
+      broadcast! socket, "user_ward_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+
+      {:reply, :ok, socket}
+    else
+      {:reply, :error, socket}
+    end
+  end
+  def handle_in("get_ward_results_for_user", %{"token" => token}, socket) do
+    results = Spade.list_ward_results_by_user(token)
+    broadcast! socket, "user_ward_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+
+    {:reply, :ok, socket}
+  end
+
+  @doc """
   On order, fetches new results for a given ward. Will automaticaly load results
   for all associated ward_accounts.
 
