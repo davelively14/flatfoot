@@ -835,6 +835,16 @@ defmodule Flatfoot.SpadeTest do
       assert result.id == ward_result.id
     end
 
+    test "with valid token and invalid as_of date, returns an error" do
+      user = insert(:user)
+      session = insert(:session, user: user)
+      ward = insert(:ward, user: user)
+      ward_account = insert(:ward_account, ward: ward)
+      insert(:ward_result, ward_account: ward_account)
+
+      assert_raise ArgumentError, fn -> Spade.list_ward_results_by_user(session.token, "bob") end
+    end
+
     test "with invalid token, raises error" do
       assert_raise BadMapError, fn -> Spade.list_ward_results_by_user("hello") end
     end
