@@ -107,6 +107,21 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "get_user_by_token/1" do
+    test "with valid token, returns user" do
+      user = insert(:user)
+      session = insert(:session, user: user)
+
+      result = Spade.get_user_by_token(session.token)
+      assert result.id == user.id
+      assert result.username == user.username
+    end
+
+    test "with invalid token, returns nil" do
+      assert {:error, "Session does not exist. Please use valid token."} == Spade.get_user_by_token("hello")
+    end
+  end
+
   ########
   # Ward #
   ########
@@ -767,7 +782,7 @@ defmodule Flatfoot.SpadeTest do
   ###############
 
   describe "list_ward_results/1" do
-    test "with valid ward_account id, returns all associated ward_account accounts" do
+    test "with valid ward_account id, returns all associated ward_account results" do
       ward_account = insert(:ward_account)
       ward_result = insert(:ward_result, ward_account: ward_account)
       insert_list(3, :ward_result)
@@ -781,6 +796,26 @@ defmodule Flatfoot.SpadeTest do
       insert_list(3, :ward_result)
 
       assert [] == Spade.list_ward_results(ward_account.id)
+    end
+  end
+
+  describe "list_ward_results_by_user/1" do
+    test "with valid token, returns results for all associated ward_accounts in correct order" do
+      user = insert(:user)
+      session = insert(:session, user: user)
+      ward = insert(:ward, user: user)
+      ward_account1 = insert(:ward_account, ward: ward)
+      ward_account2 = insert(:ward_account, ward: ward)
+      ward_result1 = insert(:ward_result, ward_account: ward_account2)
+      ward_result2 = insert(:ward_result, ward_account: ward_account1)
+
+      result = Spade.list_ward_results_by_user(session.token)
+      assert result |> List.first |> Map.get(:id) == ward_result2.id
+      assert result |> List.last |> Map.get(:id) == ward_result1.id
+    end
+
+    test "with invalid token, raises error" do
+      assert_raise BadMapError, fn -> Spade.list_ward_results_by_user("hello") end
     end
   end
 
