@@ -58,18 +58,16 @@ wards |> Enum.each(
 
 ward_accounts = WardAccount |> Repo.all
 
-ward_accounts |> Enum.each(
-  fn (ward_account) ->
-    (1..10) |> Enum.each( fn(_) ->
-      SpadeInspector.create_ward_result(%{
-        rating: Enum.random(0..100),
-        from: "@#{Faker.Internet.user_name}",
-        msg_id: Enum.random(1000..1999) |> to_string,
-        msg_text: Faker.Lorem.Shakespeare.hamlet,
-        ward_account_id: ward_account.id,
-        backend_id: backend.id
-      })
-    end )
+(1..1000) |> Enum.each(
+  fn (_) ->
+    SpadeInspector.create_ward_result(%{
+      rating: Enum.random(0..100),
+      from: "@#{Faker.Internet.user_name}",
+      msg_id: Enum.random(1000..1999) |> to_string,
+      msg_text: Faker.Lorem.Shakespeare.hamlet,
+      ward_account_id: Enum.random(ward_accounts) |> Map.get(:id),
+      backend_id: backend.id
+    })
   end
 )
 
