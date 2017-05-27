@@ -91,6 +91,25 @@ defmodule Flatfoot.Spade do
     |> Repo.one
   end
 
+  @doc """
+  Pass a valid token and returns the corresponding Session.
+
+  ## Examples
+
+    iex> get_user_by_token(valid_token)
+    {:ok, %User{}}
+
+    iex> get_user_by_token(invalid_token)
+    :error
+  """
+  def get_user_by_token(token) do
+    if session = Clients.get_session_by_token(token) do
+      User |> Repo.get(session.user_id)
+    else
+      {:error, "Session does not exist. Please use valid token."}
+    end
+  end
+
   ########
   # Ward #
   ########
@@ -696,7 +715,6 @@ defmodule Flatfoot.Spade do
   def list_ward_results(ward_account_id) do
     Repo.all from r in WardResult, where: r.ward_account_id == ^ward_account_id
   end
-
   def list_ward_results(ward_account_id, as_of) do
     as_of_dtg = NaiveDateTime.from_iso8601!("#{as_of} 00:00:00.00")
 
@@ -720,25 +738,22 @@ defmodule Flatfoot.Spade do
       iex> list_ward_results_by_user(invalid_token)
       []
   """
-  def list_ward_results_by_user(token) do
-    user = Clients.get_user_by_token(token)
-    User
-    |> where([user], user.id == ^user.id)
-    |> join(:left, [user], _ in assoc(user, :wards))
-    |> join(:left, [_user, wards], _ in assoc(wards, :ward_accounts))
-    |> join(:left, [_user, _wards, ward_accounts], _ in assoc(ward_accounts, :ward_results))
-    |> join(:left, [_user, _wards, _ward_accounts, ward_results], _ in assoc(ward_results, :backend))
-    |> preload([_user, wards, ward_accounts, ward_results, backend], [wards: {wards, ward_accounts: {ward_accounts, ward_results: {ward_results, backend: backend}}}])
-    # watchlists: {watchlists, suspects: {suspects, suspect_accounts: {suspect_accounts, backend: backend}}}
-    |> Repo.one
-    |> Map.get(:wards)
-    |> Enum.map(fn(ward) ->
-      ward.ward_accounts
-      |> Enum.map(fn(ward_account) ->
-        ward_account.ward_results
-      end)
-    end)
-    |> List.flatten
+  def list_ward_results_by_user(token, as_of \\ "0000-01-01") do
+    if as_of_dtg = NaiveDateTime.from_iso8601!("#{as_of} 00:00:00.00") do
+      ward_account_ids =
+        get_user_by_token(token)
+        |> Map.get(:id)
+        |> get_user_preload()
+        |> Map.get(:wards)
+        |> Enum.map(&(&1.ward_accounts))
+        |> List.flatten
+        |> Enum.map(&(&1.id |> Integer.to_string))
+
+      WardResult
+      |> where([result], result.ward_account_id in ^ward_account_ids and result.inserted_at > ^as_of_dtg)
+      |> order_by(desc: :inserted_at)
+      |> Repo.all
+    end
   end
 
   @doc """

@@ -791,6 +791,15 @@ defmodule Flatfoot.SpadeTest do
       assert result.id == ward_result.id
     end
 
+    test "with valid ward_account id and as_of date, returns expected number of results" do
+      ward_account = insert(:ward_account)
+      ward_result = insert(:ward_result, ward_account: ward_account)
+
+      assert [] == Spade.list_ward_results(ward_account.id, "2200-01-01")
+      assert [result] = Spade.list_ward_results(ward_account.id, "1999-01-01")
+      assert result.id == ward_result.id
+    end
+
     test "with ward_account id with no ward_account results, returns empty list" do
       ward_account = insert(:ward_account)
       insert_list(3, :ward_result)
@@ -812,6 +821,18 @@ defmodule Flatfoot.SpadeTest do
       result = Spade.list_ward_results_by_user(session.token)
       assert result |> List.first |> Map.get(:id) == ward_result2.id
       assert result |> List.last |> Map.get(:id) == ward_result1.id
+    end
+
+    test "with valid token and as_of date, returns correct results" do
+      user = insert(:user)
+      session = insert(:session, user: user)
+      ward = insert(:ward, user: user)
+      ward_account = insert(:ward_account, ward: ward)
+      ward_result = insert(:ward_result, ward_account: ward_account)
+
+      assert [] == Spade.list_ward_results_by_user(session.token, "2200-01-01")
+      assert [result] = Spade.list_ward_results_by_user(session.token, "1999-01-01")
+      assert result.id == ward_result.id
     end
 
     test "with invalid token, raises error" do
