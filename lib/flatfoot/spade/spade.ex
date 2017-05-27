@@ -4,7 +4,7 @@ defmodule Flatfoot.Spade do
   """
 
   import Ecto.{Query, Changeset}, warn: false
-  alias Flatfoot.Repo
+  alias Flatfoot.{Repo, Clients}
 
   ###########
   # Backend #
@@ -705,6 +705,40 @@ defmodule Flatfoot.Spade do
     else
       nil
     end
+  end
+
+  @doc """
+  Given a session token, will return a list of results for each ward_account belonging to the user.
+
+  Returns empty array if no results stored.
+
+  ## Examples
+
+      iex> list_ward_results_by_user(token)
+      [%WardResult{}]
+
+      iex> list_ward_results_by_user(invalid_token)
+      []
+  """
+  def list_ward_results_by_user(token) do
+    user = Clients.get_user_by_token(token)
+    User
+    |> where([user], user.id == ^user.id)
+    |> join(:left, [user], _ in assoc(user, :wards))
+    |> join(:left, [_user, wards], _ in assoc(wards, :ward_accounts))
+    |> join(:left, [_user, _wards, ward_accounts], _ in assoc(ward_accounts, :ward_results))
+    |> join(:left, [_user, _wards, _ward_accounts, ward_results], _ in assoc(ward_results, :backend))
+    |> preload([_user, wards, ward_accounts, ward_results, backend], [wards: {wards, ward_accounts: {ward_accounts, ward_results: {ward_results, backend: backend}}}])
+    # watchlists: {watchlists, suspects: {suspects, suspect_accounts: {suspect_accounts, backend: backend}}}
+    |> Repo.one
+    |> Map.get(:wards)
+    |> Enum.map(fn(ward) ->
+      ward.ward_accounts
+      |> Enum.map(fn(ward_account) ->
+        ward_account.ward_results
+      end)
+    end)
+    |> List.flatten
   end
 
   @doc """
