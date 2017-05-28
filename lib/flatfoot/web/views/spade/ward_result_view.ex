@@ -9,6 +9,8 @@ defmodule Flatfoot.Web.Spade.WardResultView do
       from: ward_result.from,
       msg_id: ward_result.msg_id,
       msg_text: ward_result.msg_text,
+      ward_account_id: ward_result.ward_account_id,
+      backend_id: ward_result.backend_id,
       timestamp: ward_result.updated_at |> NaiveDateTime.to_iso8601
     }
   end
