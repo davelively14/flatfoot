@@ -85,3 +85,8 @@ form.link, form.button {
 .text-link:hover {
   cursor:pointer;
 }
+
+/* Selected row background color */
+.selected {
+  background-color: rgb(225, 225, 225);
+}
