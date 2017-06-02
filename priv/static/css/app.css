@@ -90,3 +90,8 @@ form.link, form.button {
 .selected {
   background-color: rgb(225, 225, 225);
 }
+
+/* Override modal class to display as a block instead of none. Required in order to get modal to display. */
+.modal {
+  display:block;
+}
