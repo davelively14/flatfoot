@@ -43,7 +43,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   """
   def handle_in("get_ward", params, socket) do
     if ward = Spade.get_ward_preload(params["ward_id"]) do
-      broadcast! socket, "ward_#{ward.id}_data", Phoenix.View.render(Flatfoot.Web.WardView, "ward.json", %{ward: ward})
+      broadcast! socket, "ward_#{ward.id}_data", Phoenix.View.render(Flatfoot.Web.WardView, "ward_preload.json", %{ward: ward})
 
       {:reply, :ok, socket}
     else
@@ -142,7 +142,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   def handle_in("create_ward", %{"ward_params" => attrs}, socket) do
     if attrs["user_id"] && attrs["name"] && attrs["relationship"] do
       {:ok, new_ward} = Spade.create_ward(attrs)
-      broadcast! socket, "new_ward", Phoenix.View.render(Flatfoot.Web.WardView, "ward_no_assoc.json", %{ward: new_ward})
+      broadcast! socket, "new_ward", Phoenix.View.render(Flatfoot.Web.WardView, "ward.json", %{ward: new_ward})
     else
       broadcast! socket, "Error: invalid attributes passed for create_ward", attrs
     end

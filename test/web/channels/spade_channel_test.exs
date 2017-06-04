@@ -80,7 +80,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast message, payload
       assert message == "ward_#{ward.id}_data"
       assert payload.id == ward.id
-      assert payload == Phoenix.View.render(Flatfoot.Web.WardView, "ward.json", %{ward: ward})
+      assert payload == Phoenix.View.render(Flatfoot.Web.WardView, "ward_preload.json", %{ward: ward})
 
       leave socket
     end

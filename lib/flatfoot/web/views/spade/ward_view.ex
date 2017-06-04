@@ -8,18 +8,18 @@ defmodule Flatfoot.Web.WardView do
       name: ward.name,
       relationship: ward.relationship,
       active: ward.active,
-      user_id: ward.user_id,
-      ward_accounts: render_many(ward.ward_accounts, Flatfoot.Web.WardAccountView, "ward_account.json")
+      user_id: ward.user_id
     }
   end
 
-  def render("ward_no_assoc.json", %{ward: ward}) do
+  def render("ward_preload.json", %{ward: ward}) do
     %{
       id: ward.id,
       name: ward.name,
       relationship: ward.relationship,
       active: ward.active,
-      user_id: ward.user_id
+      user_id: ward.user_id,
+      ward_accounts: render_many(ward.ward_accounts, Flatfoot.Web.WardAccountView, "ward_account.json")
     }
   end
 
