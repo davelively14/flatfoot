@@ -182,6 +182,22 @@ defmodule Flatfoot.Spade do
   def get_ward!(id), do: Repo.get!(Ward, id)
 
   @doc """
+  Returns a single ward.
+
+  Returns nil if ward does not exist.
+
+  ## Examples
+
+      iex> get_ward!(123)
+      %Ward{}
+
+      iex> get_ward!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_ward(id), do: Repo.get(Ward, id)
+
+  @doc """
   Returns a single ward with all associations preloaded.
 
   Raises `Ecto.NoResultsError` if the Ward does not exist.

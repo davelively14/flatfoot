@@ -201,6 +201,23 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "delete_ward" do
+    @tag :full_spec
+    test "with valid id, deletes the ward and returns the ward as an object", %{socket: socket, user: user} do
+      ward = insert(:ward, user: user)
+
+      push socket, "delete_ward", %{"id" => ward.id}
+      assert_broadcast "deleted_ward", payload
+      assert payload.id == ward.id
+    end
+
+    @tag :full_spec
+    test "with invalid id, client will receive an invalid id error", %{socket: socket} do
+      push socket, "delete_ward", %{"id" => 0}
+      assert_broadcast "Error: invalid ward id for delete_ward", %{"id" => 0}
+    end
+  end
+
   #####################
   # Private Functions #
   #####################

@@ -1,6 +1,6 @@
 defmodule Flatfoot.Web.SpadeChannel do
   use Flatfoot.Web, :channel
-  alias Flatfoot.{Spade, SpadeInspector}
+  alias Flatfoot.{Spade, SpadeInspector, Web.WardView}
 
   @doc """
   On join, will return a fully preloaded user JSON response.
@@ -43,7 +43,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   """
   def handle_in("get_ward", params, socket) do
     if ward = Spade.get_ward_preload(params["ward_id"]) do
-      broadcast! socket, "ward_#{ward.id}_data", Phoenix.View.render(Flatfoot.Web.WardView, "ward_preload.json", %{ward: ward})
+      broadcast! socket, "ward_#{ward.id}_data", Phoenix.View.render(WardView, "ward_preload.json", %{ward: ward})
 
       {:reply, :ok, socket}
     else
@@ -142,9 +142,28 @@ defmodule Flatfoot.Web.SpadeChannel do
   def handle_in("create_ward", %{"ward_params" => attrs}, socket) do
     if attrs["user_id"] && attrs["name"] && attrs["relationship"] do
       {:ok, new_ward} = Spade.create_ward(attrs)
-      broadcast! socket, "new_ward", Phoenix.View.render(Flatfoot.Web.WardView, "ward.json", %{ward: new_ward})
+      broadcast! socket, "new_ward", Phoenix.View.render(WardView, "ward.json", %{ward: new_ward})
     else
       broadcast! socket, "Error: invalid attributes passed for create_ward", attrs
+    end
+
+    {:reply, :ok, socket}
+  end
+
+  @doc """
+  With a valid id, will delete a ward and return the ward that was just deleted.
+
+  Must include "delete_ward" message and a valid id.
+
+  Params requirement:
+  "id": integer (required)
+  """
+  def handle_in("delete_ward", %{"id" => id}, socket) when is_integer(id) do
+    if Spade.get_ward(id) do
+      {:ok, deleted_ward} = Spade.delete_ward(id)
+      broadcast! socket, "deleted_ward", Phoenix.View.render(WardView, "ward.json", %{ward: deleted_ward})
+    else
+      broadcast! socket, "Error: invalid ward id for delete_ward", %{"id" => id}
     end
 
     {:reply, :ok, socket}
