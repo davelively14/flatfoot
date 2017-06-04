@@ -176,6 +176,31 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "create_ward" do
+    @tag :full_spec
+    test "with valid params, will add a new ward and broadcast the new ward to the channel", %{socket: socket, user: user} do
+      user_id = user.id
+      name = "Test Name"
+      relationship = "dad"
+      ward_params = %{"user_id" => user_id, "name" => name, "relationship" => relationship}
+
+      push socket, "create_ward", %{"ward_params" => ward_params}
+      assert_broadcast(message, payload)
+      assert message == "new_ward"
+      assert payload.user_id == user_id
+      assert payload.name == name
+      assert payload.relationship == relationship
+
+      assert Spade.get_ward!(payload.id)
+    end
+
+    @tag :full_spec
+    test "with invalid params, client will receive invalid attributes error", %{socket: socket} do
+      push socket, "create_ward", %{"ward_params" => %{}}
+      assert_broadcast "Error: invalid attributes passed for create_ward", %{}
+    end
+  end
+
   #####################
   # Private Functions #
   #####################

@@ -13,6 +13,16 @@ defmodule Flatfoot.Web.WardView do
     }
   end
 
+  def render("ward_no_assoc.json", %{ward: ward}) do
+    %{
+      id: ward.id,
+      name: ward.name,
+      relationship: ward.relationship,
+      active: ward.active,
+      user_id: ward.user_id
+    }
+  end
+
   def render("ward_list.json", %{wards: wards}) do
     %{
       wards: render_many(wards, WardView, "ward.json")

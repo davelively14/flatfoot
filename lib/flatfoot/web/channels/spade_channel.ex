@@ -125,4 +125,28 @@ defmodule Flatfoot.Web.SpadeChannel do
 
     {:noreply, :ok, socket}
   end
+
+  @doc """
+  With valid parameters, will create a new ward and return the new ward.
+
+  Must include "create_ward" message and valid "ward_params".
+
+  Params requirement:
+  "ward_params": map (required)
+   -> valid parameters for "ward_params":
+    - "user_id": integer (required)
+    - "name": string (required)
+    - "relationship": string (required)
+    - "active": boolean (optional)
+  """
+  def handle_in("create_ward", %{"ward_params" => attrs}, socket) do
+    if attrs["user_id"] && attrs["name"] && attrs["relationship"] do
+      {:ok, new_ward} = Spade.create_ward(attrs)
+      broadcast! socket, "new_ward", Phoenix.View.render(Flatfoot.Web.WardView, "ward_no_assoc.json", %{ward: new_ward})
+    else
+      broadcast! socket, "Error: invalid attributes passed for create_ward", attrs
+    end
+
+    {:reply, :ok, socket}
+  end
 end
