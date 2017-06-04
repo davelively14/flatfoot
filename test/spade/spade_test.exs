@@ -232,6 +232,40 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "update_ward!/2" do
+    test "with valid ward_id and attributes, updates a ward" do
+      ward = insert(:ward)
+      new_name = "New name"
+
+      {:ok, result} = Spade.update_ward!(ward.id, %{name: new_name})
+      assert result.id == ward.id
+      assert result.name != ward.name
+      assert result.name == new_name
+    end
+
+    test "does not update associations" do
+      ward = insert(:ward)
+      new_name = "new name"
+
+      {:ok, result} = Spade.update_ward!(ward.id, %{name: new_name, user_id: 0})
+      assert result.id == ward.id
+      assert result.name == new_name
+      assert result.user_id == ward.user_id != 0
+    end
+
+    test "with invalid params, returns changeset with errors" do
+      ward = insert(:ward)
+
+      {:error, changeset} = Spade.update_ward!(ward.id, %{name: nil})
+      assert changeset.errors |> length == 1
+      assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
+    end
+
+    test "with invalid ward_id, raises error" do
+      assert_raise Ecto.NoResultsError, fn -> Spade.update_ward!(0, %{name: "Hello"}) end
+    end
+  end
+
   describe "update_ward/2" do
     test "with valid ward_id and attributes, updates a ward" do
       ward = insert(:ward)
@@ -261,8 +295,8 @@ defmodule Flatfoot.SpadeTest do
       assert changeset.errors[:name] == {"can't be blank", [validation: :required]}
     end
 
-    test "with invalid ward_id, raises error" do
-      assert_raise Ecto.NoResultsError, fn -> Spade.update_ward(0, %{name: "Hello"}) end
+    test "with invalid ward_id, returns nil" do
+      assert nil == Spade.update_ward(0, %{name: "Hello"})
     end
   end
 
