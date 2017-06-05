@@ -188,11 +188,22 @@ defmodule Flatfoot.Web.SpadeChannel do
     - "relationship": string (optional)
     - "active": boolean (optional)
   """
-  def handle_in("edit_ward", %{"id" => id, "ward_params" => ward_params}, socket) do
-    if {:ok, updated_ward} = Spade.update_ward(id, ward_params) do
-      broadcast! socket, "updated_ward", Phoenix.View.render(WardView, "ward.json", %{ward: updated_ward})
+  def handle_in("update_ward", %{"id" => id, "updated_params" => updated_params}, socket) do
+    if ward = Spade.get_ward(id) do
+      cond do
+        socket.assigns.user_id == ward.user_id ->
+          updated_params = Map.take(updated_params, ["name", "relationship", "active"])
+
+          {:ok, updated_ward} = Spade.update_ward(id, updated_params)
+          broadcast! socket, "updated_ward", Phoenix.View.render(WardView, "ward.json", %{ward: updated_ward})
+
+        true ->
+          broadcast! socket, "Error: unauthorized to edit ward", %{}
+      end
     else
-      broadcast! socket, "Error: invalid parameters", %{"id" => id, "ward_params" => ward_params}
+      broadcast! socket, "Error: invalid ward_id", %{"id" => id}
     end
+
+    {:reply, :ok, socket}
   end
 end
