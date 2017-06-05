@@ -249,10 +249,32 @@ defmodule Flatfoot.Spade do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_ward(id, attrs) do
+  def update_ward!(id, attrs) do
     get_ward!(id)
     |> ward_update_changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  Updates a ward. If the ward doesn't exists, returns nil.
+
+  ## Examples
+
+      iex> update_ward(ward, %{field: new_value})
+      {:ok, %Ward{}}
+
+      iex> update_ward(ward, %{field: bad_value})
+      nil
+
+  """
+  def update_ward(id, attrs) do
+    if ward = get_ward(id) do
+      ward
+      |> ward_update_changeset(attrs)
+      |> Repo.update()
+    else
+      nil
+    end
   end
 
   ################
