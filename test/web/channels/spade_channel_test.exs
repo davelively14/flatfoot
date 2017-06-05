@@ -262,7 +262,6 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
 
     @tag :full_spec
-    @tag :current_test
     test "cannot edit another user's ward", %{socket: socket} do
       ward = insert(:ward)
       updated_params = %{name: "new name"}
