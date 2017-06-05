@@ -159,13 +159,39 @@ defmodule Flatfoot.Web.SpadeChannel do
   "id": integer (required)
   """
   def handle_in("delete_ward", %{"id" => id}, socket) when is_integer(id) do
-    if Spade.get_ward(id) do
-      {:ok, deleted_ward} = Spade.delete_ward(id)
-      broadcast! socket, "deleted_ward", Phoenix.View.render(WardView, "ward.json", %{ward: deleted_ward})
+    if ward = Spade.get_ward(id) do
+      cond do
+        socket.assigns.user_id == ward.user_id ->
+          {:ok, deleted_ward} = Spade.delete_ward(id)
+          broadcast! socket, "deleted_ward", Phoenix.View.render(WardView, "ward.json", %{ward: deleted_ward})
+        true ->
+          broadcast! socket, "Error: unauthorized to delete ward", %{}
+      end
     else
       broadcast! socket, "Error: invalid ward id for delete_ward", %{"id" => id}
     end
 
     {:reply, :ok, socket}
+  end
+
+  @doc """
+  With a valid id and params, will update a ward and return the updated ward.
+
+  Must include "update_ward", a valid id, and valid new parameters.
+
+  Params requirement:
+  "id": integer (required)
+  "ward_params": map (required)
+   -> valid parameters for "ward_params":
+    - "name": string (optional)
+    - "relationship": string (optional)
+    - "active": boolean (optional)
+  """
+  def handle_in("edit_ward", %{"id" => id, "ward_params" => ward_params}, socket) do
+    if {:ok, updated_ward} = Spade.update_ward(id, ward_params) do
+      broadcast! socket, "updated_ward", Phoenix.View.render(WardView, "ward.json", %{ward: updated_ward})
+    else
+      broadcast! socket, "Error: invalid parameters", %{"id" => id, "ward_params" => ward_params}
+    end
   end
 end
