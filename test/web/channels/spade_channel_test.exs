@@ -193,13 +193,13 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert Spade.get_ward!(payload.id)
     end
 
-    @tag :full_spec
+    @tag :socket_only
     test "with invalid params, client will receive invalid attributes error", %{socket: socket} do
       push socket, "create_ward", %{"ward_params" => %{}}
       assert_broadcast "Error: invalid attributes passed for create_ward", %{}
     end
 
-    @tag :full_spec
+    @tag :socket_only
     test "user_id parameter is ignored", %{socket: socket} do
       user = insert(:user)
       ward_params = %{user_id: user.id, name: "test name", relationship: "test relationship"}
@@ -221,13 +221,13 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert payload.id == ward.id
     end
 
-    @tag :full_spec
+    @tag :socket_only
     test "with invalid id, client will receive an invalid id error", %{socket: socket} do
       push socket, "delete_ward", %{"id" => 0}
       assert_broadcast "Error: invalid ward id for delete_ward", %{"id" => 0}
     end
 
-    @tag :full_spec
+    @tag :socket_only
     test "cannot delete another user's ward", %{socket: socket} do
       ward = insert(:ward)
 
@@ -253,7 +253,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert payload.relationship == new_relationship
     end
 
-    @tag :full_spec
+    @tag :socket_only
     test "with invalid id, client will receive invalid id error", %{socket: socket} do
       updated_params = %{name: "new name"}
 
@@ -261,7 +261,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast "Error: invalid ward_id", %{"id" => 0}
     end
 
-    @tag :full_spec
+    @tag :socket_only
     test "cannot edit another user's ward", %{socket: socket} do
       ward = insert(:ward)
       updated_params = %{name: "new name"}
@@ -269,6 +269,10 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       push socket, "update_ward", %{"id" => ward.id, "updated_params" => updated_params}
       assert_broadcast "Error: unauthorized to edit ward", %{}
     end
+  end
+
+  describe "create_ward_account" do
+
   end
 
   #####################
