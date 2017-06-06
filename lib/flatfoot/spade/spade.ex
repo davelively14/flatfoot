@@ -41,6 +41,20 @@ defmodule Flatfoot.Spade do
   """
   def get_backend!(id), do: Repo.get!(Backend, id)
 
+  @doc """
+  Gets a single backend. Returns nil if backend does not exist.
+
+  ## Examples
+
+      iex> get_backend(123)
+      %Backend{}
+
+      iex> get_backend(0)
+      nil
+
+  """
+  def get_backend(id), do: Repo.get(Backend, id)
+
   ########
   # User #
   ########

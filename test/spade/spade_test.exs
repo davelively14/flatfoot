@@ -48,6 +48,21 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "get_backend/1" do
+    test "with valid id returns a backend" do
+      backend = insert(:backend)
+      result = Spade.get_backend(backend.id)
+
+      assert result.id == backend.id
+      assert result.name == backend.name
+      assert result.url == backend.url
+    end
+
+    test "with invalid id, returns nil" do
+      assert nil == Spade.get_backend(0)
+    end
+  end
+
   ########
   # User #
   ########
