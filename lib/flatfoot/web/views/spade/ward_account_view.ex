@@ -1,7 +1,7 @@
 defmodule Flatfoot.Web.WardAccountView do
   use Flatfoot.Web, :view
 
-  def render("ward_account.json", %{ward_account: ward_account}) do
+  def render("ward_account_preloaded_backend.json", %{ward_account: ward_account}) do
     %{
       id: ward_account.id,
       ward_id: ward_account.ward_id,
@@ -11,7 +11,7 @@ defmodule Flatfoot.Web.WardAccountView do
     }
   end
 
-  def render("single_ward_account.json", %{ward_account: ward_account}) do
+  def render("ward_account.json", %{ward_account: ward_account}) do
     %{
       id: ward_account.id,
       ward_id: ward_account.ward_id,

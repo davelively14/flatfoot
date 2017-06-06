@@ -226,7 +226,7 @@ defmodule Flatfoot.Web.SpadeChannel do
       if ward && backend do
         if ward.user_id == socket.assigns.user_id do
           {:ok, ward_account} = Spade.create_ward_account(params)
-          broadcast! socket, "new_ward_account", Phoenix.View.render(WardAccountView, "single_ward_account.json", %{ward_account: ward_account})
+          broadcast! socket, "new_ward_account", Phoenix.View.render(WardAccountView, "ward_account.json", %{ward_account: ward_account})
         else
           broadcast! socket, "Error: unauthorized to add a ward_account for another user's ward", %{}
         end
