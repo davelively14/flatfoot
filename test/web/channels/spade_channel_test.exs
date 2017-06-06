@@ -272,7 +272,53 @@ defmodule Flatfoot.Web.SpadeChannelTest do
   end
 
   describe "create_ward_account" do
+    @tag :full_spec
+    test "with valid params, will create a ward_account", %{socket: socket, ward_data: ward_data} do
+      ward = ward_data.wards |> List.first
+      handle = "@handle"
+      ward_id = ward.id
+      backend_id = ward_data.backend.id
+      params = %{handle: handle, backend_id: backend_id, ward_id: ward_id}
 
+      push socket, "create_ward_account", %{ward_account_params: params}
+      assert_broadcast "new_ward_account", payload
+      assert payload.handle == handle
+      assert payload.ward_id == ward_id
+      assert payload.backend_id == backend_id
+    end
+
+    @tag :socket_only
+    test "with invalid params, user will receive error message", %{socket: socket} do
+      push socket, "create_ward_account", %{ward_account_params: %{}}
+      assert_broadcast "Error: invalid parameters", %{"ward_account_params" => %{}}
+    end
+
+    @tag :socket_only
+    test "with invalid ward_id, returns error", %{socket: socket} do
+      backend = insert(:backend)
+      push socket, "create_ward_account", %{ward_account_params: %{handle: "@j", ward_id: 0, backend_id: backend.id}}
+      assert_broadcast "Error: invalid ward or backend association", payload
+      assert payload.backend_id == backend.id
+      assert payload.ward_id == 0
+    end
+
+    @tag :socket_only
+    test "with invalid backend_id, returns error", %{socket: socket} do
+      ward = insert(:ward)
+      push socket, "create_ward_account", %{ward_account_params: %{handle: "@j", ward_id: ward.id, backend_id: 0}}
+      assert_broadcast "Error: invalid ward or backend association", payload
+      assert payload.ward_id == ward.id
+      assert payload.backend_id == 0
+    end
+
+    @tag :socket_only
+    test "cannot add a ward_account for another user's ward", %{socket: socket} do
+      ward = insert(:ward)
+      backend = insert(:backend)
+
+      push socket, "create_ward_account", %{ward_account_params: %{handle: "@jon", ward_id: ward.id, backend_id: backend.id}}
+      assert_broadcast "Error: unauthorized to add a ward_account for another user's ward", %{}
+    end
   end
 
   #####################

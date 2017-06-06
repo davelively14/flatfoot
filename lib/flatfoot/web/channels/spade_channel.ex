@@ -1,6 +1,6 @@
 defmodule Flatfoot.Web.SpadeChannel do
   use Flatfoot.Web, :channel
-  alias Flatfoot.{Spade, SpadeInspector, Web.WardView}
+  alias Flatfoot.{Spade, SpadeInspector, Web.WardView, Web.WardAccountView}
 
   @doc """
   On join, will return a fully preloaded user JSON response.
@@ -202,6 +202,39 @@ defmodule Flatfoot.Web.SpadeChannel do
       end
     else
       broadcast! socket, "Error: invalid ward_id", %{"id" => id}
+    end
+
+    {:reply, :ok, socket}
+  end
+
+  @doc """
+  With valid parameters, create a new ward_account and return the newly created ward_account.
+
+  Must include "create_ward_account" and valid parameters.
+
+  Params requirement:
+  "ward_account_params": map (required)
+  -> valid parameters for "ward_account_params":
+    - "handle": string (required)
+    - "ward_id": integer (required)
+    - "backend_id": integer (required)
+  """
+  def handle_in("create_ward_account", %{"ward_account_params" => params}, socket) do
+    if params["handle"] && params["ward_id"] && params["backend_id"] do
+      ward = Spade.get_ward(params["ward_id"])
+      backend = Spade.get_backend(params["backend_id"])
+      if ward && backend do
+        if ward.user_id == socket.assigns.user_id do
+          {:ok, ward_account} = Spade.create_ward_account(params)
+          broadcast! socket, "new_ward_account", Phoenix.View.render(WardAccountView, "single_ward_account.json", %{ward_account: ward_account})
+        else
+          broadcast! socket, "Error: unauthorized to add a ward_account for another user's ward", %{}
+        end
+      else
+        broadcast! socket, "Error: invalid ward or backend association", %{ward_id: params["ward_id"], backend_id: params["backend_id"]}
+      end
+    else
+      broadcast! socket, "Error: invalid parameters", %{"ward_account_params" => params}
     end
 
     {:reply, :ok, socket}
