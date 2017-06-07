@@ -181,7 +181,8 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     test "with valid params, will add a new ward and broadcast the new ward to the channel", %{socket: socket, user: user} do
       name = "Test Name"
       relationship = "dad"
-      ward_params = %{"name" => name, "relationship" => relationship}
+      active = false
+      ward_params = %{"name" => name, "relationship" => relationship, "active" => active}
 
       push socket, "create_ward", %{"ward_params" => ward_params}
       assert_broadcast(message, payload)
@@ -189,6 +190,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert payload.user_id == user.id
       assert payload.name == name
       assert payload.relationship == relationship
+      assert payload.active == false
 
       assert Spade.get_ward!(payload.id)
     end
