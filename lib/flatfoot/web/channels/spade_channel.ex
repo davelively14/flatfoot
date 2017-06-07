@@ -141,7 +141,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   """
   def handle_in("create_ward", %{"ward_params" => attrs}, socket) do
     if attrs["name"] && attrs["relationship"] do
-      submit_params = %{user_id: socket.assigns.user_id, name: attrs["name"], relationship: attrs["relationship"]}
+      submit_params = %{user_id: socket.assigns.user_id, name: attrs["name"], relationship: attrs["relationship"], active: attrs["active"]}
       {:ok, new_ward} = Spade.create_ward(submit_params)
       broadcast! socket, "new_ward", Phoenix.View.render(WardView, "ward.json", %{ward: new_ward})
     else
