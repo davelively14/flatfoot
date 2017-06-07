@@ -345,6 +345,22 @@ defmodule Flatfoot.Spade do
   def get_ward_account!(id), do: Repo.get!(WardAccount, id)
 
   @doc """
+  Returns a single ward account.
+
+  Returns nil if WardAccount does not exist.
+
+  ## Examples
+
+      iex> get_ward_account(123)
+      %WardAccount{}
+
+      iex> get_ward_account(0)
+      nil
+
+  """
+  def get_ward_account(id), do: Repo.get(WardAccount, id)
+
+  @doc """
   Returns a single WardAccount with backend association preloaded.
 
   Raises `Ecto.NoResultsError` if the WardAccount does not exist.

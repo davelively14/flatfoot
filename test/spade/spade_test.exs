@@ -372,6 +372,22 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "get_ward_account/1" do
+    test "with valid ward_account_id, returns a single ward account" do
+      account = insert(:ward_account)
+
+      result = Spade.get_ward_account(account.id)
+      assert result.id == account.id
+      assert result.handle == account.handle
+      assert result.ward_id == account.ward_id
+      assert result.backend_id == account.backend_id
+    end
+
+    test "with invalid ward_account_id, raises error" do
+      assert nil == Spade.get_ward_account(0)
+    end
+  end
+
   describe "get_ward_account_preload!/1" do
     test "with valid ward_account_id, returns a single ward account with backload preloaded" do
       backend = insert(:backend)
