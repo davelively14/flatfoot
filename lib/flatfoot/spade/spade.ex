@@ -847,13 +847,13 @@ defmodule Flatfoot.Spade do
 
   defp ward_changeset(%Ward{} = ward, attrs) do
     ward
-    |> cast(attrs, [:name, :relationship, :user_id])
+    |> cast(attrs, [:name, :relationship, :user_id, :active])
     |> validate_required([:name, :user_id])
   end
 
   defp ward_update_changeset(%Ward{} = ward, attrs) do
     ward
-    |> cast(attrs, [:name, :relationship])
+    |> cast(attrs, [:name, :relationship, :active])
     |> validate_required([:name])
   end
 
