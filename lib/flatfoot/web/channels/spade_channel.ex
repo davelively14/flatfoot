@@ -127,6 +127,19 @@ defmodule Flatfoot.Web.SpadeChannel do
   end
 
   @doc """
+  On order, returns a list of all the backends like this:
+  %{backends: [backend, backend...]}
+
+  Must include "fetch_backends".
+  """
+  def handle_in("fetch_backends", %{}, socket) do
+    backends = Spade.list_backends()
+    broadcast! socket, "backends_list", %{backends: backends}
+
+    {:reply, :ok, socket}
+  end
+
+  @doc """
   With valid parameters, will create a new ward and return the new ward.
 
   Must include "create_ward" message and valid "ward_params".

@@ -176,6 +176,26 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "fetch_backends" do
+    @tag :socket_only
+    test "will return all backends", %{socket: socket} do
+      backend = insert(:backend)
+
+      push socket, "fetch_backends", %{}
+      assert_broadcast "backends_list", payload
+      assert backend.id == payload.backends |> List.first |> Map.get(:id)
+      assert backend.name == payload.backends |> List.first |> Map.get(:name)
+      assert backend.url == payload.backends |> List.first |> Map.get(:url)
+      assert backend.module == payload.backends |> List.first |> Map.get(:module)
+    end
+
+    @tag :socket_only
+    test "will return an empty list if no backends exist", %{socket: socket} do
+      push socket, "fetch_backends", %{}
+      assert_broadcast "backends_list", %{backends: []}
+    end
+  end
+
   describe "create_ward" do
     @tag :full_spec
     test "with valid params, will add a new ward and broadcast the new ward to the channel", %{socket: socket, user: user} do
