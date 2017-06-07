@@ -306,7 +306,6 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast "new_ward_account", payload
       assert payload.handle == handle
       assert payload.ward_id == ward_id
-      assert payload.backend_id == backend_id
     end
 
     @tag :socket_only
