@@ -133,7 +133,10 @@ defmodule Flatfoot.Web.SpadeChannel do
   Must include "fetch_backends".
   """
   def handle_in("fetch_backends", %{}, socket) do
-    backends = Spade.list_backends()
+    backends =
+      Spade.list_backends()
+      |> Enum.map(&Map.take(&1, [:name, :url, :module, :id]))
+
     broadcast! socket, "backends_list", %{backends: backends}
 
     {:reply, :ok, socket}
