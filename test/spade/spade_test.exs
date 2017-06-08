@@ -413,6 +413,15 @@ defmodule Flatfoot.SpadeTest do
       assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_account!(account.id) end
     end
 
+    test "with valid id, deletes a ward account and children results, then returns that deleted account" do
+      account = insert(:ward_account)
+      insert(:ward_result, ward_account: account)
+
+      {:ok, result} = Spade.delete_ward_account(account.id)
+      assert result.id == account.id
+      assert_raise Ecto.NoResultsError, fn -> Spade.get_ward_account!(account.id) end
+    end
+
     test "with invalid id, raises error" do
       assert_raise Ecto.NoResultsError, fn -> Spade.delete_ward_account(0) end
     end
