@@ -256,4 +256,30 @@ defmodule Flatfoot.Web.SpadeChannel do
 
     {:reply, :ok, socket}
   end
+
+  @doc """
+  With a valid ward_account id, will delete that ward_account and return it via broadcast!
+
+  Must include "delete_ward_account" and a valid id as a prameter.
+
+  Params requirement:
+  "id": integer (required)
+  """
+  def handle_in("delete_ward_account", %{"id" => id}, socket) do
+    if ward_account = Spade.get_ward_account(id) do
+      owner_id = ward_account.ward_id |> Spade.get_ward() |> Map.get(:user_id)
+
+      if socket.assigns.user_id == owner_id do
+        {:ok, deleted_account} = Spade.delete_ward_account(id)
+        deleted_account = deleted_account |> Flatfoot.Repo.preload(:backend)
+        broadcast! socket, "deleted_ward_account", Phoenix.View.render(WardAccountView, "ward_account_preloaded_backend.json", %{ward_account: deleted_account})
+      else
+        broadcast! socket, "Error: Unauthorized to delete another user's ward_account", %{}
+      end
+    else
+      broadcast! socket, "Error: invalid id", %{"id" => id}
+    end
+
+    {:reply, :ok, socket}
+  end
 end

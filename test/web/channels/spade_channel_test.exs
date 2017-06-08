@@ -342,6 +342,32 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "delete_ward_account" do
+    @tag :full_spec
+    test "with valid id, will delete a ward_account", %{socket: socket, ward_data: ward_data} do
+      ward_account = ward_data.ward_accounts |> List.first
+
+      push socket, "delete_ward_account", %{id: ward_account.id}
+      assert_broadcast "deleted_ward_account", payload
+      assert payload.id == ward_account.id
+      assert payload.handle == ward_account.handle
+    end
+
+    @tag :socket_only
+    test "with invalid id, will return error", %{socket: socket} do
+      push socket, "delete_ward_account", %{id: 0}
+      assert_broadcast "Error: invalid id", %{"id" => 0}
+    end
+
+    @tag :socket_only
+    test "cannot delete another user's ward_account", %{socket: socket} do
+      ward_account = insert(:ward_account)
+
+      push socket, "delete_ward_account", %{"id" => ward_account.id}
+      assert_broadcast "Error: Unauthorized to delete another user's ward_account", %{}
+    end
+  end
+
   #####################
   # Private Functions #
   #####################
