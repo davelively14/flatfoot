@@ -368,6 +368,34 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "update_ward_account" do
+    @tag :full_spec
+    test "with valid id and params, will update a ward_account", %{socket: socket, ward_data: ward_data} do
+      ward_account = ward_data.ward_accounts |> List.first
+      new_handle = "@new_handle"
+      backend = insert(:backend)
+      new_params = %{handle: new_handle, backend_id: backend.id}
+
+      push socket, "update_ward_account", %{"id" => ward_account.id, "updated_params" => new_params}
+      assert_broadcast "updated_ward_account", payload
+      assert payload.handle == new_handle
+      assert payload.backend_module == backend.module
+    end
+
+    @tag :socket_only
+    test "with invalid id, returns an error message", %{socket: socket} do
+      push socket, "update_ward_account", %{"id" => 0, "updated_params" => %{}}
+      assert_broadcast "Error: invalid id", %{"id" => 0}
+    end
+
+    @tag :socket_only
+    test "cannot update a ward_account for another user", %{socket: socket} do
+      ward_account = insert(:ward_account)
+      push socket, "update_ward_account", %{"id" => ward_account.id, "updated_params" => %{"handle" => "@new_name"}}
+      assert_broadcast "Error: unauthorized to edit ward_account", %{}
+    end
+  end
+
   #####################
   # Private Functions #
   #####################

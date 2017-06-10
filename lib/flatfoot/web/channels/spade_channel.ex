@@ -198,8 +198,8 @@ defmodule Flatfoot.Web.SpadeChannel do
 
   Params requirement:
   "id": integer (required)
-  "ward_params": map (required)
-   -> valid parameters for "ward_params":
+  "updated_params": map (required)
+   -> valid parameters for "updated_params":
     - "name": string (optional)
     - "relationship": string (optional)
     - "active": boolean (optional)
@@ -275,6 +275,39 @@ defmodule Flatfoot.Web.SpadeChannel do
         broadcast! socket, "deleted_ward_account", Phoenix.View.render(WardAccountView, "ward_account_preloaded_backend.json", %{ward_account: deleted_account})
       else
         broadcast! socket, "Error: Unauthorized to delete another user's ward_account", %{}
+      end
+    else
+      broadcast! socket, "Error: invalid id", %{"id" => id}
+    end
+
+    {:reply, :ok, socket}
+  end
+
+  @doc """
+  With a valid ward_account id and params, will update and return the existing ward.
+
+  Must include "update_ward_account", a valid id, and valid new parameters.
+
+  Params requirement:
+  "id": integer (required)
+  "updated_params": map (required)
+  -> valid parameters for "updated_params":
+    - "handle": string (optional)
+    - "backend_id": id (optional)
+  """
+  def handle_in("update_ward_account", %{"id" => id, "updated_params" => updated_params}, socket) do
+    if ward_account = Spade.get_ward_account(id) do
+      owner_id = ward_account.ward_id |> Spade.get_ward() |> Map.get(:user_id)
+
+      if socket.assigns.user_id == owner_id do
+        updated_params = Map.take(updated_params, ["handle", "backend_id"])
+
+        {:ok, updated_ward_account} = Spade.update_ward_account(id, updated_params)
+        updated_ward_account = updated_ward_account |> Flatfoot.Repo.preload(:backend)
+
+        broadcast! socket, "updated_ward_account", Phoenix.View.render(WardAccountView, "ward_account_preloaded_backend.json", %{ward_account: updated_ward_account})
+      else
+        broadcast! socket, "Error: unauthorized to edit ward_account", %{}
       end
     else
       broadcast! socket, "Error: invalid id", %{"id" => id}
