@@ -437,14 +437,13 @@ defmodule Flatfoot.SpadeTest do
       assert result.handle == new_handle
     end
 
-    test "does not update associations" do
+    test "does not update ward association" do
       account = insert(:ward_account)
       new_handle = "@things"
 
-      {:ok, result} = Spade.update_ward_account(account.id, %{handle: new_handle, backend_id: 0, ward_id: 0})
+      {:ok, result} = Spade.update_ward_account(account.id, %{handle: new_handle, ward_id: 0})
       assert result.id == account.id
       assert result.handle == new_handle
-      assert result.backend_id == account.backend_id != 0
       assert result.ward_id == account.ward_id != 0
     end
 
