@@ -870,6 +870,7 @@ defmodule Flatfoot.Spade do
   defp ward_update_changeset(%Ward{} = ward, attrs) do
     ward
     |> cast(attrs, [:name, :relationship, :active])
+    |> validate_required([:name, :relationship, :active])
   end
 
   defp ward_account_changeset(%WardAccount{} = ward_account, attrs) do
@@ -881,6 +882,7 @@ defmodule Flatfoot.Spade do
   defp ward_acount_update_changeset(%WardAccount{} = ward_account, attrs) do
     ward_account
     |> cast(attrs, [:handle, :backend_id])
+    |> validate_required([:handle, :backend_id])
   end
 
   defp watchlist_changeset(%Watchlist{} = watchlist, attrs) do
