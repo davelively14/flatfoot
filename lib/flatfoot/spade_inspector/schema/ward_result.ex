@@ -7,6 +7,7 @@ defmodule Flatfoot.SpadeInspector.WardResult do
 
     field :rating, :integer
     field :from, :string
+    field :from_id, :string
     field :msg_id, :string
     field :msg_text, :string
 
