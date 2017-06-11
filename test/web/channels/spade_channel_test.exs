@@ -163,10 +163,23 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     test "will return new results", %{socket: socket, ward_data: ward_data} do
       ward_id = ward_data.wards |> List.first |> Map.get(:id)
 
-      push socket, "fetch_new_ward_results", %{"ward_id" => ward_id}
+      use_cassette "twitter.fetch" do
+        push socket, "fetch_new_ward_results", %{"ward_id" => ward_id}
+      end
+
       assert_broadcast message, payload, 1000
+      :timer.sleep(50)
       assert message == "new_ward_results"
-      assert payload |> is_map
+      payload_result = payload.results |> List.last
+      stored_result = Spade.get_ward_result(payload_result.id)
+      assert payload_result.id == stored_result.id
+      assert payload_result.backend_id == stored_result.backend_id
+      assert payload_result.rating == stored_result.rating
+      assert payload_result.from == stored_result.from
+      assert payload_result.from_id == stored_result.from_id
+      assert payload_result.msg_id == stored_result.msg_id
+      assert payload_result.msg_text == stored_result.msg_text
+      assert payload_result.ward_account_id == stored_result.ward_account_id
     end
 
     @tag :socket_only
