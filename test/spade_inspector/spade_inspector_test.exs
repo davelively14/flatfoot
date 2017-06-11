@@ -13,6 +13,7 @@ defmodule Flatfoot.SpadeInspectorTest do
       attrs = %{
         rating: Enum.random(0..100),
         from: Faker.Internet.user_name,
+        from_id: Enum.random(1000..9999) |> to_string,
         msg_id: Enum.random(1000..1999) |> to_string,
         msg_text: Faker.Lorem.Shakespeare.hamlet,
         ward_account_id: ward_account.id,
@@ -24,6 +25,7 @@ defmodule Flatfoot.SpadeInspectorTest do
       assert result.msg_id == attrs.msg_id
       assert result.msg_text == attrs.msg_text
       assert result.from == attrs.from
+      assert result.from_id == attrs.from_id
       assert result.backend_id == attrs.backend_id
       assert result.ward_account_id == attrs.ward_account_id
     end
