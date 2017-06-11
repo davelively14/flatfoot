@@ -5,7 +5,7 @@ defmodule Flatfoot.SpadeInspector.QueryTest do
   describe "build/1" do
     test "with valid string, returns propery query format" do
       ward_account = insert(:ward_account, handle: "handle")
-      assert %{q: "to:handle"} == Query.build(ward_account)
+      assert %{q: "to:handle from:handle"} == Query.build(ward_account)
     end
   end
 end
