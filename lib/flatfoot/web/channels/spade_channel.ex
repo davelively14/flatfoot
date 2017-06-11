@@ -52,7 +52,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   end
 
   @doc """
-  On order, fetches recently stored results for a given ward_account_id
+  On order, retrieves recently stored results for a given ward_account_id
 
   Must include the "get_ward_account_results" message and a valid ward_account_id within params object.
 
@@ -78,7 +78,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   end
 
   @doc """
-  On order, fetches the newest results for all active wards of a given user. Results are returned in order of newest to oldest.
+  On order, retrieves the newest results for all active wards of a given user. Results are returned in order of newest to oldest.
 
   Must include the "get_ward_results_for_user" message and a valid user token within the params object.
 

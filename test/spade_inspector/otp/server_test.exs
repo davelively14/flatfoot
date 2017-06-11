@@ -30,7 +30,7 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
         # If I don't put this in, the server will quit before the Archer system
         # can store the results and it will raise an error. The tests sill pass,
         # but the sleeper is ugly. Need to get PID for server and then trace
-        # via :erlang.trace. 
+        # via :erlang.trace.
         :timer.sleep(100)
         # :erlang.trace(pid, true, [:receive])
         # assert_receive {:trace, ^pid, :receive, {:result, _, _}}
