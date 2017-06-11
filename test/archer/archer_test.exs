@@ -38,7 +38,7 @@ defmodule Flatfoot.ArcherTest do
       assert backend.name == name
       assert backend.url == url
       assert backend.name_snake == "some_name"
-      assert backend.module == "Flatfoot.Archer.SomeName"
+      assert backend.module == "Elixir.Flatfoot.Archer.Backend.SomeName"
     end
 
     test "with invalid attiributes will return errors" do
