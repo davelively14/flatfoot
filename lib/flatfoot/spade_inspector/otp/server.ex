@@ -108,7 +108,7 @@ defmodule Flatfoot.SpadeInspector.Server do
         }
       end)
 
-    results |> Enum.each(&parse_and_store_result(&1))
+    results = results |> Enum.map(&parse_and_store_result(&1))
 
     Flatfoot.Web.Endpoint.broadcast("spade:#{ids.user_id}", "new_ward_results", %{results: results})
 
@@ -121,7 +121,17 @@ defmodule Flatfoot.SpadeInspector.Server do
 
   defp parse_and_store_result(result) do
     rating = result.msg_text |> rate_message()
-    result |> Map.put(:rating, rating) |> store_result
+    {:ok, new_result} = result |> Map.put(:rating, rating) |> store_result
+    %{
+      id: new_result.id,
+      ward_account_id: new_result.ward_account_id,
+      backend_id: new_result.backend_id,
+      rating: new_result.rating,
+      from: new_result.from,
+      from_id: new_result.from_id,
+      msg_id: new_result.msg_id,
+      msg_text: new_result.msg_text
+    }
   end
 
   # Takes a string, splits it by spaces, removes punctuation, evaluates each
