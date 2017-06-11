@@ -25,16 +25,28 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       use_cassette "twitter.fetch" do
         assert Server.fetch_update(ward.id) == :ok
 
+
         # TODO: fix this async issue
         # If I don't put this in, the server will quit before the Archer system
-        # can return the results and it will raise an error. The tests sill pass,
-        # but the error is ugly.
+        # can store the results and it will raise an error. The tests sill pass,
+        # but the sleeper is ugly. Need to get PID for server and then trace
+        # via :erlang.trace. 
         :timer.sleep(100)
+        # :erlang.trace(pid, true, [:receive])
+        # assert_receive {:trace, ^pid, :receive, {:result, _, _}}
         result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
         assert result.backend_id == backend.id
         assert result.ward_account_id == ward_account.id
         assert result.rating == 38
       end
+    end
+
+    test "with invalid ward_id, will not cast" do
+      starting_recent = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
+      assert Server.fetch_update(0) == :ok
+      :timer.sleep(100)
+      ending_recent = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
+      assert starting_recent == ending_recent
     end
   end
 
