@@ -402,7 +402,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
   defp generate_and_return_watchlist_data(user) do
     watchlists = insert_list(2, :watchlist, user: user)
-    backend = insert(:backend, module: "Flatfoot.Archer.Backend.Twitter")
+    backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
     suspects =
       watchlists
       |> Enum.map(fn (watchlist) ->

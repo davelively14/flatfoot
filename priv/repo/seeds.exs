@@ -41,7 +41,7 @@ Archer.create_backend(%{
   name: "Twitter",
   name_snake: "twitter",
   url: "https://www.twitter.com/",
-  module: "Elixir.Flatfoot.Archer.Twitter"
+  module: "Elixir.Flatfoot.Archer.Backend.Twitter"
 })
 
 backend = Backend |> Repo.all |> List.first

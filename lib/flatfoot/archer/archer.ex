@@ -47,7 +47,7 @@ defmodule Flatfoot.Archer do
   ## Examples
 
       iex> create_backend(%{name: "Twitter", url: "https://www.twitter.com")
-      {:ok, %Backend{name: "Twitter, url: "https://www.twitter.com", name_snake: "twitter", "Flatfoot.Archer.Twitter"}}
+      {:ok, %Backend{name: "Twitter, url: "https://www.twitter.com", name_snake: "twitter", "Elixir.Flatfoot.Archer.Twitter"}}
 
       iex> create_backend(%{name: nil})
       {:error, %Ecto.Changeset{}}
@@ -82,7 +82,7 @@ defmodule Flatfoot.Archer do
 
         changeset
         |> put_change(:name_snake, name_snake)
-        |> put_change(:module, "Flatfoot.Archer.#{name_camel}")
+        |> put_change(:module, "Elixir.Flatfoot.Archer.Backend.#{name_camel}")
       _ ->
         changeset
     end
