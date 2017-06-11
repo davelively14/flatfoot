@@ -96,6 +96,7 @@ defmodule Flatfoot.Factory do
     %Flatfoot.Spade.WardResult{
       rating: Enum.random(0..100),
       from: Faker.Internet.user_name,
+      from_id: Enum.random(1000..9999) |> to_string,
       msg_id: Enum.random(1000..1999) |> to_string,
       msg_text: Faker.Lorem.Shakespeare.hamlet,
       ward_account: build(:ward_account),

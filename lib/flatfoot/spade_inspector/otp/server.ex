@@ -101,7 +101,8 @@ defmodule Flatfoot.SpadeInspector.Server do
           ward_account_id: ids.ward_account_id,
           backend_id: ids.backend_id,
           rating: 0,
-          from: status |> Map.get("user") |> Map.get("id_str"),
+          from: Enum.join(["@", status |> Map.get("user") |> Map.get("screen_name")], ""),
+          from_id: status |> Map.get("user") |> Map.get("id_str"),
           msg_id: status |> Map.get("id_str"),
           msg_text: status |> Map.get("text")
         }

@@ -63,6 +63,7 @@ ward_accounts = WardAccount |> Repo.all
     SpadeInspector.create_ward_result(%{
       rating: Enum.random(0..100),
       from: "@#{Faker.Internet.user_name}",
+      from_id: Enum.random(1000..9999) |> to_string,
       msg_id: Enum.random(1000..1999) |> to_string,
       msg_text: Faker.Lorem.Shakespeare.hamlet,
       ward_account_id: Enum.random(ward_accounts) |> Map.get(:id),
