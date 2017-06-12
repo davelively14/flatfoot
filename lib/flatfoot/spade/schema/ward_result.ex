@@ -10,6 +10,7 @@ defmodule Flatfoot.Spade.WardResult do
     field :from_id, :string
     field :msg_id, :string
     field :msg_text, :string
+    field :timestamp, Ecto.DateTime
 
     timestamps()
   end

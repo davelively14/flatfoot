@@ -67,7 +67,8 @@ ward_accounts = WardAccount |> Repo.all
       msg_id: Enum.random(1000..1999) |> to_string,
       msg_text: Faker.Lorem.Shakespeare.hamlet,
       ward_account_id: Enum.random(ward_accounts) |> Map.get(:id),
-      backend_id: backend.id
+      backend_id: backend.id,
+      timestamp: Ecto.DateTime.cast(%{year: 2017, month: Enum.random(1..3), day: Enum.random(1..15), hour: Enum.random(0..23), minute: Enum.random([0, 15, 30, 45]), second: 0}) |> elem(1)
     })
   end
 )
