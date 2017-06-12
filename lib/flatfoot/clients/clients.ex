@@ -140,7 +140,8 @@ defmodule Flatfoot.Clients do
 
   """
   def delete_user(%User{} = user) do
-    Repo.delete(user)
+    result = Flatfoot.Shared.delete_user(user.id)
+    if result |> elem(0) == :ok, do: {:ok, user}, else: result
   end
 
   @doc """
