@@ -110,7 +110,7 @@ defmodule Flatfoot.SpadeInspector.Server do
 
     results = results |> Enum.map(&parse_and_store_result(&1))
 
-    Flatfoot.Web.Endpoint.broadcast("spade:#{ids.user_id}", "new_ward_results", %{results: results})
+    Flatfoot.Web.Endpoint.broadcast("spade:#{ids.user_id}", "new_ward_results", %{ward_results: results})
 
     {:noreply, state}
   end

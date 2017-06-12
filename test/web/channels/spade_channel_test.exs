@@ -170,7 +170,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast message, payload, 1000
       :timer.sleep(50)
       assert message == "new_ward_results"
-      payload_result = payload.results |> List.last
+      payload_result = payload.ward_results |> List.last
       stored_result = Spade.get_ward_result(payload_result.id)
       assert payload_result.id == stored_result.id
       assert payload_result.backend_id == stored_result.backend_id

@@ -121,7 +121,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   @doc """
   Will receive a new_ward_results broadcast from the SpadeInspector.Sever module.
   """
-  def handle_in("new_ward_results", %{"results" => _results}, socket) do
+  def handle_in("new_ward_results", %{"ward_results" => _results}, socket) do
 
     {:noreply, :ok, socket}
   end
