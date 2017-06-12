@@ -91,6 +91,14 @@ defmodule Flatfoot.ClientsTest do
       assert nil == Clients.get_session_by_token(session.token)
       assert [] == Clients.list_notification_records(user.id)
     end
+
+    test "deletes associated wards from Archer" do
+      user = insert(:user)
+      ward = insert(:ward, user: user)
+
+      Clients.delete_user(user)
+      assert nil == Flatfoot.Spade.get_ward(ward.id)
+    end
   end
 
   ###########
