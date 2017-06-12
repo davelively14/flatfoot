@@ -100,7 +100,8 @@ defmodule Flatfoot.Factory do
       msg_id: Enum.random(1000..1999) |> to_string,
       msg_text: Faker.Lorem.Shakespeare.hamlet,
       ward_account: build(:ward_account),
-      backend: build(:backend)
+      backend: build(:backend),
+      timestamp: random_ecto_datetime()
     }
   end
 
@@ -109,4 +110,5 @@ defmodule Flatfoot.Factory do
   #####################
 
   defp random_ecto_time, do: Ecto.Time.cast({Enum.random(0..23), Enum.random([0,30]), 0}) |> elem(1)
+  defp random_ecto_datetime, do: Ecto.DateTime.cast(%{year: 2017, month: Enum.random(1..3), day: Enum.random(1..15), hour: Enum.random(0..23), minute: Enum.random([0, 15, 30, 45]), second: 0}) |> elem(1)
 end
