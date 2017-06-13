@@ -92,24 +92,8 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Once the Archer system finishes retrieving the results, it will send the
   # results to this process via the passed pid (see :fetch_update above). This
   # function will parse and store.
-  # TODO: move result logic to Twitter. Twitter should return complete results map.
   def handle_info({:result, ids, results}, state) do
-
-    # results =
-    #   result |> Map.get("statuses") |> Enum.map(fn status ->
-    #     %{
-    #       ward_account_id: ids.ward_account_id,
-    #       backend_id: ids.backend_id,
-    #       rating: 0,
-    #       from: Enum.join(["@", status |> Map.get("user") |> Map.get("screen_name")], ""),
-    #       from_id: status |> Map.get("user") |> Map.get("id_str"),
-    #       msg_id: status |> Map.get("id_str"),
-    #       msg_text: status |> Map.get("text"),
-    #       timestamp: status |> Map.get("created_at") |> parse_date_time
-    #     }
-    #   end)
-
-    results = results |> Enum.map(&parse_and_store_result(&1))
+    results = results |> Enum.map(&add_rating_and_store(&1))
 
     Flatfoot.Web.Endpoint.broadcast("spade:#{ids.user_id}", "new_ward_results", %{ward_results: results})
 
@@ -120,7 +104,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Private Functions #
   #####################
 
-  defp parse_and_store_result(result) do
+  defp add_rating_and_store(result) do
     rating = result.msg_text |> rate_message()
     {:ok, new_result} = result |> Map.put(:rating, rating) |> store_result
     %{
@@ -158,17 +142,4 @@ defmodule Flatfoot.SpadeInspector.Server do
   end
 
   defp store_result(result), do: SpadeInspector.create_ward_result(result)
-
-  # defp parse_date_time(str) do
-  #   months = %{"Jan" => 1, "Feb" => 2, "Mar" => 3, "Apr" => 4, "May" => 5, "Jun" => 6, "Jul" => 7, "Aug" => 8, "Sep" => 9, "Oct" => 10, "Nov" => 11, "Dec" => 12}
-  #
-  #   month = months |> Map.get(str |> String.slice(4..6))
-  #   day = str |> String.slice(8..9) |> String.to_integer
-  #   year = str |> String.slice(26..29) |> String.to_integer
-  #   hour = str |> String.slice(11..12) |> String.to_integer
-  #   minute = str |> String.slice(14..15) |> String.to_integer
-  #   second = str |> String.slice(17..18) |> String.to_integer
-  #
-  #   Ecto.DateTime.cast(%{year: year, month: month, day: day, hour: hour, minute: minute, second: second}) |> elem(1)
-  # end
 end
