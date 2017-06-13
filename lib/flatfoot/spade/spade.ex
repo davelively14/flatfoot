@@ -787,7 +787,7 @@ defmodule Flatfoot.Spade do
     as_of_dtg = NaiveDateTime.from_iso8601!("#{as_of} 00:00:00.00")
 
     if as_of_dtg do
-      Repo.all from r in WardResult, where: r.ward_account_id == ^ward_account_id and r.inserted_at > ^as_of_dtg
+      Repo.all from r in WardResult, where: r.ward_account_id == ^ward_account_id and r.timestamp > ^as_of_dtg
     else
       nil
     end
@@ -818,8 +818,8 @@ defmodule Flatfoot.Spade do
         |> Enum.map(&(&1.id |> Integer.to_string))
 
       WardResult
-      |> where([result], result.ward_account_id in ^ward_account_ids and result.inserted_at > ^as_of_dtg)
-      |> order_by(desc: :inserted_at)
+      |> where([result], result.ward_account_id in ^ward_account_ids and result.timestamp > ^as_of_dtg)
+      |> order_by(desc: :timestamp)
       |> Repo.all
     end
   end
