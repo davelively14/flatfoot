@@ -55,8 +55,8 @@ defmodule Flatfoot.SpadeInspector do
 
   defp ward_result_changeset(%WardResult{} = ward_result, attrs) do
     ward_result
-    |> cast(attrs, [:ward_account_id, :backend_id, :rating, :from, :from_id, :msg_id, :msg_text])
-    |> validate_required([:ward_account_id, :backend_id, :rating, :from, :from_id, :msg_id, :msg_text])
+    |> cast(attrs, [:ward_account_id, :backend_id, :rating, :from, :from_id, :msg_id, :msg_text, :timestamp])
+    |> validate_required([:ward_account_id, :backend_id, :rating, :from, :from_id, :msg_id, :msg_text, :timestamp])
     |> validate_inclusion(:rating, 0..100)
   end
 end
