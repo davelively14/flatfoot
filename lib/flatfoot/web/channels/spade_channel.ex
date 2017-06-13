@@ -23,8 +23,8 @@ defmodule Flatfoot.Web.SpadeChannel do
   Params requirement:
   "user_id": integer
   """
-  def handle_in("get_user", params, socket) do
-    if user = Spade.get_user_preload(params["user_id"]) do
+  def handle_in("get_user", _, socket) do
+    if user = Spade.get_user_preload(socket.assigns.user_id) do
       broadcast! socket, "user_data", Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user})
 
       {:reply, :ok, socket}

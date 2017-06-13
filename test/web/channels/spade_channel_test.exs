@@ -53,19 +53,11 @@ defmodule Flatfoot.Web.SpadeChannelTest do
   describe "get_user" do
     @tag :full_spec
     test "will return a fully preloaded user json", %{user: user, socket: socket} do
-      push socket, "get_user", %{"user_id" => user.id}
+      push socket, "get_user", %{}
       assert_broadcast "user_data", payload
 
       assert payload.id == user.id
       assert payload == Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user})
-
-      leave socket
-    end
-
-    @tag :socket_only
-    test "will return error if user does not exist", %{socket: socket} do
-      ref = push socket, "get_user", %{"user_id" => 0}
-      assert_reply ref, :error
 
       leave socket
     end

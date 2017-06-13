@@ -245,6 +245,18 @@ defmodule Flatfoot.SpadeTest do
     test "with invalid id, raises NoResultsError" do
       assert_raise Ecto.NoResultsError, fn -> Spade.delete_ward(0) end
     end
+
+    test "with valid id, deletes all associated content" do
+      ward = insert(:ward)
+      ward_account = insert(:ward_account, ward: ward)
+      ward_result = insert(:ward_result, ward_account: ward_account)
+
+      {:ok, result} = Spade.delete_ward(ward.id)
+      assert result.id == ward.id
+      refute Spade.get_ward(ward.id)
+      refute Spade.get_ward_account(ward_account.id)
+      refute Spade.get_ward_result(ward_result.id)
+    end
   end
 
   describe "update_ward!/2" do
@@ -888,8 +900,8 @@ defmodule Flatfoot.SpadeTest do
       ward = insert(:ward, user: user)
       ward_account1 = insert(:ward_account, ward: ward)
       ward_account2 = insert(:ward_account, ward: ward)
-      ward_result1 = insert(:ward_result, ward_account: ward_account2)
-      ward_result2 = insert(:ward_result, ward_account: ward_account1)
+      ward_result1 = insert(:ward_result, ward_account: ward_account2, timestamp: Ecto.DateTime.cast({{2016, 1, 1}, {0,0,0}}) |> elem(1))
+      ward_result2 = insert(:ward_result, ward_account: ward_account1, timestamp: Ecto.DateTime.cast({{2017, 1, 1}, {0,0,0}}) |> elem(1))
 
       result = Spade.list_ward_results_by_user(session.token)
       assert result |> List.first |> Map.get(:id) == ward_result2.id

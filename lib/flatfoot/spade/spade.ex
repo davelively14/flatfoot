@@ -247,7 +247,19 @@ defmodule Flatfoot.Spade do
 
   """
   def delete_ward(id) do
-    get_ward!(id)
+    ward = get_ward!(id) |> Repo.preload(:ward_accounts)
+    ward_accounts = ward.ward_accounts
+
+    ward_accounts
+    |> Enum.each(fn(ward_account) ->
+      ward_account =
+        ward_account
+        |> Repo.preload(:ward_results)
+      ward_account.ward_results |> Enum.each(&delete_ward_result(&1.id))
+      delete_ward_account(ward_account.id)
+    end)
+
+    ward
     |> Repo.delete
   end
 

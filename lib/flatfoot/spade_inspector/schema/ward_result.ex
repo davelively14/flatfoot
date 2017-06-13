@@ -2,9 +2,8 @@ defmodule Flatfoot.SpadeInspector.WardResult do
   use Ecto.Schema
 
   schema "spade_ward_results" do
-    # field :ward_account_id, :integer
-    belongs_to :ward_account, Flatfoot.Spade.WardAccount
-    belongs_to :backend, Flatfoot.SpadeInspector.Backend
+    field :ward_account_id, :integer
+    field :backend_id, :integer
 
     field :rating, :integer
     field :from, :string
