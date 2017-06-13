@@ -131,7 +131,8 @@ defmodule Flatfoot.SpadeInspector.Server do
       from: new_result.from,
       from_id: new_result.from_id,
       msg_id: new_result.msg_id,
-      msg_text: new_result.msg_text
+      msg_text: new_result.msg_text,
+      timestamp: new_result.timestamp
     }
   end
 
