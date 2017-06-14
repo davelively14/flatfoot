@@ -37,7 +37,7 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
         result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
         assert result.backend_id == backend.id
         assert result.ward_account_id == ward_account.id
-        assert result.rating == 38
+        assert result.rating == 44
       end
     end
 
@@ -79,7 +79,32 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
 
     test "santa barbara killer" do
       result = Server.get_rating("I hate all of you. If I had it in my power, I would stop at nothing to reduce every single one of you to mountains of skulls and rivers of blood")
-      assert result > 70
+      assert result >= 60
+    end
+
+    test "no bad words text" do
+      result = Server.get_rating("Every battle has a hero. Now it's your turn to rise. Watch the full #StarWarsBattlefrontII trailer here: http://x.ea.com/32125")
+      assert result < 5
+    end
+
+    test "chris mccord being normal" do
+      result = Server.get_rating("My ElixirConfEU keynote on Phoenix 1.3 and upcoming metrics is finally live. Take a look!")
+      assert result < 5
+    end
+
+    test "basic political" do
+      result = Server.get_rating("I'm a bit more concerned why Sessions wants to throw people in prison for having a bag of weed than why he shook hands with some Russian guy")
+      assert result < 5
+    end
+
+    test "medium angry at trump" do
+      result = Server.get_rating("You dont give a fuck about working people.")
+      assert result > 50 && result < 80
+    end
+
+    test "cursing, but not directed" do
+      result = Server.get_rating("You're the man!.  Keep kicking ass!  I'd say fuck the MSM but you already know that")
+      assert result < 50
     end
   end
 end

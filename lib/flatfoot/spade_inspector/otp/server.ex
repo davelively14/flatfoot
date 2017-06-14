@@ -115,22 +115,49 @@ defmodule Flatfoot.SpadeInspector.Server do
 
   # Takes a string, splits it by spaces, removes punctuation, evaluates each
   # word, returns a list of any mentions (people) or hashtags
-  defp rate_message(str), do: rate_message(str |> String.split, 0)
-  defp rate_message([], rating), do: rating
-  defp rate_message([head | tail], rating) do
-    word = head |> String.replace(~r/[\p{P}\p{S}]/, "") |> String.downcase
+  defp rate_message(str) do
+    split_str = str |> String.split
 
-    if :ets.lookup(:negative_words, word) != [] do
-      [{_, word_rating}] = :ets.lookup(:negative_words, word)
-      new_rating = rating + (word_rating * word_rating)
+    rate_message(split_str, "", split_str |> Enum.at(1), 0)
+  end
+
+  defp rate_message([], _prev, _next, rating), do: rating
+  defp rate_message([head | tail], prev, next, rating) do
+    word = standard_word(head)
+
+    result = :ets.lookup(:negative_words, word)
+
+    if result != [] do
+      [{_, word_rating}] = result
+
+      prev_result = :ets.lookup(:modifier_leading, (prev || "") |> standard_word)
+      next_result = :ets.lookup(:modifier_trailing, (next || "") |> standard_word)
+
+      new_rating =
+        cond do
+          prev_result != [] && next_result != [] ->
+            [{_, prev_rating}] = prev_result
+            [{_, next_rating}] = next_result
+            rating + (word_rating * word_rating) + (word_rating * prev_rating) + (prev_rating * next_rating)
+          prev_result != [] ->
+            [{_, prev_rating}] = prev_result
+            rating + (word_rating * word_rating) + (word_rating * prev_rating)
+          next_result != [] ->
+            [{_, next_rating}] = next_result
+            rating + (word_rating * word_rating) + (word_rating * next_rating)
+          true ->
+            rating + (word_rating * word_rating)
+        end
+
+      # new_rating = rating + (word_rating * word_rating)
 
       if new_rating > 99 do
         100
       else
-        rate_message(tail, new_rating)
+        rate_message(tail, head, tail |> Enum.at(1), new_rating)
       end
     else
-      rate_message(tail, rating)
+      rate_message(tail, head, tail |> Enum.at(1), rating)
     end
   end
 
@@ -143,4 +170,6 @@ defmodule Flatfoot.SpadeInspector.Server do
       :ets.insert(table, {row |> List.first, row |> List.last |> String.to_integer})
     end)
   end
+
+  defp standard_word(str), do: str |> String.replace(~r/[\p{P}\p{S}]/, "") |> String.downcase
 end
