@@ -34,19 +34,12 @@ defmodule Flatfoot.SpadeInspector.Server do
   # Inits state and loads the negative words library into an :ets table
   def init([sup]) do
     if :ets.info(:negative_words) == :undefined, do: :ets.new(:negative_words, [:set, :private, :named_table])
+    if :ets.info(:modifier_leading) == :undefined, do: :ets.new(:modifier_leading, [:set, :private, :named_table])
+    if :ets.info(:modifier_trailing) == :undefined, do: :ets.new(:modifier_trailing, [:set, :private, :named_table])
 
-    # TODO: see if we can avoid two iterations of the list (ie not Enum.map |> List.foldl)
-    # negative_words_map =
-    File.stream!("lib/flatfoot/data/negative_words.csv")
-    |> CSV.decode
-    |> Enum.map(fn row ->
-      :ets.insert(:negative_words, {row |> List.first, row |> List.last |> String.to_integer})
-    end)
-      # |> Enum.map(&(&1))
-      # |> List.foldl(%{}, fn row, map ->
-      #   Map.put(map, row |> List.first, row |> List.last |> String.to_integer)
-      # end)
-      # |> Enum.each(:ets.insert(:negative_words, ))
+    load_scoresheet("lib/flatfoot/data/negative_words.csv", :negative_words)
+    load_scoresheet("lib/flatfoot/data/modifier_leading.csv", :modifier_leading)
+    load_scoresheet("lib/flatfoot/data/modifier_trailing.csv", :modifier_trailing)
 
     state = %InspectorState{sup: sup}
     {:ok, state}
@@ -142,4 +135,12 @@ defmodule Flatfoot.SpadeInspector.Server do
   end
 
   defp store_result(result), do: SpadeInspector.create_ward_result(result)
+
+  defp load_scoresheet(path, table) do
+    File.stream!(path)
+    |> CSV.decode
+    |> Enum.map(fn row ->
+      :ets.insert(table, {row |> List.first, row |> List.last |> String.to_integer})
+    end)
+  end
 end

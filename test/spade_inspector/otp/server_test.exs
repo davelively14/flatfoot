@@ -61,5 +61,25 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       result = Server.get_rating("bully bullies bastard")
       assert result == 100
     end
+
+    test "rates suicide correctly" do
+      result = Server.get_rating("suicide")
+      assert result == 100
+    end
+
+    test "rates suicidal correctly" do
+      result = Server.get_rating("suicidal")
+      assert result == 100
+    end
+
+    test "freddy e" do
+      result = Server.get_rating("If there's a God, he's calling me back home. This barrel never felt so good next to my dome. It's cold & I'd rather die than live alone.")
+      assert result >= 50
+    end
+
+    test "santa barbara killer" do
+      result = Server.get_rating("I hate all of you. If I had it in my power, I would stop at nothing to reduce every single one of you to mountains of skulls and rivers of blood")
+      assert result > 70
+    end
   end
 end
