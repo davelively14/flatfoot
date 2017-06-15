@@ -78,7 +78,7 @@ defmodule Flatfoot.SpadeInspector.Server do
       end)
     end
 
-    if configs, do: Archer.Server.fetch_data(configs)
+    if configs, do: Archer.fetch_data(configs)
     {:noreply, state}
   end
 

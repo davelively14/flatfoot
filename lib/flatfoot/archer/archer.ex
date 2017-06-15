@@ -70,6 +70,24 @@ defmodule Flatfoot.Archer do
     |> add_snake_and_module
   end
 
+  ##########
+  # Server #
+  ##########
+
+  alias Flatfoot.Archer.Server
+
+  @doc """
+  Will send configs to the Archer.Server module to schedule for fetching.
+
+  ## Examples
+
+      iex> fetch_data(configs)
+      :ok
+  """
+  def fetch_data(configs) do
+    Server.fetch_data(configs)
+  end
+
   #####################
   # Private Functions #
   #####################
