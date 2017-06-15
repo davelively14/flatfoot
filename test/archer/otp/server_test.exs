@@ -19,7 +19,7 @@ defmodule Flatfoot.Archer.ServerTest do
       use_cassette "twitter.fetch" do
         ids = %{test: "test", ward_account_id: 1, backend_id: 1}
         config = [
-          %{mfa: {Twitter, :fetch, [self(), ids, %{q: "hello world"}]}}
+          %{mfa: {Twitter, :fetch, [self(), ids, "hello world", ""]}}
         ]
         Server.fetch_data(config)
         assert_receive({:result, ids_received, results}, 2_000)

@@ -76,7 +76,7 @@ defmodule Flatfoot.ArcherTest do
       configs = [%{mfa: {
           backend.module |> String.to_atom,
           :fetch,
-          [self(), %{user_id: user.id, ward_account_id: ward_account.id, backend_id: backend.id}, Flatfoot.SpadeInspector.Query.build(ward_account)]
+          [self(), %{user_id: user.id, ward_account_id: ward_account.id, backend_id: backend.id}, ward_account.handle, ""]
         }
       }]
 

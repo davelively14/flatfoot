@@ -11,9 +11,8 @@ defmodule Flatfoot.Archer.Backend.TwitterTest do
   describe "fetch/1" do
     test "with valid parameters, will send us results" do
       use_cassette "twitter.fetch" do
-        query = %{q: "to:sarahinatlanta", since_id: "852856862471069696"}
         ids = %{test: "test", ward_account_id: 1, backend_id: 1}
-        Twitter.fetch(self(), ids, query)
+        Twitter.fetch(self(), ids, "@sarahinatlanta", "852856862471069696")
         assert_receive({:result, ids_received, results}, 2_000)
         assert ids_received == ids
         assert results |> is_list
@@ -22,9 +21,9 @@ defmodule Flatfoot.Archer.Backend.TwitterTest do
 
     test "with invalid parameters, raises errors" do
       assert_raise UndefinedFunctionError, fn -> Twitter.fetch(nil, nil) end
-      assert_raise FunctionClauseError, fn -> Twitter.fetch(self(), 1, "hello world") end
-      assert_raise FunctionClauseError, fn -> Twitter.fetch(self(), "abc", %{q: "hello world"}) end
-      assert_raise FunctionClauseError, fn -> Twitter.fetch(12, 1, %{q: "hello world"}) end
+      assert_raise FunctionClauseError, fn -> Twitter.fetch(self(), 1, "hello world", "") end
+      assert_raise FunctionClauseError, fn -> Twitter.fetch(self(), "abc", %{q: "hello world"}, "") end
+      assert_raise FunctionClauseError, fn -> Twitter.fetch(12, 1, %{q: "hello world"}, "") end
     end
   end
 end

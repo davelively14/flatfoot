@@ -12,8 +12,8 @@ defmodule Flatfoot.Archer.Backend.Twitter do
   query should be a map with the following parameters:
   %{q: "search string"}
   """
-  def fetch(from, ids, query) when is_pid(from) and is_map(ids) and is_map(query) do
-    url = query |> build_url
+  def fetch(from, ids, handle, last) when is_pid(from) and is_map(ids) and is_bitstring(handle) and is_bitstring(last) do
+    url = {handle, last} |> build_query |> build_url
     headers = ["Authorization": "Bearer #{@token}"]
     {:ok, body} = HTTPoison.get(url, headers)
     parsed_results = body |> Map.get(:body) |> Poison.decode! |> parse_body(ids)
@@ -23,6 +23,10 @@ defmodule Flatfoot.Archer.Backend.Twitter do
   #####################
   # Private Functions #
   #####################
+
+  defp build_query({handle, last}) do
+    %{q: "to:#{handle} OR from:#{handle}", since: last}
+  end
 
   defp build_url(query) do
     search_term = query |> URI.encode_query()

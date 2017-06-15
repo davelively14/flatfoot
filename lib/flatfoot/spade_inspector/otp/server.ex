@@ -72,7 +72,7 @@ defmodule Flatfoot.SpadeInspector.Server do
         %{mfa: {
             ward_account.backend.module |> String.to_atom,
             :fetch,
-            [self(), %{user_id: ward.user_id, ward_account_id: ward_account.id, backend_id: ward_account.backend.id}, Query.build(ward_account)]
+            [self(), %{user_id: ward.user_id, ward_account_id: ward_account.id, backend_id: ward_account.backend.id}, ward_account.handle, ""]
           }
         }
       end)
