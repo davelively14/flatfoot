@@ -1,6 +1,12 @@
 defmodule Flatfoot.SpadeInspectorTest do
   use Flatfoot.DataCase
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
   alias Flatfoot.SpadeInspector
+
+  setup_all do
+    ExVCR.Config.cassette_library_dir("test/support/vcr_cassettes")
+    :ok
+  end
 
   ###############
   # Ward Result #
@@ -43,6 +49,17 @@ defmodule Flatfoot.SpadeInspectorTest do
 
       {:error, changeset} = SpadeInspector.create_ward_result(%{rating: 105})
       assert changeset.errors[:rating] == {"is invalid", [validation: :inclusion]}
+    end
+  end
+
+  describe "spade_inspector/1" do
+    test "returns :ok regardless" do
+      ward = insert(:ward)
+
+      use_cassette "twitter.fetch" do
+        assert :ok == SpadeInspector.fetch_update(ward.id)
+        assert :ok == SpadeInspector.fetch_update(0)
+      end
     end
   end
 

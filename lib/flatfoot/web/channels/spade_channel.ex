@@ -113,7 +113,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   "ward_id": integer (required)
   """
   def handle_in("fetch_new_ward_results", %{"ward_id" => id}, socket) do
-    SpadeInspector.Server.fetch_update(id)
+    SpadeInspector.fetch_update(id)
 
     {:reply, :ok, socket}
   end

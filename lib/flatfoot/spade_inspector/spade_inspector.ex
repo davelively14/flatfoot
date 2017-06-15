@@ -49,6 +49,25 @@ defmodule Flatfoot.SpadeInspector do
     Repo.all(Backend)
   end
 
+  ##########
+  # Server #
+  ##########
+
+  alias Flatfoot.SpadeInspector.Server
+
+  @doc """
+  Given a valid ward_id, will have SpadeInspector.Server fetch new results for
+  the given ward and return it to the SpadeChannel for the owning user.
+
+  ## Examples
+
+      iex> fetch_update(23)
+      :ok
+  """
+  def fetch_update(ward_id) do
+    Server.fetch_update(ward_id)
+  end
+
   ##############
   # Changesets #
   ##############
