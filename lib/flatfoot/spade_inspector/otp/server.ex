@@ -1,6 +1,6 @@
 defmodule Flatfoot.SpadeInspector.Server do
   use GenServer
-  alias Flatfoot.{SpadeInspector, SpadeInspector.Query, Archer}
+  alias Flatfoot.{SpadeInspector, Archer}
 
   defmodule InspectorState do
     defstruct sup: nil
