@@ -28,9 +28,13 @@ defmodule Flatfoot.Archer.Backend.Twitter do
     %{q: "to:#{handle} OR from:#{handle}", since: last}
   end
 
+  # defp build_url(query) do
+  #   search_term = query |> URI.encode_query()
+  #   "https://api.twitter.com/1.1/search/tweets.json?#{search_term}"
+  # end
   defp build_url(query) do
     search_term = query |> URI.encode_query()
-    "https://api.twitter.com/1.1/search/tweets.json?#{search_term}"
+    "https://api.twitter.com/1.1/statuses/user_timeline.json?#{search_term}"
   end
 
   defp parse_body(body, ids) do
