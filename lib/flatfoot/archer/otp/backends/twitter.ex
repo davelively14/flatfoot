@@ -16,6 +16,7 @@ defmodule Flatfoot.Archer.Backend.Twitter do
     url = {handle, last} |> build_query |> build_url
     headers = ["Authorization": "Bearer #{@token}"]
     {:ok, body} = HTTPoison.get(url, headers)
+    IO.inspect body |> Map.get(:body) |> Poison.decode!
     parsed_results = body |> Map.get(:body) |> Poison.decode! |> parse_body(ids)
     send(from, {:result, ids, parsed_results})
   end
@@ -25,7 +26,8 @@ defmodule Flatfoot.Archer.Backend.Twitter do
   #####################
 
   defp build_query({handle, last}) do
-    %{q: "to:#{handle} OR from:#{handle}", since: last}
+    # %{screen_name: handle, since_id: last}
+    %{screen_name: handle}
   end
 
   # defp build_url(query) do
@@ -38,7 +40,7 @@ defmodule Flatfoot.Archer.Backend.Twitter do
   end
 
   defp parse_body(body, ids) do
-    body |> Map.get("statuses") |> Enum.map(fn status ->
+    body |> Enum.map(fn status ->
       %{
         ward_account_id: ids.ward_account_id,
         backend_id: ids.backend_id,
