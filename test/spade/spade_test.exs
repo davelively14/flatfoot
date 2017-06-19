@@ -963,4 +963,23 @@ defmodule Flatfoot.SpadeTest do
       assert_raise FunctionClauseError, fn -> Spade.delete_ward_result(0) end
     end
   end
+
+  describe "get_last_ward_result_msg_id/1" do
+    test "with valid ward_account id, returns correct result" do
+      ward_account = insert(:ward_account)
+      ward_result_latest = insert(:ward_result, ward_account: ward_account, timestamp: Ecto.DateTime.cast({{2017, 1, 1}, {0, 0, 0}}) |> elem(1))
+      insert(:ward_result, ward_account: ward_account, timestamp: Ecto.DateTime.cast({{2016, 1, 1}, {0, 0, 0}}) |> elem(1))
+
+      assert ward_result_latest.msg_id == Spade.get_last_ward_result_msg_id(ward_account.id)
+    end
+
+    test "with invalid ward_account id, returns nil" do
+      assert nil == Spade.get_last_ward_result_msg_id(0)
+    end
+
+    test "if no results for a ward_account id, returns nil" do
+      ward_account = insert(:ward_account)
+      assert nil == Spade.get_last_ward_result_msg_id(ward_account.id)
+    end
+  end
 end
