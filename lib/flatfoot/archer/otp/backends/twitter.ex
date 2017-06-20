@@ -16,7 +16,6 @@ defmodule Flatfoot.Archer.Backend.Twitter do
     url = {handle, last} |> build_query |> build_url
     headers = ["Authorization": "Bearer #{@token}"]
     {:ok, body} = HTTPoison.get(url, headers)
-    IO.inspect body |> Map.get(:body) |> Poison.decode!
     parsed_results = body |> Map.get(:body) |> Poison.decode! |> parse_body(ids)
     send(from, {:result, ids, parsed_results})
   end
@@ -26,21 +25,21 @@ defmodule Flatfoot.Archer.Backend.Twitter do
   #####################
 
   defp build_query({handle, last}) do
-    # %{screen_name: handle, since_id: last}
-    %{screen_name: handle}
+    # %{q: handle, since_id: last}
+    %{q: handle, result_type: "recent"}
   end
 
-  # defp build_url(query) do
-  #   search_term = query |> URI.encode_query()
-  #   "https://api.twitter.com/1.1/search/tweets.json?#{search_term}"
-  # end
   defp build_url(query) do
     search_term = query |> URI.encode_query()
-    "https://api.twitter.com/1.1/statuses/user_timeline.json?#{search_term}"
+    "https://api.twitter.com/1.1/search/tweets.json?#{search_term}"
   end
+  # defp build_url(query) do
+  #   search_term = query |> URI.encode_query()
+  #   "https://api.twitter.com/1.1/statuses/user_timeline.json?#{search_term}"
+  # end
 
   defp parse_body(body, ids) do
-    body |> Enum.map(fn status ->
+    body |> Map.get("statuses") |> Enum.map(fn status ->
       %{
         ward_account_id: ids.ward_account_id,
         backend_id: ids.backend_id,
