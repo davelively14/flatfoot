@@ -869,22 +869,6 @@ defmodule Flatfoot.Spade do
     |> Repo.delete
   end
 
-  @doc """
-  Returns last ward_result id for a given ward_account_id or nil.
-
-  ## Examples
-
-      iex> get_last_ward_result_msg_id(12)
-      11298
-
-      iex> get_last_ward_result_msg_id(0)
-      nil
-  """
-  def get_last_ward_result_msg_id(ward_account_id) do
-    results = Repo.all from r in WardResult, where: r.ward_account_id == ^ward_account_id, order_by: [desc: r.timestamp]
-    if results != [], do: results |> List.first |> Map.get(:msg_id), else: nil
-  end
-
   ##############
   # Changesets #
   ##############
