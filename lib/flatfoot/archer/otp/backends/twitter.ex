@@ -14,6 +14,7 @@ defmodule Flatfoot.Archer.Backend.Twitter do
   """
   def fetch(from, ids, handle, last) when is_pid(from) and is_map(ids) and is_bitstring(handle) and is_bitstring(last) do
     url = {handle, last} |> build_query |> build_url
+    IO.inspect url
     headers = ["Authorization": "Bearer #{@token}"]
     {:ok, body} = HTTPoison.get(url, headers)
     parsed_results = body |> Map.get(:body) |> Poison.decode! |> parse_body(ids)
@@ -26,7 +27,7 @@ defmodule Flatfoot.Archer.Backend.Twitter do
 
   defp build_query({handle, last}) do
     # %{q: handle, since_id: last}
-    %{q: handle, result_type: "recent"}
+    %{q: "#{handle} OR from:#{handle} -filter:retweets", since_id: last, count: 100}
   end
 
   defp build_url(query) do
