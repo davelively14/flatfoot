@@ -831,7 +831,7 @@ defmodule Flatfoot.Spade do
 
       WardResult
       |> where([result], result.ward_account_id in ^ward_account_ids and result.timestamp > ^as_of_dtg)
-      |> order_by(desc: :timestamp)
+      |> order_by([desc: :rating, desc: :timestamp])
       |> Repo.all
     end
   end
