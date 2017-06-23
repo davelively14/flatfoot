@@ -7,6 +7,7 @@ defmodule Flatfoot.Spade.WardAccount do
     has_many :ward_results, Flatfoot.Spade.WardResult, on_delete: :delete_all
 
     field :handle, :string
+    field :last_msg, :string
 
     timestamps()
   end

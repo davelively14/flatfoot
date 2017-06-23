@@ -893,7 +893,7 @@ defmodule Flatfoot.Spade do
 
   defp ward_acount_update_changeset(%WardAccount{} = ward_account, attrs) do
     ward_account
-    |> cast(attrs, [:handle, :backend_id])
+    |> cast(attrs, [:handle, :last_msg, :backend_id])
     |> validate_required([:handle, :backend_id])
   end
 

@@ -4,7 +4,7 @@ defmodule Flatfoot.SpadeInspector do
   """
 
   import Ecto.{Query, Changeset}, warn: false
-  alias Flatfoot.Repo
+  alias Flatfoot.{Repo, Spade}
 
   ###############
   # Ward Result #
@@ -25,9 +25,17 @@ defmodule Flatfoot.SpadeInspector do
 
   """
   def create_ward_result(attrs) do
-    %WardResult{}
-    |> ward_result_changeset(attrs)
-    |> Repo.insert()
+    resp =
+      %WardResult{}
+      |> ward_result_changeset(attrs)
+      |> Repo.insert()
+
+    if attrs |> Map.has_key?(:ward_account_id) do
+      last_msg = get_last_ward_result_msg_id(attrs.ward_account_id)
+      Spade.update_ward_account(attrs.ward_account_id, %{last_msg: last_msg})
+    end
+
+    resp
   end
 
   @doc """

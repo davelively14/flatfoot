@@ -6,6 +6,7 @@ defmodule Flatfoot.Web.WardAccountView do
       id: ward_account.id,
       ward_id: ward_account.ward_id,
       handle: ward_account.handle,
+      last_msg: ward_account.last_msg,
       network: ward_account.backend.name,
       backend_module: ward_account.backend.module
     }
@@ -16,6 +17,7 @@ defmodule Flatfoot.Web.WardAccountView do
       id: ward_account.id,
       ward_id: ward_account.ward_id,
       handle: ward_account.handle,
+      last_msg: ward_account.last_msg,
       backend_id: ward_account.backend_id
     }
   end
