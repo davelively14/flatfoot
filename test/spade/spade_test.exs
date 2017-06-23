@@ -900,12 +900,13 @@ defmodule Flatfoot.SpadeTest do
       ward = insert(:ward, user: user)
       ward_account1 = insert(:ward_account, ward: ward)
       ward_account2 = insert(:ward_account, ward: ward)
-      ward_result1 = insert(:ward_result, ward_account: ward_account2, timestamp: Ecto.DateTime.cast({{2016, 1, 1}, {0,0,0}}) |> elem(1))
-      ward_result2 = insert(:ward_result, ward_account: ward_account1, timestamp: Ecto.DateTime.cast({{2017, 1, 1}, {0,0,0}}) |> elem(1))
+      ward_result1 = insert(:ward_result, ward_account: ward_account2, timestamp: Ecto.DateTime.cast({{2016, 1, 1}, {0,0,0}}) |> elem(1), rating: 100)
+      insert(:ward_result, ward_account: ward_account1, timestamp: Ecto.DateTime.cast({{2017, 1, 1}, {0,0,0}}) |> elem(1), rating: 50)
+      ward_result3 = insert(:ward_result, ward_account: ward_account1, timestamp: Ecto.DateTime.cast({{2017, 1, 1}, {0,0,0}}) |> elem(1), rating: 0)
 
       result = Spade.list_ward_results_by_user(session.token)
-      assert result |> List.first |> Map.get(:id) == ward_result2.id
-      assert result |> List.last |> Map.get(:id) == ward_result1.id
+      assert result |> List.first |> Map.get(:id) == ward_result1.id
+      assert result |> List.last |> Map.get(:id) == ward_result3.id
     end
 
     test "with valid token and as_of date, returns correct results" do
