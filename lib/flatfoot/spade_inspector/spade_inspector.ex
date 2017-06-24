@@ -24,6 +24,7 @@ defmodule Flatfoot.SpadeInspector do
       {:error, %Ecto.Changeset{}}
 
   """
+  # TODO: this is expensive. Has to pull ALL ward_results every time we add one. We really don't need last_msg...
   def create_ward_result(attrs) do
     resp =
       %WardResult{}
