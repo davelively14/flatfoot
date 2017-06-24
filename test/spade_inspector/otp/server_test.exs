@@ -1,5 +1,6 @@
 defmodule Flatfoot.SpadeInspector.ServerTest do
   use Flatfoot.DataCase
+  import Phoenix.ChannelTest, only: [assert_broadcast: 2]
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
   alias Flatfoot.SpadeInspector.{Server}
 
@@ -25,15 +26,8 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       use_cassette "twitter.fetch" do
         assert Server.fetch_update(ward.id) == :ok
 
-
-        # TODO: fix this async issue
-        # If I don't put this in, the server will quit before the Archer system
-        # can store the results and it will raise an error. The tests sill pass,
-        # but the sleeper is ugly. Need to get PID for server and then trace
-        # via :erlang.trace.
-        :timer.sleep(100)
-        # :erlang.trace(pid, true, [:receive])
-        # assert_receive {:trace, ^pid, :receive, {:result, _, _}}
+        Flatfoot.Web.Endpoint.subscribe("spade:#{user.id}")
+        assert_broadcast "new_ward_results", _payload
         result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
         assert result.backend_id == backend.id
         assert result.ward_account_id == ward_account.id
