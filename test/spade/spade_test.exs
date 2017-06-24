@@ -233,6 +233,28 @@ defmodule Flatfoot.SpadeTest do
     end
   end
 
+  describe "get_ward_preload_with_results/1" do
+    test "with valid id, returns a ward with all preloads" do
+      ward = insert(:ward)
+      ward_account = insert(:ward_account, ward: ward)
+      ward_result = insert(:ward_result, ward_account: ward_account)
+
+      resp = Spade.get_ward_preload_with_results(ward.id)
+      assert resp.id == ward.id
+
+      [resp_account] = resp.ward_accounts
+      assert resp_account.id == ward_account.id
+      assert %Flatfoot.Spade.Backend{} = resp_account.backend
+
+      [resp_result] = resp_account.ward_results
+      assert resp_result.id == ward_result.id
+    end
+
+    test "with invalid id, returns nil" do
+      assert nil == Spade.get_ward_preload_with_results(0)
+    end
+  end
+
   describe "delete_ward/1" do
     test "with valid id, deletes a ward and returns the deleted ward" do
       ward = insert(:ward)

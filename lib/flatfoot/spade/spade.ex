@@ -235,6 +235,30 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
+  Returns a single ward with ward_results associations preloaded.
+
+  Returns nil if no results.
+
+  ## Examples
+
+      iex> get_ward_preload(123)
+      %Ward{}
+
+      iex> get_ward_preload(456)
+      nil
+
+  """
+  def get_ward_preload_with_results(id) do
+    Ward
+    |> where([wards], wards.id == ^id)
+    |> join(:left, [wards], _ in assoc(wards, :ward_accounts))
+    |> join(:left, [_, ward_accounts], _ in assoc(ward_accounts, :backend))
+    |> join(:left, [_, ward_accounts], _ in assoc(ward_accounts, :ward_results))
+    |> preload([_, ward_accounts, backend, ward_results], [ward_accounts: {ward_accounts, backend: backend, ward_results: ward_results}])
+    |> Repo.one
+  end
+
+  @doc """
   Given a Ward id, will delete that Ward.
 
   ## Examples
