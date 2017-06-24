@@ -401,6 +401,29 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "clear_ward_result" do
+    @tag :full_spec
+    test "with valid ward_result id, will delete the ward_result and return the deleted result", %{socket: socket, ward_data: ward_data} do
+      ward_result = ward_data.ward_results |> List.first
+      push socket, "clear_ward_result", %{"id" => ward_result.id}
+      assert_broadcast "cleared_ward_result", payload
+      assert payload.msg_id == ward_result.msg_id
+    end
+
+    @tag :socket_only
+    test "with invalid ward_result id, returns error message", %{socket: socket} do
+      push socket, "clear_ward_result", %{"id" => 0}
+      assert_broadcast "Error: invalid ward_result id", %{"id" => 0}
+    end
+
+    @tag :socket_only
+    test "cannot clear another user's ward_result", %{socket: socket} do
+      ward_result = insert(:ward_result)
+      push socket, "clear_ward_result", %{"id" => ward_result.id}
+      assert_broadcast "Error: unauthorized to clear ward_result", %{}
+    end
+  end
+
   #####################
   # Private Functions #
   #####################

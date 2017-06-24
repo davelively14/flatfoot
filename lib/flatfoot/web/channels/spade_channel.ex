@@ -1,6 +1,6 @@
 defmodule Flatfoot.Web.SpadeChannel do
   use Flatfoot.Web, :channel
-  alias Flatfoot.{Spade, SpadeInspector, Web.WardView, Web.WardAccountView}
+  alias Flatfoot.{Spade, SpadeInspector, Web.WardView, Web.WardAccountView, Web.Spade.WardResultView}
 
   @doc """
   On join, will return a fully preloaded user JSON response.
@@ -89,7 +89,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   def handle_in("get_ward_results_for_user", %{"token" => token, "as_of" => as_of}, socket) do
     if Regex.match?(~r/\d{4}-\d{2}-\d{2}/, as_of) do
       results = Spade.list_ward_results_by_user(token, as_of)
-      broadcast! socket, "user_ward_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+      broadcast! socket, "user_ward_results", Phoenix.View.render(WardResultView, "ward_result_list.json", %{ward_results: results})
 
       {:reply, :ok, socket}
     else
@@ -98,7 +98,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   end
   def handle_in("get_ward_results_for_user", %{"token" => token}, socket) do
     results = Spade.list_ward_results_by_user(token)
-    broadcast! socket, "user_ward_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+    broadcast! socket, "user_ward_results", Phoenix.View.render(WardResultView, "ward_result_list.json", %{ward_results: results})
 
     {:reply, :ok, socket}
   end
@@ -315,4 +315,37 @@ defmodule Flatfoot.Web.SpadeChannel do
 
     {:reply, :ok, socket}
   end
+
+  @doc """
+  With a valid ward_result_id, will clear that particular result.
+
+  Must include "clear_ward_result" and a valid id.
+
+  Params requirement:
+  "id": integer (required)
+  """
+  def handle_in("clear_ward_result", %{"id" => id}, socket) do
+    if ward_result = Spade.get_ward_result(id) do
+      owner_id = ward_result.ward_account_id |> Spade.get_ward_account() |> Map.get(:ward_id) |> Spade.get_ward() |> Map.get(:user_id)
+
+      if socket.assigns.user_id == owner_id do
+        {:ok, deleted_result} = Spade.delete_ward_result(id)
+        broadcast! socket, "cleared_ward_result", Phoenix.View.render(WardResultView, "ward_result.json", %{ward_result: deleted_result})
+      else
+        broadcast! socket, "Error: unauthorized to clear ward_result", %{}
+      end
+    else
+      broadcast! socket, "Error: invalid ward_result id", %{"id" => id}
+    end
+
+    {:reply, :ok, socket}
+  end
+
+  @doc """
+  With a valid ward_account_id, clears all results for a particular ward_account.
+  """
+
+  @doc """
+  With a valid ward_id, clears all results for a particular ward.
+  """
 end
