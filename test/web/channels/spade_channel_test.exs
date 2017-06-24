@@ -95,7 +95,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       push socket, "get_ward_account_results", %{"ward_account_id" => ward_account_id}
       assert_broadcast message, payload
       assert message == "ward_account_#{ward_account_id}_results"
-      assert payload == Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results})
+      assert payload.ward_results |> length == ward_results |> length
     end
 
     @tag :socket_only
@@ -424,9 +424,9 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
-  describe "clear_ward_results" do
+  describe "clear_ward_results w/ ward_account_id" do
     @tag :full_spec
-    test "with valid ward_account id, will delete all associated wards", %{socket: socket, ward_data: ward_data} do
+    test "with valid ward_account id, will delete all associated ward results", %{socket: socket, ward_data: ward_data} do
       ward_account = ward_data.ward_accounts |> List.first
       assert Spade.get_ward_account_preload!(ward_account.id) |> Map.get(:ward_results) |> length == 2
 
@@ -448,6 +448,33 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       ward_account = insert(:ward_account)
       push socket, "clear_ward_results", %{"ward_account_id" => ward_account.id}
       assert_broadcast "Error: unauthorized to access this ward_account", %{}
+    end
+  end
+
+  describe "clear_ward_results w/ ward_id" do
+    @tag :full_spec
+    test "with valid ward id, will delete all associated", %{socket: socket, ward_data: ward_data} do
+      ward = ward_data.wards |> List.first
+      assert ward.id |> Spade.get_ward_preload_with_results |> Map.get(:ward_accounts) |> Enum.map(&(&1.ward_results)) |> List.flatten |> length == 4
+
+      push socket, "clear_ward_results", %{"ward_id" => ward.id}
+      assert_broadcast "cleared_ward_results", payload
+
+      assert payload["ward_id"] == ward.id
+      assert ward.id |> Spade.get_ward_preload_with_results |> Map.get(:ward_accounts) |> Enum.map(&(&1.ward_results)) |> List.flatten |> length == 0
+    end
+
+    @tag :socket_only
+    test "with invalid ward id, will broadcast an error", %{socket: socket} do
+      push socket, "clear_ward_results", %{"ward_id" => 0}
+      assert_broadcast "Error: invalid ward id", %{"ward_id" => 0}
+    end
+
+    @tag :socket_only
+    test "cannot clear another user's ward_results", %{socket: socket} do
+      ward = insert(:ward)
+      push socket, "clear_ward_results", %{"ward_id" => ward.id}
+      assert_broadcast "Error: unauthorized to access this ward", %{}
     end
   end
 
