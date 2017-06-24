@@ -69,7 +69,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   def handle_cast({:fetch_update, ward_id}, state) do
     configs = if ward = Flatfoot.Spade.get_ward_preload(ward_id) do
       ward.ward_accounts |> Enum.map(fn ward_account ->
-        last_msg_id = SpadeInspector.get_last_ward_result_msg_id(ward_account.id) || ""
+        last_msg_id = ward_account.last_msg || ""
 
         %{mfa: {
             ward_account.backend.module |> String.to_atom,
