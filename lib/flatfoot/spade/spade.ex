@@ -391,6 +391,7 @@ defmodule Flatfoot.Spade do
     |> where([ward_account], ward_account.id == ^id)
     |> join(:left, [ward_account], _ in assoc(ward_account, :backend))
     |> preload([_, backend], [backend: backend])
+    |> preload(:ward_results)
     |> Repo.one!
   end
 
