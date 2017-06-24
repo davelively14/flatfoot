@@ -343,7 +343,29 @@ defmodule Flatfoot.Web.SpadeChannel do
 
   @doc """
   With a valid ward_account_id, clears all results for a particular ward_account.
+
+  Must include "clear_ward_results" and a valid ward_account_id.
+
+  Params requirement:
+  "ward_account_id": integer (required)
   """
+  def handle_in("clear_ward_results", %{"ward_account_id" => id}, socket) do
+    if Spade.get_ward_account(id) do
+      ward_account = Spade.get_ward_account_preload!(id)
+      owner_id = ward_account.ward_id |> Spade.get_ward() |> Map.get(:user_id)
+
+      if socket.assigns.user_id == owner_id do
+        ward_account.ward_results |> Enum.each(&Spade.delete_ward_result(&1.id))
+        broadcast! socket, "cleared_ward_results", %{"ward_account_id" => id}
+      else
+        broadcast! socket, "Error: unauthorized to access this ward_account", %{}
+      end
+    else
+      broadcast! socket, "Error: invalid ward_account id", %{"ward_account_id" => id}
+    end
+
+    {:reply, :ok, socket}
+  end
 
   @doc """
   With a valid ward_id, clears all results for a particular ward.

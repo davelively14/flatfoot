@@ -424,6 +424,33 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
+  describe "clear_ward_results" do
+    @tag :full_spec
+    test "with valid ward_account id, will delete all associated wards", %{socket: socket, ward_data: ward_data} do
+      ward_account = ward_data.ward_accounts |> List.first
+      assert Spade.get_ward_account_preload!(ward_account.id) |> Map.get(:ward_results) |> length == 2
+
+      push socket, "clear_ward_results", %{"ward_account_id" => ward_account.id}
+      assert_broadcast "cleared_ward_results", payload
+
+      assert payload["ward_account_id"] == ward_account.id
+      assert Spade.get_ward_account_preload!(ward_account.id) |> Map.get(:ward_results) |> length == 0
+    end
+
+    @tag :socket_only
+    test "with invalid ward_account id, will broadcast error message", %{socket: socket} do
+      push socket, "clear_ward_results", %{"ward_account_id" => 0}
+      assert_broadcast "Error: invalid ward_account id", %{"ward_account_id" => 0}
+    end
+
+    @tag :socket_only
+    test "cannot clear another user's ward_results", %{socket: socket} do
+      ward_account = insert(:ward_account)
+      push socket, "clear_ward_results", %{"ward_account_id" => ward_account.id}
+      assert_broadcast "Error: unauthorized to access this ward_account", %{}
+    end
+  end
+
   #####################
   # Private Functions #
   #####################
