@@ -108,6 +108,7 @@ defmodule Flatfoot.SpadeInspectorTest do
       use_cassette "twitter.fetch" do
         assert :ok == SpadeInspector.fetch_update(ward.id)
         assert :ok == SpadeInspector.fetch_update(0)
+        :timer.sleep(50)
       end
     end
   end
