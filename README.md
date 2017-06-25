@@ -8,8 +8,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [Documentation links](#docs)
 * [Intro](#intro)
 * [Demo installation instructions](#install)
-* [Working with JSON API](#json-api)
-* [Working with SpadeChannel](#getting-started)
+* [Getting started](#getting-started)
 
 ## <a name="docs"></a>Documentation links
 
