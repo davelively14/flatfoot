@@ -58,8 +58,6 @@ config :flatfoot, :twitter, token: "YOUR_KEY_HERE"
 
 ## <a name="getting-started"></a>Getting started
 
-[SpadeChannel docs](https://github.com/davelively14/flatfoot/blob/master/spade_channel.md)
-
 In order to get a basic token, the client must either create an account or login to an existing account.
 
 To create an account, use the `api/new_user POST` call with required parameters:
