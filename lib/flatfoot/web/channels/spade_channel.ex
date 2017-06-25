@@ -355,8 +355,8 @@ defmodule Flatfoot.Web.SpadeChannel do
       owner_id = ward_account.ward_id |> Spade.get_ward() |> Map.get(:user_id)
 
       if socket.assigns.user_id == owner_id do
-        ward_account.ward_results |> Enum.each(&Spade.delete_ward_result(&1.id))
-        broadcast! socket, "cleared_ward_results", %{"ward_account_id" => id}
+        deleted_results = ward_account.ward_results |> delete_results
+        broadcast! socket, "cleared_ward_results", Phoenix.View.render(WardResultView, "ward_result_list.json", %{ward_results: deleted_results})
       else
         broadcast! socket, "Error: unauthorized to access this ward_account", %{}
       end
@@ -378,17 +378,33 @@ defmodule Flatfoot.Web.SpadeChannel do
   def handle_in("clear_ward_results", %{"ward_id" => id}, socket) do
     if ward = Spade.get_ward_preload_with_results(id) do
       if socket.assigns.user_id == ward.user_id do
-        ward.ward_accounts |> Enum.each(fn (ward_account) ->
-          ward_account.ward_results |> Enum.each(&Spade.delete_ward_result(&1.id))
-        end)
-        broadcast! socket, "cleared_ward_results", %{"ward_id" => id}
+        deleted_results = ward.ward_accounts |> delete_nested_results
+        broadcast! socket, "cleared_ward_results", Phoenix.View.render(WardResultView, "ward_result_list.json", %{ward_results: deleted_results})
       else
         broadcast! socket, "Error: unauthorized to access this ward", %{}
       end
     else
       broadcast! socket, "Error: invalid ward id", %{"ward_id" => id}
     end
-    
+
     {:reply, :ok, socket}
+  end
+
+  #####################
+  # Private Functions #
+  #####################
+
+  defp delete_results(results), do: delete_results(results, [])
+  defp delete_results([], list_of_deleted), do: list_of_deleted
+  defp delete_results([head | tail], list_of_deleted) do
+    {:ok, deleted_head} = Spade.delete_ward_result(head.id)
+    delete_results(tail, [deleted_head | list_of_deleted])
+  end
+
+  defp delete_nested_results(accounts), do: delete_nested_results(accounts, [])
+  defp delete_nested_results([], list_of_deleted), do: list_of_deleted
+  defp delete_nested_results([head | tail], list_of_deleted) do
+    deleted_results = delete_results(head.ward_results)
+    delete_nested_results(tail, [deleted_results | list_of_deleted] |> List.flatten)
   end
 end

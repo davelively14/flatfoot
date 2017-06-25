@@ -428,12 +428,14 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     @tag :full_spec
     test "with valid ward_account id, will delete all associated ward results", %{socket: socket, ward_data: ward_data} do
       ward_account = ward_data.ward_accounts |> List.first
-      assert Spade.get_ward_account_preload!(ward_account.id) |> Map.get(:ward_results) |> length == 2
+      ward_results = Spade.get_ward_account_preload!(ward_account.id) |> Map.get(:ward_results)
+      assert ward_results |> length == 2
 
       push socket, "clear_ward_results", %{"ward_account_id" => ward_account.id}
       assert_broadcast "cleared_ward_results", payload
 
-      assert payload["ward_account_id"] == ward_account.id
+      assert payload.ward_results |> length == ward_results |> length
+      assert Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results}) |> Map.get(:ward_results) |> List.first == payload.ward_results |> List.last
       assert Spade.get_ward_account_preload!(ward_account.id) |> Map.get(:ward_results) |> length == 0
     end
 
@@ -455,12 +457,14 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     @tag :full_spec
     test "with valid ward id, will delete all associated", %{socket: socket, ward_data: ward_data} do
       ward = ward_data.wards |> List.first
-      assert ward.id |> Spade.get_ward_preload_with_results |> Map.get(:ward_accounts) |> Enum.map(&(&1.ward_results)) |> List.flatten |> length == 4
+      ward_results = ward.id |> Spade.get_ward_preload_with_results |> Map.get(:ward_accounts) |> Enum.map(&(&1.ward_results)) |> List.flatten
+      assert ward_results |> length == 4
 
       push socket, "clear_ward_results", %{"ward_id" => ward.id}
       assert_broadcast "cleared_ward_results", payload
 
-      assert payload["ward_id"] == ward.id
+      assert payload.ward_results |> length == ward_results |> length
+      assert Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results}) |> Map.get(:ward_results) |> List.first == payload.ward_results |> List.last
       assert ward.id |> Spade.get_ward_preload_with_results |> Map.get(:ward_accounts) |> Enum.map(&(&1.ward_results)) |> List.flatten |> length == 0
     end
 
