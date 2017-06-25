@@ -7,7 +7,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 
 * [Creating a user account](#new-account)
 * [Logging in](#login)
-* [Getting a socket token](#get-token)
+* [Getting a Phoenix Token](#get-token)
 * [User API](#user-api)
   * [Index](#user-index) | [Show](#user-show) | [Update](#user-update) | [Delete](#user-delete) | [Validate User](#user-validate)
 * [NotificationRecord](#notification-record)
@@ -83,7 +83,7 @@ Return body:
 }
 ```
 
-## <a name="get-token"></a>Getting a socket token
+## <a name="get-token"></a>Getting a Phoenix Token
 
 With a valid authentication token, will return a Phoenix token that can be used to connect to a channel. Takes no parameters. Authorization token is required.
 
