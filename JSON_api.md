@@ -85,7 +85,7 @@ Return body:
 
 ## <a name="get-token"></a>Getting a socket token
 
-With a valid authentication token, will return a Phoenix token that can be used to connect to a channel. Takes no parameters. Authorziation token is required.
+With a valid authentication token, will return a Phoenix token that can be used to connect to a channel. Takes no parameters. Authorization token is required.
 
 API path pattern: `api/token`
 - Sent via the http `GET` method.
