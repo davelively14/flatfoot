@@ -147,7 +147,7 @@ fetchPhoenixToken = (username, password) => {
 ```
 
 With that Phoenix token, we're almost ready to connect to the socket. But first we need to ensure that we've included the `phoenix-socket` dependency. We can either call `npm install --save phoenix-socket` from the command line, or add it directly in our `package.json`:
-```javascript
+```json
 "dependencies": {
   "phoenix-socket": "^1.2.3"
 }
