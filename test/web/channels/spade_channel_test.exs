@@ -13,7 +13,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
         {:ok, watchlist_data} = generate_and_return_watchlist_data(user)
         {:ok, ward_data} = generate_and_return_ward_data(user)
         user = Spade.get_user_preload(user.id)
-        {:ok, resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+        {:ok, resp, socket} = socket("", %{user_id: user.id}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
         {:ok, %{user: user, resp: resp, socket: socket, ward_data: ward_data, watchlist_data: watchlist_data, token: token}}
 
       config[:user_preloaded] ->
@@ -23,7 +23,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
         {:ok, %{user: user, token: token}}
 
       config[:socket_only] ->
-        {:ok, _resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+        {:ok, _resp, socket} = socket("", %{user_id: user.id}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
         {:ok, %{socket: socket}}
 
       config[:empty_user_only] ->
@@ -34,10 +34,10 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
   end
 
-  @tag :user_preloaded
   describe "join" do
+    @tag :user_preloaded
     test "will return response and socket", %{user: user} do
-      {:ok, resp, socket} = socket("", %{}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
+      {:ok, resp, socket} = socket("", %{user_id: user.id}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
 
       assert resp == Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user})
       assert socket.channel == Flatfoot.Web.SpadeChannel
@@ -46,7 +46,13 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     end
 
     test "will return error if no valid user given" do
-      assert {:error, "User does not exist"} == subscribe_and_join(socket("", %{}), SpadeChannel, "spade:#{0}")
+      assert {:error, "User does not exist"} == subscribe_and_join(socket("", %{user_id: 0}), SpadeChannel, "spade:#{0}")
+    end
+
+    @tag :user_preloaded
+    test "will not allow a client to join another user's channel", %{user: user} do
+      other_user = insert(:user)
+      assert {:error, "Unauthorized"} == socket("", %{user_id: user.id}) |> subscribe_and_join(SpadeChannel, "spade:#{other_user.id}")
     end
   end
 

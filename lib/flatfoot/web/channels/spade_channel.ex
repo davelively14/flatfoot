@@ -3,15 +3,18 @@ defmodule Flatfoot.Web.SpadeChannel do
   alias Flatfoot.{Spade, SpadeInspector, Web.WardView, Web.WardAccountView, Web.Spade.WardResultView}
 
   @doc """
-  On join, will return a fully preloaded user JSON response.
+  On join, will return a fully preloaded user JSON response. Can only join a channel if you are the authorized user.
 
   Provide the channel name (i.e. "spade:0") and the socket. Params are unused.
   """
   def join("spade:" <> user_id, _params, socket) do
-    if user = Spade.get_user_preload(user_id) do
-      {:ok, Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user}), assign(socket, :user_id, user.id)}
-    else
-      {:error, "User does not exist"}
+    cond do
+      user_id |> String.to_integer != socket.assigns.user_id ->
+        {:error, "Unauthorized"}
+      user = Spade.get_user_preload(user_id) ->
+        {:ok, Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user}), assign(socket, :user_id, user.id)}
+      true ->
+        {:error, "User does not exist"}
     end
   end
 
