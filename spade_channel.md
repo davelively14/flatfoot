@@ -174,7 +174,7 @@ Response body:
 
 ### <a name="get-ward"></a>get_ward
 
-Given a ward id as a passed parameter, will return a ward and it's associated ward_accounts via channel broadcast.
+Given a ward id as a passed parameter, app will asynchronously return a ward and it's associated ward_accounts via channel broadcast.
 
 Javascript call pattern:
 ```javascript
@@ -203,7 +203,7 @@ channel.push('get_ward', {ward_id: 12});
 Asynchronous response:
 ```javascript
 ('user_data', {
-  id: 13,
+  id: 12,
   email: 'jon@gmail.com',
   username: 'realjon',
   global_threshold: 0,
@@ -214,7 +214,7 @@ Asynchronous response:
       name: 'Adam Smith',
       relationship: 'son',
       active: true,
-      user_id: 13,
+      user_id: 12,
       ward_accounts: [
         {
           id: 324324,
@@ -228,4 +228,58 @@ Asynchronous response:
     }
   ]
 })
+```
+
+### <a name="get-ward-account-results"></a>get_ward_account_results
+
+Given a ward_account id as a passed parameter, app will asynchronously return stored results for a given ward_account. Provide optional `as_of` parameter to return results only after a given date.
+
+Javascript call pattern:
+```javascript
+channel.push('get_ward_account_results', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*ward_account_id* | yes | integer | Valid ward id
+*as_of* | no | string | ISO style date (YYYY-MM-DD). Error on any other format.
+
+Asynchronous return pattern:
+```javascript
+('ward_wardAccountId_results', ward_results_object)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('get_ward_account_results', {ward_account_id: 32780, as_of: '2017-05-01'});
+```
+
+Asynchronous response:
+```javascript
+('ward_account_32780_results', {ward_results: [
+  {
+    id: 56432,
+    backend_id: 35159,
+    from: "oral.nolan",
+    msg_id: "1975",
+    msg_text: "This above all: to thine own self be true.",
+    rating: 66,
+    timestamp: "2017-06-26T01:15:25.610577",
+    ward_account_id: 32780
+  },
+  {
+    id: 56431,
+    backend_id: 35159,
+    from: "raoul_gerhold",
+    msg_id: "1350",
+    msg_text: "The play 's the thing wherein I'll catch the conscience of the king.",
+    rating: 80, timestamp: "2017-06-26T01:15:25.607697",
+    ward_account_id: 32780
+  }
+]})
 ```
