@@ -11,10 +11,12 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [get_ward_results_for_user](#get-ward-results-for-user)
 * [fetch_new_ward_results](#fetch-new-ward-results)
 * [fetch_backends](#fetch-backends)
-* [Ward API](#wards-api)
+* [Ward API](#ward-api)
   * [get_ward](#get-ward) | [create_ward](#create-ward) | [delete_ward](#delete-ward) | [update_ward](#update-ward)
-* [WardAccount API](#ward-accounts-api)
+* [WardAccount API](#ward-account-api)
   * [create_ward_account](#create-ward-account) | [delete_ward_account](#delete-ward-account) | [update_ward_account](#update-ward-account)
+* [WardResult API](#ward-result-api)
+  * [clear_ward_result](#clear-ward-result)
 
 ### <a name="join"></a>Joining a channel
 
@@ -437,7 +439,7 @@ Asynchronous response:
 ]})
 ```
 
-## <a name="wards-api"></a>Ward API
+## <a name="ward-api"></a>Ward API
 
 ### <a name="create-ward"></a>create_ward
 
@@ -573,7 +575,7 @@ Asynchronous response:
 })
 ```
 
-## <a name="ward-accounts-api"></a>WardAccount API
+## <a name="ward-account-api"></a>WardAccount API
 
 ### <a name="create-ward-account"></a>create_ward_account
 
@@ -708,5 +710,49 @@ Asynchronous response:
   last_msg: nil,
   network: "Facebook",
   ward_id: 28263
+})
+```
+
+## <a name="ward-result-api"></a>WardResult API
+
+### <a name="clear-ward-result"></a>clear_ward_result
+
+With a valid ward_result id, will delete a ward_result and return the deleted ward_result.
+
+Javascript call pattern:
+```javascript
+channel.push('clear_ward_result', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*id* | yes | integer | Valid ward_result id
+
+Asynchronous return pattern:
+```javascript
+('cleared_ward_result', cleared_ward_result)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('clear_ward_result', {id: 57628});
+```
+
+Asynchronous response:
+```javascript
+('cleared_ward_result', {
+  id: 57628,
+  backend_id: 35572,
+  from: "hellen_conroy",
+  msg_id: "1178",
+  msg_text: "When sorrows come, they come not single spies, but in battalions.",
+  rating: 79,
+  timestamp: "2017-06-26T03:19:07.193415",
+  ward_account_id: 33362
 })
 ```
