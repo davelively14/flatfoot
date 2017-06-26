@@ -14,7 +14,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [Ward API](#wards-api)
   * [get_ward](#get-ward) | [create_ward](#create-ward) | [delete_ward](#delete-ward) | [update_ward](#update-ward)
 * [WardAccount API](#ward-accounts-api)
-  * [create_ward_account](#create-ward-account)
+  * [create_ward_account](#create-ward-account) | [delete_ward_account](#delete-ward-account)
 
 ### <a name="join"></a>Joining a channel
 
@@ -589,8 +589,8 @@ Accepted parameters for the `params_object`:
 Name | Required | Type | Notes
 --- | :---: | :---: | ---
 *handle* | yes | string | The unique handle for the social network
-*ward_id* | yes | string | Valid ward id to which this account will belong
-*backend_id* | yes | boolean | Valid backend id
+*ward_id* | yes | integer | Valid ward id to which this account will belong
+*backend_id* | yes | integer | Valid backend id
 
 Asynchronous return pattern:
 ```javascript
@@ -612,6 +612,46 @@ channel.push('create_ward_account', {
 Asynchronous response:
 ```javascript
 ('new_ward_account', {
+  id: 33258,
+  backend_module: "Elixir.Flatfoot.Archer.Backend.Twitter",
+  handle: "@realDave",
+  last_msg: nil,
+  network: "Twitter",
+  ward_id: 28263
+})
+```
+
+### <a name="delete-ward-account"></a>delete_ward_account
+
+With a valid ward_account id, will delete the ward_account and asynchronously return the deleted ward_account.
+
+Javascript call pattern:
+```javascript
+channel.push('delete_ward_account', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*id* | yes | integer | Valid ward_account id
+
+Asynchronous return pattern:
+```javascript
+('deleted_ward_account', deleted_ward_account)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('delete_ward_account', {id: 33258});
+```
+
+Asynchronous response:
+```javascript
+('deleted_ward_account', {
   id: 33258,
   backend_module: "Elixir.Flatfoot.Archer.Backend.Twitter",
   handle: "@realDave",
