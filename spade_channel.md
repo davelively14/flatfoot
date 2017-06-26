@@ -8,6 +8,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [Joining a channel](#join)
 * [get_user](#get-user)
 * [get_ward](#get-ward)
+* [get_ward_account_results](#get-ward-account-results)
 
 ### <a name="join"></a>Joining a channel
 
@@ -175,22 +176,33 @@ Response body:
 
 Given a ward id as a passed parameter, will return a ward and it's associated ward_accounts via channel broadcast.
 
+Javascript call pattern:
+```javascript
+channel.push('get_ward', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*ward_id* | yes | integer | Valid ward id
+
+Asynchronous return pattern:
+```javascript
+('ward_wardId_data', ward_object)
+```
+
 ##### Example:
 
 Call:
 
 ```javascript
-channel.push('get_user', {});
+channel.push('get_ward', {ward_id: 12});
 ```
 
-Asynchronous response message:
+Asynchronous response:
 ```javascript
-('user_data', response_body)
-```
-
-Response body:
-```javascript
-{
+('user_data', {
   id: 13,
   email: 'jon@gmail.com',
   username: 'realjon',
@@ -215,5 +227,5 @@ Response body:
       ]
     }
   ]
-}
+})
 ```
