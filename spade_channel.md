@@ -9,6 +9,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [get_user](#get-user)
 * [get_ward](#get-ward)
 * [get_ward_account_results](#get-ward-account-results)
+* [get_ward_results_for_user](#get-ward-results-for-user)
 
 ### <a name="join"></a>Joining a channel
 
@@ -243,7 +244,7 @@ Accepted parameters for the `params_object`:
 
 Name | Required | Type | Notes
 --- | :---: | :---: | ---
-*ward_account_id* | yes | integer | Valid ward id
+*ward_account_id* | yes | integer | Valid ward_account_id
 *as_of* | no | string | ISO style date (YYYY-MM-DD). Error on any other format.
 
 Asynchronous return pattern:
@@ -262,6 +263,60 @@ channel.push('get_ward_account_results', {ward_account_id: 32780, as_of: '2017-0
 Asynchronous response:
 ```javascript
 ('ward_account_32780_results', {ward_results: [
+  {
+    id: 56432,
+    backend_id: 35159,
+    from: "oral.nolan",
+    msg_id: "1975",
+    msg_text: "This above all: to thine own self be true.",
+    rating: 66,
+    timestamp: "2017-06-26T01:15:25.610577",
+    ward_account_id: 32780
+  },
+  {
+    id: 56431,
+    backend_id: 35159,
+    from: "raoul_gerhold",
+    msg_id: "1350",
+    msg_text: "The play 's the thing wherein I'll catch the conscience of the king.",
+    rating: 80, timestamp: "2017-06-26T01:15:25.607697",
+    ward_account_id: 32780
+  }
+]})
+```
+
+### <a name="get-ward-results-for-user"></a>get_ward_results_for_user
+
+Given a valid session token as a passed parameter, app will asynchronously return stored results for that user. Provide optional `as_of` parameter to return results only after a given date.
+
+Javascript call pattern:
+```javascript
+channel.push('get_ward_results_for_user', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*token* | yes | string | Valid [session token](https://github.com/davelively14/flatfoot/blob/master/JSON_api.md#get-token)
+*as_of* | no | string | ISO style date (YYYY-MM-DD). Error on any other format.
+
+Asynchronous return pattern:
+```javascript
+('user_ward_results', ward_results_object)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('get_ward_results_for_user', {token: "aDNvZitlK3diYXR6SUx0Z0V4aDFOdz09", as_of: '2017-05-01'});
+```
+
+Asynchronous response:
+```javascript
+('user_ward_results', {ward_results: [
   {
     id: 56432,
     backend_id: 35159,
