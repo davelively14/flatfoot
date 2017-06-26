@@ -7,13 +7,12 @@ Monitors and reports if someone you are tracking is being bullied online.
 
 * [Joining a channel](#join)
 * [get_user](#get-user)
-* [get_ward](#get-ward)
 * [get_ward_account_results](#get-ward-account-results)
 * [get_ward_results_for_user](#get-ward-results-for-user)
 * [fetch_new_ward_results](#fetch-new-ward-results)
 * [fetch_backends](#fetch-backends)
-* [create_ward](#create-ward)
-* [delete_ward](#delete-ward)
+* [Wards API](#wards-api)
+  * [get_ward](#get-ward) | [create_ward](#create-ward) | [delete_ward](#delete-ward) | [update_ward](#update-ward)
 
 ### <a name="join"></a>Joining a channel
 
@@ -436,6 +435,8 @@ Asynchronous response:
 ]})
 ```
 
+## <a name="wards-api"></a>Wards API
+
 ### <a name="create-ward"></a>create_ward
 
 With valid parameters, will create a new ward and asynchronously return the new ward data.
@@ -493,7 +494,7 @@ Accepted parameters for the `params_object`:
 
 Name | Required | Type | Notes
 --- | :---: | :---: | ---
-*id* | yes | integer | Ward id
+*id* | yes | integer | Valid ward id
 
 Asynchronous return pattern:
 ```javascript
@@ -515,6 +516,57 @@ Asynchronous response:
   active: true,
   name: "John Smith",
   relationship: "brother",
+  user_id: 76752
+})
+```
+
+### <a name="update-ward"></a>update_ward
+
+With a valid ward id and params, will update the ward and asynchronously return the updated ward.
+
+Javascript call pattern:
+```javascript
+channel.push('update_ward', {id: id, updated_params: params_object})
+```
+
+Accepted parameters for `id`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*id* | yes | integer | Valid ward id
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*name* | no | string | Name of the individual being watched over
+*relationship* | no | string | Relationship of the ward to the user
+*active* | no | boolean | If false, ward_account will not be monitored. Default: true. Not currently implemented.
+
+Asynchronous return pattern:
+```javascript
+('updated_ward', updated_ward)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('updated_ward', {id: 28194, updated_params: {
+  active: false,
+  name: "Dave Williams",
+  relationship: "dad"
+}});
+```
+
+Asynchronous response:
+```javascript
+('updated_ward', {
+  id: 28194,
+  active: false,
+  name: "Dave Williams",
+  relationship: "dad",
   user_id: 76752
 })
 ```
