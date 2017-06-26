@@ -13,6 +13,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [fetch_new_ward_results](#fetch-new-ward-results)
 * [fetch_backends](#fetch-backends)
 * [create_ward](#create-ward)
+* [delete_ward](#delete-ward)
 
 ### <a name="join"></a>Joining a channel
 
@@ -454,7 +455,7 @@ Name | Required | Type | Notes
 
 Asynchronous return pattern:
 ```javascript
-('new_ward', new_Ward)
+('new_ward', new_ward)
 ```
 
 ##### Example:
@@ -476,5 +477,44 @@ Asynchronous response:
   name: "Bob Williams",
   relationship: "Dad",
   user_id: 76683
+})
+```
+
+### <a name="delete-ward"></a>delete_ward
+
+With a valid ward_id, will delete a ward and asynchronously return that ward.
+
+Javascript call pattern:
+```javascript
+channel.push('delete_ward', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*id* | yes | integer | Ward id
+
+Asynchronous return pattern:
+```javascript
+('deleted_ward', deleted_ward)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('delete_ward', {id: 28194});
+```
+
+Asynchronous response:
+```javascript
+('deleted_ward', {
+  id: 28194,
+  active: true,
+  name: "John Smith",
+  relationship: "brother",
+  user_id: 76752
 })
 ```
