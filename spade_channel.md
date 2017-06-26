@@ -6,6 +6,8 @@ Monitors and reports if someone you are tracking is being bullied online.
 ## Table of Contents
 
 * [Joining a channel](#join)
+* [get_user](#get-user)
+* [get_ward](#get-ward)
 
 ### <a name="join"></a>Joining a channel
 
@@ -39,6 +41,8 @@ channel.join()
     console.log('Failed to join spade channel', resp);
   });
 ```
+
+The `join` will synchronously return a user and all of it's associated ward and ward_accounts.
 
 That `channel` object is the key to interacting with the rest of the API. You will use it to push commands and set listeners for responses.
 
@@ -74,48 +78,142 @@ Returns:
 ```
 
 Response body:
-```json
+```javascript
 {
-  "email": "joe@gmail.com",
-  "global_threshold": 0,
-  "id": 11,
-  "username": "joe",
-  "wards": [
+  email: "joe@gmail.com",
+  global_threshold: 0,
+  id: 11,
+  username: "joe",
+  wards: [
     {
-      "active": false,
-      "id": 41,
-      "name": "Gabriel Kuhlman",
-      "relationship": "sister",
-      "user_id": 11,
-      "ward_accounts": [
+      active: false,
+      id: 41,
+      name: "Gabriel Kuhlman",
+      relationship: "sister",
+      user_id: 11,
+      ward_accounts: [
         {
-          "backend_module": "Elixir.Flatfoot.Archer.Backend.Twitter",
-          "handle": "@genesis_o'connell",
-          "id": 51,
-          "last_msg": null,
-          "network": "Twitter",
-          "ward_id": 41
+          backend_module: "Elixir.Flatfoot.Archer.Backend.Twitter",
+          handle: "@genesis_o'connell",
+          id: 51,
+          last_msg: null,
+          network: "Twitter",
+          ward_id: 41
         }
       ]
     },
     {
       "active": true,
-      "id": 42,
-      "name": "John Smith",
-      "relationship": "mother",
-      "user_id": 11,
-      "ward_accounts": [
+      id: 42,
+      name: "John Smith",
+      relationship: "mother",
+      user_id: 11,
+      ward_accounts: [
         {
-          "backend_module": "Elixir.Flatfoot.Archer.Backend.Twitter",
-          "handle": "@bob",
-          "id": 73,
-          "last_msg": null,
-          "network": "Twitter",
-          "ward_id": 42
+          backend_module: "Elixir.Flatfoot.Archer.Backend.Twitter",
+          handle: "@bob",
+          id: 73,
+          last_msg: null,
+          network: "Twitter",
+          ward_id: 42
         }
       ]
     }
   ],
-  "watchlists": []
+  watchlists: []
+}
+```
+
+### <a name="get-user"></a>get_user
+
+On call, will return user data for the currently logged in user. Takes no parameters. Returns a user object via channel broadcast.
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('get_user', {});
+```
+
+Asynchronous response message:
+```javascript
+('user_data', response_body)
+```
+
+Response body:
+```javascript
+{
+  id: 13,
+  email: 'jon@gmail.com',
+  username: 'realjon',
+  global_threshold: 0,
+  watchlists: undefined,
+  wards: [
+    {
+      id: 1231,
+      name: 'Adam Smith',
+      relationship: 'son',
+      active: true,
+      user_id: 13,
+      ward_accounts: [
+        {
+          id: 324324,
+          ward_id: 1231,
+          handle: '@realAdam',
+          last_msg: '1238489243852',
+          network: 'Twitter',
+          backend_module: 'Elixir.Flatfoot.Archer.Backend.Twitter'
+        }
+      ]
+    }
+  ]
+}
+```
+
+### <a name="get-ward"></a>get_ward
+
+Given a ward id as a passed parameter, will return a ward and it's associated ward_accounts via channel broadcast.
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('get_user', {});
+```
+
+Asynchronous response message:
+```javascript
+('user_data', response_body)
+```
+
+Response body:
+```javascript
+{
+  id: 13,
+  email: 'jon@gmail.com',
+  username: 'realjon',
+  global_threshold: 0,
+  watchlists: undefined,
+  wards: [
+    {
+      id: 1231,
+      name: 'Adam Smith',
+      relationship: 'son',
+      active: true,
+      user_id: 13,
+      ward_accounts: [
+        {
+          id: 324324,
+          ward_id: 1231,
+          handle: '@realAdam',
+          last_msg: '1238489243852',
+          network: 'Twitter',
+          backend_module: 'Elixir.Flatfoot.Archer.Backend.Twitter'
+        }
+      ]
+    }
+  ]
 }
 ```
