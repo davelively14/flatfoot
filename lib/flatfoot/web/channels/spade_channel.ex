@@ -153,7 +153,6 @@ defmodule Flatfoot.Web.SpadeChannel do
   Params requirement:
   "ward_params": map (required)
    -> valid parameters for "ward_params":
-    - "user_id": integer (required)
     - "name": string (required)
     - "relationship": string (required)
     - "active": boolean (optional)
