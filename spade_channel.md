@@ -11,6 +11,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [get_ward_account_results](#get-ward-account-results)
 * [get_ward_results_for_user](#get-ward-results-for-user)
 * [fetch_new_ward_results](#fetch-new-ward-results)
+* [fetch_backends](#fetch-backends)
 
 ### <a name="join"></a>Joining a channel
 
@@ -389,6 +390,46 @@ Asynchronous response:
     msg_text: "The play 's the thing wherein I'll catch the conscience of the king.",
     rating: 80, timestamp: "2017-06-26T01:15:25.607697",
     ward_account_id: 32780
+  }
+]})
+```
+
+### <a name="fetch-backends"></a>fetch_backends
+
+On call, will asynchronously return all of the backends.
+
+Javascript call pattern:
+```javascript
+channel.push('fetch_backends', {})
+```
+
+Asynchronous return pattern:
+```javascript
+('backends_list', backends_list)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('fetch_backends', {});
+```
+
+Asynchronous response:
+```javascript
+('backends_list', {backends: [
+  {
+    id: 35363,
+    module: "Elixir.Flatfoot.Archer.Twitter",
+    name: "Twitter",
+    url: "http://twitter.com"
+  },
+  {
+    id: 35365,
+    module: "Elixir.Flatfoot.Archer.Facebook",
+    name: "Facebook",
+    url: "http://facebook.com"
   }
 ]})
 ```
