@@ -10,6 +10,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [get_ward](#get-ward)
 * [get_ward_account_results](#get-ward-account-results)
 * [get_ward_results_for_user](#get-ward-results-for-user)
+* [fetch_new_ward_results](#fetch-new-ward-results)
 
 ### <a name="join"></a>Joining a channel
 
@@ -175,7 +176,7 @@ Response body:
 
 ### <a name="get-ward"></a>get_ward
 
-Given a ward id as a passed parameter, app will asynchronously return a ward and it's associated ward_accounts via channel broadcast.
+Given a ward id, app will asynchronously return a ward and it's associated ward_accounts via channel broadcast.
 
 Javascript call pattern:
 ```javascript
@@ -233,7 +234,7 @@ Asynchronous response:
 
 ### <a name="get-ward-account-results"></a>get_ward_account_results
 
-Given a ward_account id as a passed parameter, app will asynchronously return stored results for a given ward_account. Provide optional `as_of` parameter to return results only after a given date.
+Given a ward_account id, app will asynchronously return stored results for a given ward_account. Provide optional `as_of` parameter to return results only after a given date.
 
 Javascript call pattern:
 ```javascript
@@ -287,7 +288,7 @@ Asynchronous response:
 
 ### <a name="get-ward-results-for-user"></a>get_ward_results_for_user
 
-Given a valid session token as a passed parameter, app will asynchronously return stored results for that user. Provide optional `as_of` parameter to return results only after a given date.
+Given a valid session token, app will asynchronously return stored results for that user. Provide optional `as_of` parameter to return results only after a given date.
 
 Javascript call pattern:
 ```javascript
@@ -317,6 +318,59 @@ channel.push('get_ward_results_for_user', {token: "aDNvZitlK3diYXR6SUx0Z0V4aDFOd
 Asynchronous response:
 ```javascript
 ('user_ward_results', {ward_results: [
+  {
+    id: 56432,
+    backend_id: 35159,
+    from: "oral.nolan",
+    msg_id: "1975",
+    msg_text: "This above all: to thine own self be true.",
+    rating: 66,
+    timestamp: "2017-06-26T01:15:25.610577",
+    ward_account_id: 32780
+  },
+  {
+    id: 56431,
+    backend_id: 35159,
+    from: "raoul_gerhold",
+    msg_id: "1350",
+    msg_text: "The play 's the thing wherein I'll catch the conscience of the king.",
+    rating: 80, timestamp: "2017-06-26T01:15:25.607697",
+    ward_account_id: 32780
+  }
+]})
+```
+
+### <a name="fetch-new-ward-results"></a>fetch_new_ward_results
+
+Given a valid ward_id, app will fetch new results for all associated ward_accounts and asynchronously return those results.
+
+Javascript call pattern:
+```javascript
+channel.push('fetch_new_ward_results', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*ward_id* | yes | integer | Valid ward_id
+
+Asynchronous return pattern:
+```javascript
+('new_ward_results', ward_results_object)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('fetch_new_ward_results', {ward_id: 1245});
+```
+
+Asynchronous response:
+```javascript
+('new_ward_results', {ward_results: [
   {
     id: 56432,
     backend_id: 35159,
