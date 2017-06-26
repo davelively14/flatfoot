@@ -16,7 +16,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [WardAccount API](#ward-account-api)
   * [create_ward_account](#create-ward-account) | [delete_ward_account](#delete-ward-account) | [update_ward_account](#update-ward-account)
 * [WardResult API](#ward-result-api)
-  * [clear_ward_result](#clear-ward-result)
+  * [clear_ward_result](#clear-ward-result) | [clear_ward_results](#clear-ward-results)
 
 ### <a name="join"></a>Joining a channel
 
@@ -717,7 +717,7 @@ Asynchronous response:
 
 ### <a name="clear-ward-result"></a>clear_ward_result
 
-With a valid ward_result id, will delete a ward_result and return the deleted ward_result.
+With a valid ward_result id, will delete a ward_result and asynchronously return the deleted ward_result.
 
 Javascript call pattern:
 ```javascript
@@ -754,5 +754,61 @@ Asynchronous response:
   rating: 79,
   timestamp: "2017-06-26T03:19:07.193415",
   ward_account_id: 33362
+})
+```
+
+### <a name="clear-ward-results"></a>clear_ward_results
+
+With either a valid ward id or ward_account id, the app will delete all associated ward_results and asynchronously return those deleted ward_results.
+
+Javascript call pattern:
+```javascript
+channel.push('clear_ward_results', params_object)
+```
+
+Only accepts one of the following parameters for the `params_object`. *Note:* only supply one of these parameters.
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*ward_id* | no | integer | Valid ward id
+*ward_account_id* | no | integer | Valid ward account id
+
+Asynchronous return pattern:
+```javascript
+('cleared_ward_results', cleared_ward_results)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('clear_ward_results', {ward_account_id: 33468});
+```
+
+Asynchronous response:
+```javascript
+('cleared_ward_results', {ward_results:
+  [
+    {
+      backend_id: 35635,
+      from: "donna.boyer",
+      id: 57849,
+      msg_id: "1974",
+      msg_text: "Neither a borrower nor a lender be; For loan oft loses both itself and friend, and borrowing dulls the edge of husbandry.",
+      rating: 64,
+      timestamp: "2017-06-26T03:28:02.762071",
+      ward_account_id: 33468
+    },
+    {
+      backend_id: 35635,
+      from: "alberto_hansen",
+      id: 57850, msg_id: "1165",
+      msg_text: "Brevity is the soul of wit.",
+      rating: 36,
+      timestamp: "2017-06-26T03:28:02.765543",
+      ward_account_id: 33468
+    }
+  ]
 })
 ```
