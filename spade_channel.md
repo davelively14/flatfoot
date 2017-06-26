@@ -11,8 +11,10 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [get_ward_results_for_user](#get-ward-results-for-user)
 * [fetch_new_ward_results](#fetch-new-ward-results)
 * [fetch_backends](#fetch-backends)
-* [Wards API](#wards-api)
+* [Ward API](#wards-api)
   * [get_ward](#get-ward) | [create_ward](#create-ward) | [delete_ward](#delete-ward) | [update_ward](#update-ward)
+* [WardAccount API](#ward-accounts-api)
+  * [create_ward_account](#create-ward-account)
 
 ### <a name="join"></a>Joining a channel
 
@@ -435,7 +437,7 @@ Asynchronous response:
 ]})
 ```
 
-## <a name="wards-api"></a>Wards API
+## <a name="wards-api"></a>Ward API
 
 ### <a name="create-ward"></a>create_ward
 
@@ -568,5 +570,53 @@ Asynchronous response:
   name: "Dave Williams",
   relationship: "dad",
   user_id: 76752
+})
+```
+
+## <a name="ward-accounts-api"></a>WardAccount API
+
+### <a name="create-ward-account"></a>create_ward_account
+
+With valid parameters, will create a new ward_account and asynchronously return the newly created ward_account.
+
+Javascript call pattern:
+```javascript
+channel.push('create_ward_account', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*handle* | yes | string | The unique handle for the social network
+*ward_id* | yes | string | Valid ward id to which this account will belong
+*backend_id* | yes | boolean | Valid backend id
+
+Asynchronous return pattern:
+```javascript
+('new_ward_account', new_ward_account)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('create_ward_account', {
+  handle: "@realDave",
+  ward_id: 28263,
+  backend_id: 24358
+});
+```
+
+Asynchronous response:
+```javascript
+('new_ward_account', {
+  id: 33258,
+  backend_module: "Elixir.Flatfoot.Archer.Backend.Twitter",
+  handle: "@realDave",
+  last_msg: nil,
+  network: "Twitter",
+  ward_id: 28263
 })
 ```
