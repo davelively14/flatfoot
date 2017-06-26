@@ -12,6 +12,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [get_ward_results_for_user](#get-ward-results-for-user)
 * [fetch_new_ward_results](#fetch-new-ward-results)
 * [fetch_backends](#fetch-backends)
+* [create_ward](#create-ward)
 
 ### <a name="join"></a>Joining a channel
 
@@ -432,4 +433,48 @@ Asynchronous response:
     url: "http://facebook.com"
   }
 ]})
+```
+
+### <a name="create-ward"></a>create_ward
+
+With valid parameters, will create a new ward and asynchronously return the new ward data.
+
+Javascript call pattern:
+```javascript
+channel.push('create_ward', params_object)
+```
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*name* | yes | string | Name of the individual being watched over
+*relationship* | yes | string | Relationship of the ward to the user
+*active* | no | boolean | If false, ward_account will not be monitored. Default: true. Not currently implemented.
+
+Asynchronous return pattern:
+```javascript
+('new_ward', new_Ward)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('create_ward', {
+  name: "Bob Williams",
+  relationship: "Dad"
+});
+```
+
+Asynchronous response:
+```javascript
+('new_ward_results', {
+  id: 28131,
+  active: true,
+  name: "Bob Williams",
+  relationship: "Dad",
+  user_id: 76683
+})
 ```
