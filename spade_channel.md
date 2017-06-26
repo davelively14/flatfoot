@@ -14,7 +14,7 @@ Monitors and reports if someone you are tracking is being bullied online.
 * [Ward API](#wards-api)
   * [get_ward](#get-ward) | [create_ward](#create-ward) | [delete_ward](#delete-ward) | [update_ward](#update-ward)
 * [WardAccount API](#ward-accounts-api)
-  * [create_ward_account](#create-ward-account) | [delete_ward_account](#delete-ward-account)
+  * [create_ward_account](#create-ward-account) | [delete_ward_account](#delete-ward-account) | [update_ward_account](#update-ward-account)
 
 ### <a name="join"></a>Joining a channel
 
@@ -657,6 +657,56 @@ Asynchronous response:
   handle: "@realDave",
   last_msg: nil,
   network: "Twitter",
+  ward_id: 28263
+})
+```
+
+### <a name="update-ward-account"></a>update_ward_account
+
+With a valid ward_account id and params, will update a ward_account and asynchronously return the updated ward_account.
+
+Javascript call pattern:
+```javascript
+channel.push('update_ward_account', {id: id, updated_params: params_object})
+```
+
+Accepted parameters for `id`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*id* | yes | integer | Valid ward_account id
+
+Accepted parameters for the `params_object`:
+
+Name | Required | Type | Notes
+--- | :---: | :---: | ---
+*handle* | no | string | The unique handle for the social network
+*backend_id* | no | integer | Valid backend id
+
+Asynchronous return pattern:
+```javascript
+('updated_ward_account', updated_ward_account)
+```
+
+##### Example:
+
+Call:
+
+```javascript
+channel.push('updated_ward_account', {id: 33258, updated_params: {
+  handle: "mr.blantons",
+  backend_id: 14
+}});
+```
+
+Asynchronous response:
+```javascript
+('deleted_ward_account', {
+  id: 33258,
+  backend_module: "Elixir.Flatfoot.Archer.Backend.Facebook",
+  handle: "mr.blantons",
+  last_msg: nil,
+  network: "Facebook",
   ward_id: 28263
 })
 ```
