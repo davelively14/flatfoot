@@ -158,9 +158,7 @@ Back in our app, we can finally get goting. Import `Socket` from our `phoenix-so
 import { Socket } from 'phoenix-socket';
 
 joinChannel = (userId, phoenixToken) => {
-  let socketUri = 'ws://localhost:4000';
-
-  socket = new Socket(socketUri + '/socket', {
+  socket = new Socket('/socket', {
     params: {token: phoenixToken},
     logger: (kind, msg, data) => { console.log(`${kind}: ${msg}`, data); }
   });
