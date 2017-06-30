@@ -1,2 +1,2 @@
+mix phx.digest
 ./node_modules/.bin/webpack -p
-../mix phx.digest
