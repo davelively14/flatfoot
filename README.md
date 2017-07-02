@@ -32,6 +32,7 @@ Note that in order to run this yourself, you'll need a [Twitter dev account](htt
 
 * Clone or download this repo.
 * Once on your machine, ensure that you add any login and password requirements for Postgres on your machine in the `config/dev.exs` and `config/test.exs` if necessary.
+
 ```elixir
 # Configure your database
 config :flatfoot, Flatfoot.Repo,
@@ -52,6 +53,16 @@ config :flatfoot, :twitter, secret_key: "YOUR_KEY_HERE"
 config :flatfoot, :twitter, base_64: "YOUR_KEY_HERE"
 config :flatfoot, :twitter, token: "YOUR_KEY_HERE"
 ```
+* Open `lib/flatfoot/web/static/js/components/helpers/api.js` and change the value of the constant `uri` to `http://localhost:4000`:
+
+```javascript
+import { SubmissionError } from 'redux-form';
+import { browserHistory } from 'react-router';
+
+export const uri = 'http://localhost:4000/';
+...
+```
+
 * From the root directory, run: `mix deps.get`
 * From the root directory, run: `mix ecto.migrate`
 * Navigate to the `/assets` directory and run: `npm install`
