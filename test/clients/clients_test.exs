@@ -338,31 +338,6 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
-  ##############
-  # Changesets #
-  ##############
-
-  describe "change_user/1" do
-    test "returns a user changeset" do
-      user = insert(:user)
-      assert %Ecto.Changeset{} = Clients.change_user(user)
-    end
-  end
-
-  describe "register_user/1" do
-    test "returns a registration changeset" do
-      user = insert(:user)
-      assert %Ecto.Changeset{} = Clients.register_user(user)
-    end
-  end
-
-  describe "register_session/1" do
-    test "returns a registration session changeset" do
-      session = insert(:session)
-      assert %Ecto.Changeset{} = Clients.register_session(session)
-    end
-  end
-
   #############
   # Authorize #
   #############

@@ -144,32 +144,6 @@ defmodule Flatfoot.Clients do
     if result |> elem(0) == :ok, do: {:ok, user}, else: result
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
-
-  ## Examples
-
-      iex> change_user(user)
-      %Ecto.Changeset{source: %User{}}
-
-  """
-  def change_user(%User{} = user) do
-    user_changeset(user, %{})
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
-
-  ## Examples
-
-      iex> register_user(user)
-      %Ecto.Changeset{source: %User{}}
-
-  """
-  def register_user(%User{} = user) do
-    user_registration_changeset(user, %{})
-  end
-
   ###########
   # Session #
   ###########
@@ -222,19 +196,6 @@ defmodule Flatfoot.Clients do
     if session = Session |> Repo.get_by(token: token) do
       User |> Repo.get(session.user_id)
     end
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking session changes.
-
-  ## Examples
-
-      iex> register_session(session)
-      %Ecto.Changeset{source: %Session{}}
-
-  """
-  def register_session(%Session{} = session) do
-    session_registration_changeset(session, %{})
   end
 
   ######################
