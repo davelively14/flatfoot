@@ -24,21 +24,27 @@ defmodule Flatfoot.SpadeInspector do
       {:error, %Ecto.Changeset{}}
 
   """
-  # TODO: this is expensive. Has to pull ALL ward_results every time we add one. We really don't need last_msg...
   def create_ward_result(attrs) do
     resp =
       %WardResult{}
       |> ward_result_changeset(attrs)
       |> Repo.insert()
 
+
+    # Updates last_msg of ward_account
     if attrs |> Map.has_key?(:ward_account_id) do
-      last_msg = get_last_ward_result_msg_id(attrs.ward_account_id)
-      Spade.update_ward_account(attrs.ward_account_id, %{last_msg: last_msg})
+      ward_account = attrs.ward_account_id |> Spade.get_ward_account
+
+      # If no last_msg or last_msg is before the new msg_id, will update
+      if ward_account.last_msg == nil || ward_account.last_msg < attrs.msg_id do
+        Spade.update_ward_account(attrs.ward_account_id, %{last_msg: attrs.msg_id})
+      end
     end
 
     resp
   end
 
+  # NOTE can be deprecated in next update
   @doc """
   Returns last ward_result id for a given ward_account_id or nil.
 
