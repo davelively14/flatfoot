@@ -22,10 +22,10 @@ defmodule Flatfoot.Archer.Server do
 
     iex> config =
     iex> [
-    iex> mfa: {Archer.Twitter, :start_link, [channel_pid]},
-    iex> mfa: {Archer.Facebook, :start_link, [channel_pid]}
+    iex> mfa: {Archer.Twitter, :start_link, [return_pid, ids_map, handle, last_msg_id]},
+    iex> mfa: {Archer.Facebook, :start_link, [return_pid, ids_map, handle, last_msg_id]}
     iex> ]
-    [mfa: {Archer.Twitter, :start_link, [channel_pid]}, mfa: {Archer.Facebook, :start_link, [channel_pid]}]
+    [mfa: {Archer.Twitter, :start_link, [#PID<0.659.0>, %{...}, "@handle", "234242"]}, mfa: {Archer.Facebook, :start_link, [#PID<0.659.0>, %{...}, "username", "123"]}]
     iex> fetch_data(config)
 
 
