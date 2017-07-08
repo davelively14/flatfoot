@@ -15,6 +15,8 @@ defmodule Flatfoot.Clients do
   @doc """
   Returns the list of users.
 
+  Returns an empty list if no users exist in the database.
+
   ## Examples
 
       iex> list_users()
@@ -60,7 +62,7 @@ defmodule Flatfoot.Clients do
   @doc """
   Gets the first user matching the providing params.
 
-  Raises `Ecto.NoResultsError` if the User does not exist.
+  Returns nil if no user exists.
 
   ## Examples
 
@@ -68,7 +70,7 @@ defmodule Flatfoot.Clients do
       %User{}
 
       iex> get_user_by_username(username: "not_username")
-      ** (Ecto.NoResultsError)
+      nil
 
   """
   def get_user_by_session(session), do: Repo.get(User, session.user_id)
@@ -92,7 +94,7 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
-  Updates a user.
+  Updates a user. If error, will return an :error and a changeset with the errors.
 
   ## Examples
 
@@ -110,7 +112,7 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
-  Updates a user.
+  Updates a user. If error, will return an :error and a changeset with the errors.
 
   ## Examples
 
@@ -128,7 +130,7 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
-  Deletes a User.
+  Deletes a User and returns the deletes user. If the user does not exist, raise a FunctionClauseError.
 
   ## Examples
 
@@ -136,7 +138,7 @@ defmodule Flatfoot.Clients do
       {:ok, %User{}}
 
       iex> delete_user(user)
-      {:error, %Ecto.Changeset{}}
+      ** (FunctionClauseError)
 
   """
   def delete_user(%User{} = user) do
