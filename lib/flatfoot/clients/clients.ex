@@ -153,7 +153,7 @@ defmodule Flatfoot.Clients do
   alias Flatfoot.Clients.Session
 
   @doc """
-  Pass a valid user_id and returns a Session.
+  Pass a valid user_id and returns a Session. Will raise an Ecto.NoResultsError if the user does not exist.
 
   ## Examples
 
@@ -161,10 +161,11 @@ defmodule Flatfoot.Clients do
       {:ok, %Session{}}
 
       iex> login(%{user_id: invalid_id})
-      {:error, %Ecto.Changeset{}}
+      ** (Ecto.NoResultsError)
 
   """
   def login(attrs) do
+    get_user!(attrs.user_id)
     %Session{}
     |> session_registration_changeset(attrs)
     |> Repo.insert()

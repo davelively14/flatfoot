@@ -113,7 +113,7 @@ defmodule Flatfoot.ClientsTest do
     end
 
     test "raises error with invalid user_id" do
-      assert_raise Ecto.ConstraintError, fn -> Clients.login(%{user_id: 0}) end
+      assert_raise Ecto.NoResultsError, fn -> Clients.login(%{user_id: 0}) end
     end
   end
 
