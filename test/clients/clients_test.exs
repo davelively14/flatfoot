@@ -132,6 +132,21 @@ defmodule Flatfoot.ClientsTest do
     end
   end
 
+  describe "get_user_by_token/1" do
+    test "returns a user when valid token is passed" do
+      user = insert(:user)
+      session = insert(:session, user: user)
+      assert %User{} = returned_user = Clients.get_user_by_token(session.token)
+
+      assert user.id == returned_user.id
+      assert user.username == returned_user.username
+    end
+
+    test "returns nil if invalid token is passed" do
+      assert nil == Clients.get_user_by_token("nbd")
+    end
+  end
+
   ######################
   # NotificationRecord #
   ######################
