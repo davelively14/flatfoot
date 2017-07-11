@@ -172,7 +172,7 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
-  Pass a valid token and returns the corresponding Session.
+  Pass a valid token and returns the corresponding Session. If no Session exists, will return nil.
 
   ## Examples
 
@@ -180,12 +180,12 @@ defmodule Flatfoot.Clients do
     {:ok, %Session{}}
 
     iex> get_session_by_token(invalid_token)
-    :error
+    nil
   """
   def get_session_by_token(token), do: Repo.get_by(Session, token: token)
 
   @doc """
-  Pass a valid token and returns the corresponding Session.
+  Pass a valid token and returns the corresponding Session. If no Session exists, will return nil.
 
   ## Examples
 
@@ -193,7 +193,7 @@ defmodule Flatfoot.Clients do
     {:ok, %User{}}
 
     iex> get_user_by_token(invalid_token)
-    :error
+    nil
   """
   def get_user_by_token(token) do
     if session = Session |> Repo.get_by(token: token) do
