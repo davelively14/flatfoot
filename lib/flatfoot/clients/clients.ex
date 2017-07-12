@@ -208,15 +208,15 @@ defmodule Flatfoot.Clients do
   alias Flatfoot.Clients.NotificationRecord
 
   @doc """
-  Returns a list of notification records for a given user.
+  Returns a list of notification records for a given user. If user_id does not match any user records, will return an empty list
 
   ## Examples
 
       iex> list_notification_records(user_id)
       [%NotificationRecords{}, ...]
 
-      iex> list_notification_records(no_user_id)
-      ** (Ecto.NoResultsError)
+      iex> list_notification_records(not_a_user_id)
+      []
 
   """
   def list_notification_records(user_id) do
@@ -224,17 +224,15 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
-  Gets a single notification record.
-
-  Raises `Ecto.NoResultsError` if the NotificationRecord does not exist.
+  Gets a single notification record. Will return `nil` if no notification record found with given params.
 
   ## Examples
 
-      iex> get_notification_record!(123)
+      iex> get_notification_record!(notification_id, user_id)
       %NotificationRecord{}
 
-      iex> get_notification_record!(456)
-      ** (Ecto.NoResultsError)
+      iex> get_notification_record!(456, 12312)
+      nil
 
   """
   def get_notification_record!(id, user_id) do
