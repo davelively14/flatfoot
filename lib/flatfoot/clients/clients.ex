@@ -303,7 +303,7 @@ defmodule Flatfoot.Clients do
   alias Flatfoot.Clients.BlackoutOption
 
   @doc """
-  Returns a list of blackout options for a given user.
+  Returns a list of blackout options for a given user. If no blackout_options exist for the user_id provide, will return an empty list.
 
   ## Examples
 
@@ -311,7 +311,7 @@ defmodule Flatfoot.Clients do
       [%BlackoutOption{}, ...]
 
       iex> list_blackout_options(bad_user_id)
-      ** (Ecto.NoResultsError)
+      []
 
   """
   def list_blackout_options(user_id) do
@@ -339,7 +339,7 @@ defmodule Flatfoot.Clients do
 
   ## Examples
 
-      iex> create_blackout_option(%{user_id: 12, threshold: 0})
+      iex> create_blackout_option(%{user_id: 12, threshold: 0, start: time, end: time})
       {:ok, %BlackoutOption{}}
 
       iex> create_blackout_option(%{user_id: nil})
