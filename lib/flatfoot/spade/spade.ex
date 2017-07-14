@@ -78,9 +78,7 @@ defmodule Flatfoot.Spade do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
-  Returns a single user with all associations preloaded throughout the depth.
-
-  Raises `Ecto.NoResultsError` if the User does not exist.
+  Returns a single user with all associations preloaded throughout the depth. Returns `nil` if no user exists.
 
   ## Examples
 
@@ -88,7 +86,7 @@ defmodule Flatfoot.Spade do
       %User{}
 
       iex> get_user_preload(456)
-      ** (Ecto.NoResultsError)
+      nil
 
   """
   def get_user_preload(id) do
@@ -114,7 +112,7 @@ defmodule Flatfoot.Spade do
     {:ok, %User{}}
 
     iex> get_user_by_token(invalid_token)
-    :error
+    {:error, "Session does not exist. Please use valid token."}
   """
   def get_user_by_token(token) do
     if session = Clients.get_session_by_token(token) do
