@@ -147,12 +147,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a user_id, returns a list of wards for a given user.
+  Give a user_id, returns a list of wards for a given user. Returns empty list of no results.
 
   ## Examples
 
       iex> list_wards(12)
       [%Ward{}, ...]
+
+      iex> list_wards(invalid_user_id)
+      []
 
   """
   def list_wards(user_id) do
@@ -160,13 +163,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a user_id, returns a list of wards for a given user and preloads all associations.
+  Give a user_id, returns a list of wards for a given user and preloads all associations. Returns empty list if no results
 
   ## Examples
 
       iex> list_wards_preload(12)
       [%Ward{}, ...]
 
+      iex> list_wards_preload(invalid_user_id)
+      []
   """
   def list_wards_preload(user_id) do
     Ward
@@ -194,9 +199,7 @@ defmodule Flatfoot.Spade do
   def get_ward!(id), do: Repo.get!(Ward, id)
 
   @doc """
-  Returns a single ward.
-
-  Returns nil if ward does not exist.
+  Returns a single ward. Returns nil if ward does not exist.
 
   ## Examples
 
@@ -204,23 +207,21 @@ defmodule Flatfoot.Spade do
       %Ward{}
 
       iex> get_ward!(456)
-      ** (Ecto.NoResultsError)
+      nil
 
   """
   def get_ward(id), do: Repo.get(Ward, id)
 
   @doc """
-  Returns a single ward with all associations preloaded.
-
-  Raises `Ecto.NoResultsError` if the Ward does not exist.
+  Returns a single ward with all associations preloaded. Returns nil if no results.
 
   ## Examples
 
       iex> get_ward_preload(123)
       %Ward{}
 
-      iex> get_ward_preload(456)
-      ** (Ecto.NoResultsError)
+      iex> get_ward_preload(invalid_id)
+      nil
 
   """
   def get_ward_preload(id) do
@@ -233,16 +234,14 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Returns a single ward with ward_results associations preloaded.
-
-  Returns nil if no results.
+  Returns a single ward with ward_results associations preloaded. Returns nil if no results.
 
   ## Examples
 
-      iex> get_ward_preload(123)
+      iex> get_ward_preload_with_results(123)
       %Ward{}
 
-      iex> get_ward_preload(456)
+      iex> get_ward_preload_with_results(invalid_id)
       nil
 
   """
@@ -255,6 +254,8 @@ defmodule Flatfoot.Spade do
     |> preload([_, ward_accounts, backend, ward_results], [ward_accounts: {ward_accounts, backend: backend, ward_results: ward_results}])
     |> Repo.one
   end
+
+  # TODO stopped here on rewrite
 
   @doc """
   Given a Ward id, will delete that Ward.
