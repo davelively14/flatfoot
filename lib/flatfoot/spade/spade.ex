@@ -255,10 +255,8 @@ defmodule Flatfoot.Spade do
     |> Repo.one
   end
 
-  # TODO stopped here on rewrite
-
   @doc """
-  Given a Ward id, will delete that Ward.
+  Given a Ward id, will delete that Ward. Will raise Ecto.NoResultsError if ward does not exist.
 
   ## Examples
 
@@ -266,7 +264,7 @@ defmodule Flatfoot.Spade do
       {:ok, %Ward{}}
 
       iex> delete_ward(0)
-      {:error, %Ecto.Changeset{}}
+      ** (Ecto.NoResultsError)
 
   """
   def delete_ward(id) do
@@ -291,10 +289,13 @@ defmodule Flatfoot.Spade do
 
   ## Examples
 
-      iex> update_ward(ward, %{field: new_value})
+      iex> update_ward!(ward, %{field: new_value})
       {:ok, %Ward{}}
 
-      iex> update_ward(ward, %{field: bad_value})
+      iex> update_ward!(0, %{field: new_value})
+      ** (Ecto.NoResultsError)
+
+      iex> update_ward!(ward, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
