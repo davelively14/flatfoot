@@ -352,12 +352,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a ward id, returns a list of ward_accounts for a given ward.
+  Give a ward id, returns a list of ward_accounts for a given ward. Returns empty list if no ward_accounts for a given ward id.
 
   ## Examples
 
       iex> list_ward_accounts(12)
       [%WardAccount{}, ...]
+
+      iex> list_ward_accounts(0)
+      []
 
   """
   def list_ward_accounts(ward_id) do
