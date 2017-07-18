@@ -368,9 +368,7 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Returns a single ward account.
-
-  Raises `Ecto.NoResultsError` if the WardAccount does not exist.
+  Returns a single ward account. Raises `Ecto.NoResultsError` if the WardAccount does not exist.
 
   ## Examples
 
@@ -384,9 +382,7 @@ defmodule Flatfoot.Spade do
   def get_ward_account!(id), do: Repo.get!(WardAccount, id)
 
   @doc """
-  Returns a single ward account.
-
-  Returns nil if WardAccount does not exist.
+  Returns a single ward account. Returns nil if WardAccount does not exist.
 
   ## Examples
 
@@ -431,8 +427,7 @@ defmodule Flatfoot.Spade do
       {:ok, %WardAccount{}}
 
       iex> delete_ward_account(0)
-      {:error, %Ecto.Changeset{}}
-
+      ** (Ecto.NoResultsError)
   """
   def delete_ward_account(id) do
     get_ward_account!(id)
@@ -440,12 +435,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Updates a ward_account.
+  Updates a ward_account. If no ward_account exists for id, raises error. If invalid params, will return :error and a changeset with the errors.
 
   ## Examples
 
       iex> update_ward_account(ward_account, %{field: new_value})
       {:ok, %WardAccount{}}
+
+      iex> update_ward_account(0, %{field: new_value})
+      ** (Ecto.NoResultsError)
 
       iex> update_ward_account(ward_account, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
