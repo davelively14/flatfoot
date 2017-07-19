@@ -480,12 +480,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a user id, returns a list of watchlists for a given user. Preloads suspects by default.
+  Give a user id, returns a list of watchlists for a given user. Preloads suspects by default. Returns empty list if no results or invalid user_id.
 
   ## Examples
 
       iex> list_watchlists(12)
       [%Watchlist{}, ...]
+
+      iex> list_watchlists(0)
+      []
 
   """
   def list_watchlists(user_id) do
@@ -493,12 +496,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a user id, returns a list of watchlists for a given user and preloads all by default.
+  Give a user id, returns a list of watchlists for a given user and preloads all by default. Returns empty list if no results or invalid user_id.
 
   ## Examples
 
       iex> list_watchlists_preload(12)
       [%Watchlist{}, ...]
+
+      iex> list_watchlists_preload(0)
+      []
 
   """
   def list_watchlists_preload(user_id) do
@@ -552,7 +558,7 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Given a Watchlist id, will delete that Watchlist.
+  Given a Watchlist id, will delete that Watchlist. Raises error if invalid watchlist id.
 
   ## Examples
 
@@ -560,7 +566,7 @@ defmodule Flatfoot.Spade do
       {:ok, %Watchlist{}}
 
       iex> delete_watchlist(0)
-      {:error, %Ecto.Changeset{}}
+      ** (Ecto.NoResultsError)
 
   """
   def delete_watchlist(id) do
@@ -569,12 +575,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  With a valid watchlist id and attributes, updates a watchlist.
+  With a valid watchlist id and attributes, updates a watchlist. Raises error if invalid watchlist id. Returns error and changeset if attributes are invalid.
 
   ## Examples
 
       iex> update_watchlist(watchlist_id, %{field: new_value})
       {:ok, %Watchlist{}}
+
+      iex> update_watchlist(0, %{field: new_value})
+      ** (Ecto.NoResultsError)
 
       iex> update_watchlist(watchlist_id, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
