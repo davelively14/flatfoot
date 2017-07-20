@@ -620,12 +620,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a watchlist id, returns a list of watchlists for a given user.
+  Give a watchlist id, returns a list of watchlists for a given user. Invalid watchlist id or no suspects for a given watchlist id will return an empty list.
 
   ## Examples
 
       iex> list_suspects(12)
       [%Suspect{}, ...]
+
+      iex> list_suspects(0)
+      []
 
   """
   def list_suspects(watchlist_id) do
@@ -633,12 +636,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a watchlist id, returns a list of watchlists for a given user.
+  Give a watchlist id, returns a list of watchlists for a given user. Invalid watchlist id or no suspects for a given watchlist id will return an empty list.
 
   ## Examples
 
       iex> list_suspects_preload(12)
       [%Suspect{}, ...]
+
+      iex> list_suspects_preload(0)
+      []
 
   """
   def list_suspects_preload(watchlist_id) do
@@ -651,9 +657,7 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Returns a single suspect.
-
-  Raises `Ecto.NoResultsError` if the Suspect does not exist.
+  Returns a single suspect. Raises `Ecto.NoResultsError` if the Suspect does not exist.
 
   ## Examples
 
@@ -667,9 +671,7 @@ defmodule Flatfoot.Spade do
   def get_suspect!(id), do: Repo.get!(Suspect, id)
 
   @doc """
-  Returns a single suspect and preloads all associationsby default.
-
-  Raises `Ecto.NoResultsError` if the Suspect does not exist.
+  Returns a single suspect and preloads all associationsby default. Raises `Ecto.NoResultsError` if the Suspect does not exist.
 
   ## Examples
 
@@ -690,7 +692,7 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Given a Suspect id, will delete that Suspect.
+  Given a Suspect id, will delete that Suspect. Raises error with invalid suspect id.
 
   ## Examples
 
@@ -698,7 +700,7 @@ defmodule Flatfoot.Spade do
       {:ok, %Suspect{}}
 
       iex> delete_suspect(0)
-      {:error, %Ecto.Changeset{}}
+      ** (Ecto.NoResultsError)
 
   """
   def delete_suspect(id) do
@@ -707,12 +709,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  With a valid suspect id and attributes, updates a suspect.
+  With a valid suspect id and attributes, updates a suspect. Invalid suspect id will raise error. Invalid fields will return an error and a changeset containing the errors.
 
   ## Examples
 
       iex> update_suspect(suspect_id, %{field: new_value})
       {:ok, %Suspect{}}
+
+      iex> update_suspect(0, %{field: new_value})
+      ** (Ecto.NoResultsError)
 
       iex> update_suspect(suspect_id, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
