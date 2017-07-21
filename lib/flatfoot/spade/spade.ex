@@ -754,12 +754,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Give a suspect id, returns a list of suspect accounts for a given user.
+  Give a suspect id, returns a list of suspect accounts for a given user. Invalid suspect_account id or no suspect_accounts will return an empty list.
 
   ## Examples
 
       iex> list_suspect_accounts(12)
       [%SuspectAccount{}, ...]
+
+      iex> list_suspect_accounts(0)
+      []
 
   """
   def list_suspect_accounts(suspect_id) do
@@ -767,9 +770,7 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Returns a single suspect account.
-
-  Raises `Ecto.NoResultsError` if the SuspectAccount does not exist.
+  Returns a single suspect account. Raises `Ecto.NoResultsError` if the SuspectAccount does not exist.
 
   ## Examples
 
@@ -783,7 +784,7 @@ defmodule Flatfoot.Spade do
   def get_suspect_account!(id), do: Repo.get!(SuspectAccount, id)
 
   @doc """
-  Given a SuspectAccount id, will delete that SuspectAccount.
+  Given a SuspectAccount id, will delete that SuspectAccount. Raises error if SuspectAccount does not exist.
 
   ## Examples
 
@@ -791,7 +792,7 @@ defmodule Flatfoot.Spade do
       {:ok, %SuspectAccount{}}
 
       iex> delete_suspect_account(0)
-      {:error, %Ecto.Changeset{}}
+      ** (Ecto.NoResultsError)
 
   """
   def delete_suspect_account(id) do
@@ -800,12 +801,15 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  With a valid suspect account id and attributes, updates a suspect account.
+  With a valid suspect account id and attributes, updates a suspect account. Raises error if SuspectAccount does not exist. Returns error and a changeset with errors if invalid attributes are passed.
 
   ## Examples
 
       iex> update_suspect_account(suspect_account_id, %{field: new_value})
       {:ok, %SuspectAccount{}}
+
+      iex> update_suspect_account(0, %{field: new_value})
+      ** (Ecto.NoResultsError)
 
       iex> update_suspect_account(suspect_account_id, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
