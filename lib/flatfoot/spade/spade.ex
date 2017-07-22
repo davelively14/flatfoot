@@ -828,12 +828,23 @@ defmodule Flatfoot.Spade do
   alias Flatfoot.Spade.WardResult
 
   @doc """
-  Given a ward id, returns a list of ward results for that ward.
+  Given a ward id, returns a list of ward results for that ward. Invalid id or WardAccount with no WardResults will return empty list.
+
+  Can provide optional as_of parameter that specifies the earliest date to be included in the results. Must be in "YYYY-MM-DD". If not in that format, raises an error.
 
   ## Examples
 
       iex> list_ward_results(12)
       [%WardResult{}, ...]
+
+      iex> list_ward_results(0)
+      []
+
+      iex> list_ward_results(12, "2016-10-05")
+      [%WardResult{}, ...]
+
+      iex> list_ward_results(12, "invalid")
+      ** (ArgumentError)
 
   """
   def list_ward_results(ward_account_id) do
@@ -850,17 +861,23 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Given a session token, will return a list of results for each ward_account belonging to the user.
+  Given a session token, will return a list of results for each ward_account belonging to the user. Returns empty array if no results stored.
 
-  Returns empty array if no results stored.
+  Can provide optional as_of parameter that specifies the earliest date to be included in the results. Must be in "YYYY-MM-DD". If not in that format, raises an error.
 
   ## Examples
 
       iex> list_ward_results_by_user(token)
-      [%WardResult{}]
+      [%WardResult{}, ...]
 
       iex> list_ward_results_by_user(invalid_token)
       []
+
+      iex> list_ward_results(token, "2017-01-21")
+      [%WardResult{}, ...]
+
+      iex> list_ward_results(token, "invalid")
+      ** (ArgumentError)
   """
   def list_ward_results_by_user(token, as_of \\ "0000-01-01") do
     if as_of_dtg = NaiveDateTime.from_iso8601!("#{as_of} 00:00:00.00") do
@@ -881,23 +898,21 @@ defmodule Flatfoot.Spade do
   end
 
   @doc """
-  Returns a single ward result.
-
-  Raises `Ecto.NoResultsError` if the WardResult does not exist.
+  Returns a single ward result. Returns nil if WardResult does not exist.
 
   ## Examples
 
       iex> get_ward_result(123)
       %WardResult{}
 
-      iex> get_ward_result(456)
-      ** (Ecto.NoResultsError)
+      iex> get_ward_result(0)
+      nil
 
   """
   def get_ward_result(id), do: Repo.get(WardResult, id)
 
   @doc """
-  Given a WardResult id, will delete that WardResult.
+  Given a WardResult id, will delete that WardResult. Raises error if WardResult does not exist.
 
   ## Examples
 
@@ -905,7 +920,7 @@ defmodule Flatfoot.Spade do
       {:ok, %WardResult{}}
 
       iex> delete_ward_result(0)
-      {:error, %Ecto.Changeset{}}
+      ** (FunctionClauseError)
 
   """
   def delete_ward_result(id) do
