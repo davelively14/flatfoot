@@ -8,7 +8,7 @@ defmodule Flatfoot.Shared do
   alias Flatfoot.Shared.User
 
   @doc """
-  Deletes a User.
+  Deletes a User. If invalid user_id provided, will raise error.
 
   ## Examples
 
@@ -16,10 +16,10 @@ defmodule Flatfoot.Shared do
       {:ok, %User{}}
 
       iex> delete_user(user_id)
-      {:error, %Ecto.Changeset{}}
+      ** (Ecto.NoResultsError)
 
   """
   def delete_user(user_id) do
-    User |> Repo.get(user_id) |> Repo.delete
+    User |> Repo.get!(user_id) |> Repo.delete
   end
 end
