@@ -371,12 +371,15 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
-  Deletes a BlackoutOption.
+  Deletes a BlackoutOption. Invalid blackout_option will raise an error. Invalid paramters will return :error and the changeset with errors.
 
   ## Examples
 
       iex> delete_blackout_option(blackout_option)
       {:ok, %BlackoutOption{}}
+
+      iex> delete_blackout_option(0)
+      ** (FunctionClauseError)
 
       iex> delete_blackout_option(blackout_option)
       {:error, %Ecto.Changeset{}}
