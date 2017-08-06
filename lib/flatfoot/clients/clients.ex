@@ -13,9 +13,7 @@ defmodule Flatfoot.Clients do
   alias Flatfoot.Clients.User
 
   @doc """
-  Returns the list of users.
-
-  Returns an empty list if no users exist in the database.
+  Returns the list of users. Returns an empty list if no users exist in the database.
 
   ## Examples
 
@@ -44,9 +42,7 @@ defmodule Flatfoot.Clients do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
-  Gets the first user matching the providing params.
-
-  Raises `Ecto.NoResultsError` if the User does not exist.
+  Gets the first user matching the providing params. Raises `Ecto.NoResultsError` if the User does not exist.
 
   ## Examples
 
@@ -60,9 +56,7 @@ defmodule Flatfoot.Clients do
   def get_user_by_username(username), do: Repo.get_by(User, username: username)
 
   @doc """
-  Gets the first user matching the providing params.
-
-  Returns nil if no user exists.
+  Gets the first user matching the providing params. Returns nil if no user exists.
 
   ## Examples
 
@@ -94,7 +88,7 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
-  Updates a user. If error, will return an :error and a changeset with the errors.
+  Updates a user. If error, will return an :error and a changeset with the errors.  If the user does not exist, raise a FunctionClauseError.
 
   ## Examples
 
@@ -103,6 +97,9 @@ defmodule Flatfoot.Clients do
 
       iex> update_user(user, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
+
+      iex> update_user(invalid_user)
+      ** (FunctionClauseError)
 
   """
   def update_user(%User{} = user, attrs) do
@@ -112,15 +109,18 @@ defmodule Flatfoot.Clients do
   end
 
   @doc """
-  Updates a user. If error, will return an :error and a changeset with the errors.
+  Updates a user. If error, will return an :error and a changeset with the errors.  If the user does not exist, raise a FunctionClauseError.
 
   ## Examples
 
-      iex> update_user(user, %{field: new_value})
+      iex> update_user_and_password(user, %{field: new_value})
       {:ok, %User{}}
 
-      iex> update_user(user, %{field: bad_value})
+      iex> update_user_and_password(user, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
+
+      iex> update_user_and_password(invalid_user)
+      ** (FunctionClauseError)
 
   """
   def update_user_and_password(%User{} = user, attrs) do
@@ -137,7 +137,7 @@ defmodule Flatfoot.Clients do
       iex> delete_user(user)
       {:ok, %User{}}
 
-      iex> delete_user(user)
+      iex> delete_user(invalid_user)
       ** (FunctionClauseError)
 
   """
