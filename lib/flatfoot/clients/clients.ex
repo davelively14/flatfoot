@@ -153,7 +153,7 @@ defmodule Flatfoot.Clients do
   alias Flatfoot.Clients.Session
 
   @doc """
-  Pass a valid user_id and returns a Session. Will raise an Ecto.NoResultsError if the user does not exist.
+  Pass a valid user_id and returns a Session. Will raise an Ecto.NoResultsError if the user does not exist. Invalid attributes will raise additional errors
 
   ## Examples
 
@@ -162,6 +162,12 @@ defmodule Flatfoot.Clients do
 
       iex> login(%{user_id: invalid_id})
       ** (Ecto.NoResultsError)
+
+      iex> login(not_a_map)
+      ** (ArgumentError)
+
+      iex> login(%{not_user_id: 12})
+      ** (KeyError)
 
   """
   def login(attrs) do
@@ -181,8 +187,11 @@ defmodule Flatfoot.Clients do
 
     iex> get_session_by_token(invalid_token)
     nil
+
+    iex> get_session_by_token(%{non_string: true})
+    ** (FunctionClauseError)
   """
-  def get_session_by_token(token), do: Repo.get_by(Session, token: token)
+  def get_session_by_token(token) when is_bitstring(token), do: Repo.get_by(Session, token: token)
 
   @doc """
   Pass a valid token and returns the corresponding Session. If no Session exists, will return nil.
@@ -194,8 +203,11 @@ defmodule Flatfoot.Clients do
 
     iex> get_user_by_token(invalid_token)
     nil
+
+    iex> get_user_by_token(%{non_string: true})
+    ** (FunctionClauseError)
   """
-  def get_user_by_token(token) do
+  def get_user_by_token(token) when is_bitstring(token) do
     if session = Session |> Repo.get_by(token: token) do
       User |> Repo.get(session.user_id)
     end
