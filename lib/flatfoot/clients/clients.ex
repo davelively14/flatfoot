@@ -230,6 +230,9 @@ defmodule Flatfoot.Clients do
       iex> list_notification_records(not_a_user_id)
       []
 
+      iex> list_notification_records(invalid_type)
+      ** (Ecto.Query.CastError)
+
   """
   def list_notification_records(user_id) do
     Repo.all from r in NotificationRecord, where: r.user_id == ^user_id
@@ -267,6 +270,9 @@ defmodule Flatfoot.Clients do
       iex> create_notification_record(%{nickname: nil, email: "dlom", user_id: nil})
       {:error, %Ecto.Changeset{}}
 
+      iex> create_notification_record("not a map")
+      ** (Ecto.CastError)
+
   """
   def create_notification_record(attrs) do
     %NotificationRecord{}
@@ -279,11 +285,14 @@ defmodule Flatfoot.Clients do
 
   ## Examples
 
-      iex> update_notification_record(user, %{field: new_value})
+      iex> update_notification_record(record, %{field: new_value})
       {:ok, %NotificationRecord{}}
 
-      iex> update_notification_record(user, %{field: bad_value})
+      iex> update_notification_record(record, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
+
+      iex> update_notification_record(not_a_notification_record_struct, %{field: bad_value})
+      ** (FunctionClauseError)
 
   """
   def update_notification_record(%NotificationRecord{} = record, attrs) do
@@ -302,6 +311,9 @@ defmodule Flatfoot.Clients do
 
       iex> delete_notification_record(invalid_notification_record)
       {:error, %Ecto.Changeset{}}
+
+      iex> delete_notification_record(not_a_notification_record_struct)
+      ** (FunctionClauseError)
 
   """
   def delete_notification_record(%NotificationRecord{} = notification_record) do
