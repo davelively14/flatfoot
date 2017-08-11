@@ -337,6 +337,9 @@ defmodule Flatfoot.Clients do
       iex> list_blackout_options(bad_user_id)
       []
 
+      iex> list_blackout_options(invalid_data_type)
+      ** (Ecto.Query.CastError)
+
   """
   def list_blackout_options(user_id) do
     Repo.all from r in BlackoutOption, where: r.user_id == ^user_id
@@ -355,6 +358,8 @@ defmodule Flatfoot.Clients do
       iex> get_blackout_option!(invalid_id)
       ** (Ecto.NoResultsError)
 
+      iex> get_blackout_option!(invalid_data_type)
+      ** (Ecto.Query.CastError)
   """
   def get_blackout_option!(id), do: Repo.get!(BlackoutOption, id)
 
@@ -369,6 +374,8 @@ defmodule Flatfoot.Clients do
       iex> create_blackout_option(%{user_id: nil})
       {:error, %Ecto.Changeset{}}
 
+      iex> create_blackout_option(invalid_data_type)
+      ** (Ecto.Query.CastError)
   """
   def create_blackout_option(attrs \\ %{}) do
     %BlackoutOption{}
@@ -387,6 +394,11 @@ defmodule Flatfoot.Clients do
       iex> update_blackout_option(blackout_option, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
+      iex> update_blackout_option(non_blackout_option_struct, %{field: bad_value})
+      ** (FunctionClauseError)
+
+      iex> create_blackout_option(blackout_option, invalid_data_type)
+      ** (Ecto.Query.CastError)
   """
   def update_blackout_option(%BlackoutOption{} = blackout_option, attrs) do
     blackout_option
@@ -402,12 +414,14 @@ defmodule Flatfoot.Clients do
       iex> delete_blackout_option(blackout_option)
       {:ok, %BlackoutOption{}}
 
-      iex> delete_blackout_option(0)
+      iex> delete_blackout_option(non_blackout_option_struct)
       ** (FunctionClauseError)
 
       iex> delete_blackout_option(blackout_option)
       {:error, %Ecto.Changeset{}}
 
+      iex> delete_blackout_option(invalid_or_blank_blackout_option)
+      ** (CompileError)
   """
   def delete_blackout_option(%BlackoutOption{} = blackout_option) do
     Repo.delete(blackout_option)
