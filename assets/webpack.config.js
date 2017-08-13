@@ -4,7 +4,7 @@ var path = require('path')
 var webpack = require('webpack')
 
 function root(dest) { return path.resolve(__dirname, "../", dest) }
-function web(dest) { return root('lib/flatfoot/web/static/' + dest) }
+function web(dest) { return root('lib/flatfoot_web/static/' + dest) }
 
 var config = module.exports = {
   entry: {
