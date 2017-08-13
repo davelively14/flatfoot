@@ -1,6 +1,6 @@
-defmodule Flatfoot.Web.BlackoutOptionView do
-  use Flatfoot.Web, :view
-  alias Flatfoot.Web.BlackoutOptionView
+defmodule FlatfootWeb.BlackoutOptionView do
+  use FlatfootWeb, :view
+  alias FlatfootWeb.BlackoutOptionView
 
   def render("index.json", %{blackout_options: blackout_options}) do
     %{data: render_many(blackout_options, BlackoutOptionView, "blackout_option.json")}

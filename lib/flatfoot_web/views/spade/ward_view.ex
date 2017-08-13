@@ -1,6 +1,6 @@
-defmodule Flatfoot.Web.WardView do
-  use Flatfoot.Web, :view
-  alias Flatfoot.Web.WardView
+defmodule FlatfootWeb.WardView do
+  use FlatfootWeb, :view
+  alias FlatfootWeb.WardView
 
   def render("ward.json", %{ward: ward}) do
     %{
@@ -19,7 +19,7 @@ defmodule Flatfoot.Web.WardView do
       relationship: ward.relationship,
       active: ward.active,
       user_id: ward.user_id,
-      ward_accounts: render_many(ward.ward_accounts, Flatfoot.Web.WardAccountView, "ward_account_preloaded_backend.json")
+      ward_accounts: render_many(ward.ward_accounts, FlatfootWeb.WardAccountView, "ward_account_preloaded_backend.json")
     }
   end
 

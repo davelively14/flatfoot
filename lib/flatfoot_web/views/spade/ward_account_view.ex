@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.WardAccountView do
-  use Flatfoot.Web, :view
+defmodule FlatfootWeb.WardAccountView do
+  use FlatfootWeb, :view
 
   def render("ward_account_preloaded_backend.json", %{ward_account: ward_account}) do
     %{

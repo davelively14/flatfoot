@@ -1,6 +1,7 @@
-defmodule Flatfoot.Web.SpadeChannel do
-  use Flatfoot.Web, :channel
-  alias Flatfoot.{Spade, SpadeInspector, Web.WardView, Web.WardAccountView, Web.Spade.WardResultView}
+defmodule FlatfootWeb.SpadeChannel do
+  use FlatfootWeb, :channel
+  alias Flatfoot.{Spade, SpadeInspector}
+  alias FlatfootWeb.{WardView, WardAccountView, Spade.WardResultView}
 
   @doc """
   On join, will return a fully preloaded user JSON response. Can only join a channel if you are the authorized user.
@@ -12,7 +13,7 @@ defmodule Flatfoot.Web.SpadeChannel do
       user_id |> String.to_integer != socket.assigns.user_id ->
         {:error, "Unauthorized"}
       user = Spade.get_user_preload(user_id) ->
-        {:ok, Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user}), assign(socket, :user_id, user.id)}
+        {:ok, Phoenix.View.render(FlatfootWeb.Spade.UserView, "user.json", %{user: user}), assign(socket, :user_id, user.id)}
       true ->
         {:error, "User does not exist"}
     end
@@ -28,7 +29,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   """
   def handle_in("get_user", _, socket) do
     if user = Spade.get_user_preload(socket.assigns.user_id) do
-      broadcast! socket, "user_data", Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user})
+      broadcast! socket, "user_data", Phoenix.View.render(FlatfootWeb.Spade.UserView, "user.json", %{user: user})
 
       {:reply, :ok, socket}
     else
@@ -66,7 +67,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   def handle_in("get_ward_account_results", %{"ward_account_id" => id, "as_of" => as_of}, socket) do
     if Regex.match?(~r/\d{4}-\d{2}-\d{2}/, as_of) do
       results = Spade.list_ward_results(id, as_of)
-      broadcast! socket, "ward_account_#{id}_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+      broadcast! socket, "ward_account_#{id}_results", Phoenix.View.render(FlatfootWeb.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
 
       {:reply, :ok, socket}
     else
@@ -75,7 +76,7 @@ defmodule Flatfoot.Web.SpadeChannel do
   end
   def handle_in("get_ward_account_results", %{"ward_account_id" => id}, socket) do
     results = Spade.list_ward_results(id)
-    broadcast! socket, "ward_account_#{id}_results", Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
+    broadcast! socket, "ward_account_#{id}_results", Phoenix.View.render(FlatfootWeb.Spade.WardResultView, "ward_result_list.json", %{ward_results: results})
 
     {:reply, :ok, socket}
   end

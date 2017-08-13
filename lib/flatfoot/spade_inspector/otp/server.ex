@@ -90,7 +90,7 @@ defmodule Flatfoot.SpadeInspector.Server do
   def handle_info({:result, ids, results}, state) do
     results = results |> Enum.map(&add_rating_and_store(&1))
 
-    Flatfoot.Web.Endpoint.broadcast("spade:#{ids.user_id}", "new_ward_results", %{ward_results: results})
+    FlatfootWeb.Endpoint.broadcast("spade:#{ids.user_id}", "new_ward_results", %{ward_results: results})
 
     {:noreply, state}
   end

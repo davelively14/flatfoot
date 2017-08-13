@@ -1,3 +1,3 @@
-defmodule Flatfoot.Web.LayoutView do
-  use Flatfoot.Web, :view
+defmodule FlatfootWeb.LayoutView do
+  use FlatfootWeb, :view
 end

@@ -1,11 +1,11 @@
-defmodule Flatfoot.Web.ChangesetView do
-  use Flatfoot.Web, :view
+defmodule FlatfootWeb.ChangesetView do
+  use FlatfootWeb, :view
 
   @doc """
   Traverses and translates changeset errors.
 
   See `Ecto.Changeset.traverse_errors/2` and
-  `Flatfoot.Web.ErrorHelpers.translate_error/1` for more details.
+  `FlatfootWeb.ErrorHelpers.translate_error/1` for more details.
   """
   def translate_errors(changeset) do
     Ecto.Changeset.traverse_errors(changeset, &translate_error/1)

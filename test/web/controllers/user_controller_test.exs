@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.UserControllerTest do
-  use Flatfoot.Web.ConnCase
+defmodule FlatfootWeb.UserControllerTest do
+  use FlatfootWeb.ConnCase
 
   alias Flatfoot.{Clients.User, Repo, Clients}
 
@@ -191,7 +191,7 @@ defmodule Flatfoot.Web.UserControllerTest do
   defp render_json(template, assigns) do
     assigns = Map.new(assigns)
 
-    Flatfoot.Web.UserView.render(template, assigns)
+    FlatfootWeb.UserView.render(template, assigns)
     |> Poison.encode!
     |> Poison.decode!
   end

@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.BlackoutOptionControllerTest do
-  use Flatfoot.Web.ConnCase
+defmodule FlatfootWeb.BlackoutOptionControllerTest do
+  use FlatfootWeb.ConnCase
 
   setup [:login_user_setup]
 

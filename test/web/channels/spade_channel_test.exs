@@ -1,7 +1,8 @@
-defmodule Flatfoot.Web.SpadeChannelTest do
-  use Flatfoot.Web.ChannelCase
+defmodule FlatfootWeb.SpadeChannelTest do
+  use FlatfootWeb.ChannelCase
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
-  alias Flatfoot.{Web.SpadeChannel, Spade}
+  alias Flatfoot.Spade
+  alias FlatfootWeb.SpadeChannel
 
   setup config do
     ExVCR.Config.cassette_library_dir("test/support/vcr_cassettes")
@@ -39,8 +40,8 @@ defmodule Flatfoot.Web.SpadeChannelTest do
     test "will return response and socket", %{user: user} do
       {:ok, resp, socket} = socket("", %{user_id: user.id}) |> subscribe_and_join(SpadeChannel, "spade:#{user.id}")
 
-      assert resp == Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user})
-      assert socket.channel == Flatfoot.Web.SpadeChannel
+      assert resp == Phoenix.View.render(FlatfootWeb.Spade.UserView, "user.json", %{user: user})
+      assert socket.channel == FlatfootWeb.SpadeChannel
       assert socket.assigns.user_id == user.id
       leave socket
     end
@@ -63,7 +64,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast "user_data", payload
 
       assert payload.id == user.id
-      assert payload == Phoenix.View.render(Flatfoot.Web.Spade.UserView, "user.json", %{user: user})
+      assert payload == Phoenix.View.render(FlatfootWeb.Spade.UserView, "user.json", %{user: user})
 
       leave socket
     end
@@ -78,7 +79,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast message, payload
       assert message == "ward_#{ward.id}_data"
       assert payload.id == ward.id
-      assert payload == Phoenix.View.render(Flatfoot.Web.WardView, "ward_preload.json", %{ward: ward})
+      assert payload == Phoenix.View.render(FlatfootWeb.WardView, "ward_preload.json", %{ward: ward})
 
       leave socket
     end
@@ -118,7 +119,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       push socket, "get_ward_account_results", %{"ward_account_id" => ward_account_id, "as_of" => "2017-01-01"}
       assert_broadcast message, payload
       assert message == "ward_account_#{ward_account_id}_results"
-      assert payload == Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results})
+      assert payload == Phoenix.View.render(FlatfootWeb.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results})
 
       push socket, "get_ward_account_results", %{"ward_account_id" => ward_account_id, "as_of" => "2224-01-01"}
       assert_broadcast message, payload
@@ -130,7 +131,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
   describe "get_ward_results_for_user" do
     @tag :full_spec
     test "will return all results for a user", %{socket: socket, ward_data: ward_data, token: token} do
-      expected_results = Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_data.ward_results})
+      expected_results = Phoenix.View.render(FlatfootWeb.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_data.ward_results})
 
       push socket, "get_ward_results_for_user", %{"token" => token}
       assert_broadcast message, payload
@@ -141,7 +142,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
 
     @tag :full_spec
     test "will return only the results for a user after a specified as_of date", %{socket: socket, ward_data: ward_data, token: token} do
-      expected_results = Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_data.ward_results})
+      expected_results = Phoenix.View.render(FlatfootWeb.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_data.ward_results})
 
       push socket, "get_ward_results_for_user", %{"token" => token, "as_of" => "1900-01-01"}
       assert_broadcast message, payload
@@ -441,7 +442,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast "cleared_ward_results", payload
 
       assert payload.ward_results |> length == ward_results |> length
-      assert Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results}) |> Map.get(:ward_results) |> List.first == payload.ward_results |> List.last
+      assert Phoenix.View.render(FlatfootWeb.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results}) |> Map.get(:ward_results) |> List.first == payload.ward_results |> List.last
       assert Spade.get_ward_account_preload!(ward_account.id) |> Map.get(:ward_results) |> length == 0
     end
 
@@ -470,7 +471,7 @@ defmodule Flatfoot.Web.SpadeChannelTest do
       assert_broadcast "cleared_ward_results", payload
 
       assert payload.ward_results |> length == ward_results |> length
-      assert Phoenix.View.render(Flatfoot.Web.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results}) |> Map.get(:ward_results) |> List.first == payload.ward_results |> List.last
+      assert Phoenix.View.render(FlatfootWeb.Spade.WardResultView, "ward_result_list.json", %{ward_results: ward_results}) |> Map.get(:ward_results) |> List.first == payload.ward_results |> List.last
       assert ward.id |> Spade.get_ward_preload_with_results |> Map.get(:ward_accounts) |> Enum.map(&(&1.ward_results)) |> List.flatten |> length == 0
     end
 

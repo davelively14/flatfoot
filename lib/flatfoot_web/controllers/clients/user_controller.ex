@@ -1,12 +1,12 @@
-defmodule Flatfoot.Web.UserController do
-  use Flatfoot.Web, :controller
+defmodule FlatfootWeb.UserController do
+  use FlatfootWeb, :controller
 
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
 
   alias Flatfoot.Clients
   alias Flatfoot.Clients.User
 
-  action_fallback Flatfoot.Web.FallbackController
+  action_fallback FlatfootWeb.FallbackController
 
   def index(conn, _params) do
     users = Clients.list_users()
@@ -21,7 +21,7 @@ defmodule Flatfoot.Web.UserController do
       conn
       |> put_status(:created)
       # |> put_resp_header("location", user_path(conn, :show, user))
-      |> render(Flatfoot.Web.SessionView, "show.json", session: session)
+      |> render(FlatfootWeb.SessionView, "show.json", session: session)
     end
   end
 
@@ -42,7 +42,7 @@ defmodule Flatfoot.Web.UserController do
             render(conn, "show.json", user: user)
           end
         true ->
-          render(conn |> put_status(401), Flatfoot.Web.ErrorView, "error.json", error: "Current password is invalid.")
+          render(conn |> put_status(401), FlatfootWeb.ErrorView, "error.json", error: "Current password is invalid.")
       end
     else
       with {:ok, %User{} = user} <- Clients.update_user(user, user_params) do

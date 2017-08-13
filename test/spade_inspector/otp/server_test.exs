@@ -26,7 +26,7 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
       use_cassette "twitter.fetch" do
         assert Server.fetch_update(ward.id) == :ok
 
-        Flatfoot.Web.Endpoint.subscribe("spade:#{user.id}")
+        FlatfootWeb.Endpoint.subscribe("spade:#{user.id}")
         assert_broadcast "new_ward_results", _payload
         result = Flatfoot.Spade.WardResult |> Flatfoot.Repo.all |> List.last
         assert result.backend_id == backend.id

@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.SessionControllerTest do
-  use Flatfoot.Web.ConnCase
+defmodule FlatfootWeb.SessionControllerTest do
+  use FlatfootWeb.ConnCase
 
   alias Flatfoot.Clients
 

@@ -1,6 +1,6 @@
-defmodule Flatfoot.Web.NotificationRecordView do
-  use Flatfoot.Web, :view
-  alias Flatfoot.Web.NotificationRecordView
+defmodule FlatfootWeb.NotificationRecordView do
+  use FlatfootWeb, :view
+  alias FlatfootWeb.NotificationRecordView
 
   def render("show.json", %{notification_record: notification_record}) do
     %{data: render_one(notification_record, NotificationRecordView, "notification_record.json")}

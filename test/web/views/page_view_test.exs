@@ -1,3 +1,3 @@
-defmodule Flatfoot.Web.PageViewTest do
-  use Flatfoot.Web.ConnCase, async: true
+defmodule FlatfootWeb.PageViewTest do
+  use FlatfootWeb.ConnCase, async: true
 end

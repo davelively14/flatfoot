@@ -10,10 +10,10 @@ config :flatfoot,
   ecto_repos: [Flatfoot.Repo]
 
 # Configures the endpoint
-config :flatfoot, Flatfoot.Web.Endpoint,
+config :flatfoot, FlatfootWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "GFYuRHS8Zyb3tZTeks2xa0hNVOrfqQvPV4ozQfxkcPruzT81RoRSJTcJKWJlYjRQ",
-  render_errors: [view: Flatfoot.Web.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: FlatfootWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Flatfoot.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

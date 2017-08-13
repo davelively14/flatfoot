@@ -1,5 +1,5 @@
 defmodule Flatfoot.Clients.AuthTest do
-  use Flatfoot.Web.ConnCase
+  use FlatfootWeb.ConnCase
   alias Flatfoot.Clients.Auth
 
   @opts Auth.init([])

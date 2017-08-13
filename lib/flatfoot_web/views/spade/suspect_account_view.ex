@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.SuspectAccountView do
-  use Flatfoot.Web, :view
+defmodule FlatfootWeb.SuspectAccountView do
+  use FlatfootWeb, :view
 
   # Requires backend to be preloaded.
   def render("suspect_account.json", %{suspect_account: suspect_account}) do

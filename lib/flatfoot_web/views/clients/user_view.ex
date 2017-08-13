@@ -1,6 +1,6 @@
-defmodule Flatfoot.Web.UserView do
-  use Flatfoot.Web, :view
-  alias Flatfoot.Web.UserView
+defmodule FlatfootWeb.UserView do
+  use FlatfootWeb, :view
+  alias FlatfootWeb.UserView
 
   def render("index.json", %{users: users}) do
     %{data: render_many(users, UserView, "user.json")}

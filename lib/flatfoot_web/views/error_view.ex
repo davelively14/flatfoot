@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.ErrorView do
-  use Flatfoot.Web, :view
+defmodule FlatfootWeb.ErrorView do
+  use FlatfootWeb, :view
 
   def render("404.html", _assigns) do
     "Page not found"

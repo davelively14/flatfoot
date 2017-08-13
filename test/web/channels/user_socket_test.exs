@@ -1,7 +1,7 @@
-defmodule Flatfoot.Web.UserSocketTest do
-  use Flatfoot.Web.ChannelCase
+defmodule FlatfootWeb.UserSocketTest do
+  use FlatfootWeb.ChannelCase
   use Phoenix.ConnTest, only: [:get]
-  alias Flatfoot.Web.UserSocket
+  alias FlatfootWeb.UserSocket
 
   describe "JOIN" do
     setup :login_user_setup

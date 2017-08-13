@@ -9,7 +9,7 @@ defmodule Flatfoot.Application do
     # Define workers and child supervisors to be supervised
     children = [
       supervisor(Flatfoot.Repo, []),
-      supervisor(Flatfoot.Web.Endpoint, []),
+      supervisor(FlatfootWeb.Endpoint, []),
       supervisor(Flatfoot.SpadeInspector.SpadeInspectorSupervisor, []),
       supervisor(Flatfoot.Archer.ArcherSupervisor, [])
     ]

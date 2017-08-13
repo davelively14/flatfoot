@@ -1,6 +1,6 @@
-defmodule Flatfoot.Web.SessionView do
-  use Flatfoot.Web, :view
-  alias Flatfoot.Web.SessionView
+defmodule FlatfootWeb.SessionView do
+  use FlatfootWeb, :view
+  alias FlatfootWeb.SessionView
 
   def render("show.json", %{session: session}) do
     %{data: render_one(session, SessionView, "session.json")}

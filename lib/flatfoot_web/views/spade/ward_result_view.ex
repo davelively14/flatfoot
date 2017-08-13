@@ -1,6 +1,6 @@
-defmodule Flatfoot.Web.Spade.WardResultView do
-  use Flatfoot.Web, :view
-  alias Flatfoot.Web.Spade.WardResultView
+defmodule FlatfootWeb.Spade.WardResultView do
+  use FlatfootWeb, :view
+  alias FlatfootWeb.Spade.WardResultView
 
   def render("ward_result.json", %{ward_result: ward_result}) do
     %{

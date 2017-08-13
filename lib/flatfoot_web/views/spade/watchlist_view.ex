@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.WatchlistView do
-  use Flatfoot.Web, :view
+defmodule FlatfootWeb.WatchlistView do
+  use FlatfootWeb, :view
 
   # Requires suspects to be preloaded
   def render("watchlist.json", %{watchlist: watchlist}) do
@@ -7,7 +7,7 @@ defmodule Flatfoot.Web.WatchlistView do
       id: watchlist.id,
       name: watchlist.name,
       user_id: watchlist.user_id,
-      suspects: render_many(watchlist.suspects, Flatfoot.Web.SuspectView, "suspect.json")
+      suspects: render_many(watchlist.suspects, FlatfootWeb.SuspectView, "suspect.json")
     }
   end
 end

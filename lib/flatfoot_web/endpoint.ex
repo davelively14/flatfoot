@@ -1,7 +1,7 @@
-defmodule Flatfoot.Web.Endpoint do
+defmodule FlatfootWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :flatfoot
 
-  socket "/socket", Flatfoot.Web.UserSocket
+  socket "/socket", FlatfootWeb.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -40,7 +40,7 @@ defmodule Flatfoot.Web.Endpoint do
 
   plug CORSPlug
 
-  plug Flatfoot.Web.Router
+  plug FlatfootWeb.Router
 
   @doc """
   Dynamically loads configuration from the system environment

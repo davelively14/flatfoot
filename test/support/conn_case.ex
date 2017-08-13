@@ -1,4 +1,4 @@
-defmodule Flatfoot.Web.ConnCase do
+defmodule FlatfootWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -19,12 +19,12 @@ defmodule Flatfoot.Web.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import Flatfoot.Web.Router.Helpers
+      import FlatfootWeb.Router.Helpers
       import Flatfoot.Factory
       import Flatfoot.Authorize
 
       # The default endpoint for testing
-      @endpoint Flatfoot.Web.Endpoint
+      @endpoint FlatfootWeb.Endpoint
     end
   end
 

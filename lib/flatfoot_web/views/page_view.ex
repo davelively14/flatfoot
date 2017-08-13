@@ -1,3 +1,3 @@
-defmodule Flatfoot.Web.PageView do
-  use Flatfoot.Web, :view
+defmodule FlatfootWeb.PageView do
+  use FlatfootWeb, :view
 end

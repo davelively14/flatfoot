@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.NotificationRecordControllerTest do
-  use Flatfoot.Web.ConnCase
+defmodule FlatfootWeb.NotificationRecordControllerTest do
+  use FlatfootWeb.ConnCase
 
   setup [:login_user_setup]
 

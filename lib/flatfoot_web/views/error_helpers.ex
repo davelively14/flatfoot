@@ -1,4 +1,4 @@
-defmodule Flatfoot.Web.ErrorHelpers do
+defmodule FlatfootWeb.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -32,9 +32,9 @@ defmodule Flatfoot.Web.ErrorHelpers do
     #     dgettext "errors", "is invalid"
     #
     if count = opts[:count] do
-      Gettext.dngettext(Flatfoot.Web.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(FlatfootWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(Flatfoot.Web.Gettext, "errors", msg, opts)
+      Gettext.dgettext(FlatfootWeb.Gettext, "errors", msg, opts)
     end
   end
 end

@@ -1,7 +1,8 @@
-defmodule Flatfoot.Web.SpadeViewTest do
-  use Flatfoot.Web.ConnCase, async: true
+defmodule FlatfootWeb.SpadeViewTest do
+  use FlatfootWeb.ConnCase, async: true
   # import Phoenix.View
-  alias Flatfoot.{Web.WatchlistView, Spade}
+  alias Flatfoot.Spade
+  alias FlatfootWeb.WatchlistView
 
   setup do
     watchlist = insert(:watchlist)

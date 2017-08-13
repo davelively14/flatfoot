@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.PageControllerTest do
-  use Flatfoot.Web.ConnCase
+defmodule FlatfootWeb.PageControllerTest do
+  use FlatfootWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

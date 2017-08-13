@@ -1,5 +1,5 @@
-defmodule Flatfoot.Web.Router do
-  use Flatfoot.Web, :router
+defmodule FlatfootWeb.Router do
+  use FlatfootWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -17,13 +17,13 @@ defmodule Flatfoot.Web.Router do
     plug Flatfoot.Clients.Auth
   end
 
-  scope "/", Flatfoot.Web do
+  scope "/", FlatfootWeb do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
   end
 
-  scope "/api", Flatfoot.Web do
+  scope "/api", FlatfootWeb do
     pipe_through :api
 
     resources "/login", SessionController, only: [:create]
@@ -31,7 +31,7 @@ defmodule Flatfoot.Web.Router do
     get "/users/token", UserController, :show
   end
 
-  scope "/api", Flatfoot.Web do
+  scope "/api", FlatfootWeb do
     pipe_through [:api, :authenticate]
 
     get "/token", SessionController, :get_ws_token
@@ -47,7 +47,7 @@ defmodule Flatfoot.Web.Router do
 
   # Want every other path to go back to root. This allows React router to handle
   # nested urls via links.
-  scope "/*path", Flatfoot.Web do
+  scope "/*path", FlatfootWeb do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index

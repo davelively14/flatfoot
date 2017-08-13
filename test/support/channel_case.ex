@@ -1,4 +1,4 @@
-defmodule Flatfoot.Web.ChannelCase do
+defmodule FlatfootWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -21,10 +21,10 @@ defmodule Flatfoot.Web.ChannelCase do
       use Phoenix.ChannelTest
       import Flatfoot.Factory
       import Flatfoot.Authorize
-      import Flatfoot.Web.Router.Helpers
+      import FlatfootWeb.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint Flatfoot.Web.Endpoint
+      @endpoint FlatfootWeb.Endpoint
     end
   end
 
