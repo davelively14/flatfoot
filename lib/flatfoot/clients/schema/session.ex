@@ -1,7 +1,7 @@
 defmodule Flatfoot.Clients.Session do
   use Ecto.Schema
 
-  schema "clients_sessions" do
+  schema "sessions" do
     field :token, :string
     belongs_to :user, Flatfoot.Clients.User
 
