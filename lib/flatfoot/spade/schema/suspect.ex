@@ -1,7 +1,7 @@
 defmodule Flatfoot.Spade.Suspect do
   use Ecto.Schema
 
-  schema "spade_suspects" do
+  schema "suspects" do
     belongs_to :watchlist, Flatfoot.Spade.Watchlist
     has_many :suspect_accounts, Flatfoot.Spade.SuspectAccount, on_delete: :delete_all
 
