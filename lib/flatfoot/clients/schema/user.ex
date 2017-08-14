@@ -1,7 +1,7 @@
 defmodule Flatfoot.Clients.User do
   use Ecto.Schema
 
-  schema "shared_users" do
+  schema "users" do
     field :email, :string
     field :password_hash, :string
     field :password, :string, virtual: true
