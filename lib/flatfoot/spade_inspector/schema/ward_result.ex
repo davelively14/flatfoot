@@ -1,7 +1,7 @@
 defmodule Flatfoot.SpadeInspector.WardResult do
   use Ecto.Schema
 
-  schema "spade_ward_results" do
+  schema "ward_results" do
     field :ward_account_id, :integer
     field :backend_id, :integer
 
