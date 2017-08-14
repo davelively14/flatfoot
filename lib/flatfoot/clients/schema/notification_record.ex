@@ -1,7 +1,7 @@
 defmodule Flatfoot.Clients.NotificationRecord do
   use Ecto.Schema
 
-  schema "clients_notification_records" do
+  schema "notification_records" do
     belongs_to :user, Flatfoot.Clients.User
     field :nickname, :string
     field :email, :string
