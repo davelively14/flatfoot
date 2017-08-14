@@ -1,7 +1,7 @@
 defmodule Flatfoot.SpadeInspector.Backend do
   use Ecto.Schema
 
-  schema "archer_backends" do
+  schema "backends" do
     field :module, :string
 
     timestamps()
