@@ -6,11 +6,8 @@
   "directories": {
     "test": "test"
   },
-  "jest": {
-    "roots": ["../lib"]
-  },
   "scripts": {
-    "test": "jest"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -24,11 +21,9 @@
   "homepage": "https://github.com/davelively14/flatfoot#readme",
   "devDependencies": {
     "babel-core": "^6.24.0",
-    "babel-jest": "^21.0.0",
     "babel-loader": "^6.4.1",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",
-    "jest": "^21.0.0",
     "webpack": "^2.3.2"
   },
   "dependencies": {
