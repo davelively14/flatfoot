@@ -2,10 +2,14 @@ module.exports = {
     "env": {
         "node": true,
         "es6": true,
-        "browser": true
+        "browser": true,
+        "jasmine": true
     },
     "extends": [
       "eslint:recommended"
+    ],
+    "plugins": [
+      "jasmine"
     ],
     "parserOptions": {
         "sourceType": "module",
