@@ -18,7 +18,7 @@ describe('backends', () => {
     expect(backends(['Some state'], {type: LOGOUT})).to.eql(initialState);
   });
 
-  it('should set state to passed backends', () => {
+  it('should set state to passed backends when SET_BACKENDS called', () => {
     let set_backends = ['one', 'two'];
     expect(backends(undefined, {type: SET_BACKENDS, backends: set_backends})).to.eql(set_backends);
   });
