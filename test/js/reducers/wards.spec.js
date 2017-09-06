@@ -1,9 +1,7 @@
 import wards from '../../../lib/flatfoot_web/static/js/reducers/wards';
 
 const initialState = [];
-const ADD_WARD = 'ADD_WARD', REMOVE_WARD = 'REMOVE_WARD',
-      UPDATE_WARD = 'UPDATE_WARD', LOGOUT = 'LOGOUT',
-      CLEAR_DASHBOARD = 'CLEAR_DASHBOARD';
+const ADD_WARD = 'ADD_WARD', REMOVE_WARD = 'REMOVE_WARD', UPDATE_WARD = 'UPDATE_WARD', LOGOUT = 'LOGOUT', CLEAR_DASHBOARD = 'CLEAR_DASHBOARD';
 
 var wardParams1 = {id: 1, name: 'Dave Lively', relationship: 'father', active: true};
 var updatedWardParams1 = {id: 1, name: 'Dave Johnson', relationship: 'father', active: true};
