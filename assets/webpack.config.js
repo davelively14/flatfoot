@@ -25,7 +25,7 @@ var config = module.exports = {
 
   module: {
     noParse: /vendor\/phoenix/,
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
