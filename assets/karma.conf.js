@@ -19,7 +19,7 @@ module.exports = function(config) {
     // this recursive or not. These files will be used as webpack entry points,
     // but we need to list the same thing below in preprocessors.
     files: [
-      '../test/js/*.spec.js'
+      '../test/js/**/*.spec.js'
     ],
 
 
@@ -32,7 +32,7 @@ module.exports = function(config) {
     // List which files get piped through which preprocessors. In this case, all
     // of our test files will be routed through webpack.
     preprocessors: {
-      '../test/js/*.spec.js': ['webpack']
+      '../test/js/**/*.spec.js': ['webpack']
     },
 
     // We can con­ﬁg­ure web­pack in karma (thanks to the karma-web­pack mod­ule) by
