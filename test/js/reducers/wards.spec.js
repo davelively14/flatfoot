@@ -21,6 +21,11 @@ describe('wards', () => {
     expect(wards([wardParams1], {type: ADD_WARD, ward_params: wardParams2})).to.eql([wardParams1, wardParams2]);
   });
 
+  it('ignores unrecognized params from passed ward_params when ADD_WARD called', () => {
+    let verboseWardParams = Object.assign({}, wardParams1, {nothing: true, num: 5});
+    expect(wards(undefined, {type: ADD_WARD, ward_params: verboseWardParams})).to.eql([wardParams1]);
+  });
+
   it('should remove a ward from the current state when REMOVE_WARD called', () => {
     expect(wards([wardParams1], {type: REMOVE_WARD, ward_id: wardParams1.id})).to.eql([]);
   });
