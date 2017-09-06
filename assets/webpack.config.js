@@ -30,7 +30,7 @@ var config = module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        query: {
+        options: {
           cacheDirectory: true,
           presets: [require.resolve('babel-preset-react'), require.resolve('babel-preset-es2015')]
         }
