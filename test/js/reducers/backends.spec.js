@@ -13,12 +13,12 @@ describe('backends', () => {
     expect(backends(undefined, {type: 'JOHNSON_CITY_TN'})).to.eql(initialState);
   });
 
-  it('should return to initial state when LOGOUT called', () => {
+  it('should return to initial state with LOGOUT type', () => {
     expect(backends(['Some state'], {})).to.eql(['Some state']);
     expect(backends(['Some state'], {type: LOGOUT})).to.eql(initialState);
   });
 
-  it('should set state to passed backends when SET_BACKENDS called', () => {
+  it('should set state to passed backends with SET_BACKENDS type', () => {
     let set_backends = ['one', 'two'];
     expect(backends(undefined, {type: SET_BACKENDS, backends: set_backends})).to.eql(set_backends);
   });
