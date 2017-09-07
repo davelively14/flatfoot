@@ -3,7 +3,7 @@ import wardAccounts from '../../../lib/flatfoot_web/static/js/reducers/ward_acco
 const initialState = [];
 const ADD_WARD_ACCOUNT = 'ADD_WARD_ACCOUNT', REMOVE_WARD_ACCOUNT = 'REMOVE_WARD_ACCOUNT', UPDATE_WARD_ACCOUNT = 'UPDATE_WARD_ACCOUNT', LOGOUT = 'LOGOUT', CLEAR_DASHBOARD = 'CLEAR_DASHBOARD';
 
-// TODO why does backend_module stay in both the JS version and the in the passed from Elixir version?
+// TODO why does backend_module (snake case) stay in both the JS version and the in the passed from Elixir version?
 var wardAccount1 = { id: 101, ward_id: 1, backend_module: 'Elixir.Twitter', handle: '@johnsmith', network: 'Twitter' };
 var wardAccountJS1 = { id: 101, wardId: 1, backend_module: 'Elixir.Twitter', handle: '@johnsmith', network: 'Twitter' };
 var updatedWardAccount1 = { id: 101, ward_id: 10, backend_module: 'Elixir.Twitter', handle: '@smithwicks', network: 'Twitter' };
