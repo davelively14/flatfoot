@@ -67,4 +67,82 @@ describe('ui', () => {
     let endState = Object.assign({}, startState, {dashboardTab: 'My Wards', wardFocus: 1, wardAccountFocus: undefined});
     expect(ui(startState, {type: SET_WARD_FOCUS, ward_id: 1})).to.eql(endState);
   });
+
+  it('should set wardAccountFocus with SET_WARD_ACCOUNT_FOCUS type and id', () => {
+    let endState = Object.assign({}, initialState, {wardAccountFocus: 102});
+    expect(ui(initialState, {type: SET_WARD_ACCOUNT_FOCUS, ward_account_id: 102})).to.eql(endState);
+  });
+
+  it('should set wardAccountFocus to undefined with SET_WARD_ACCOUNT_FOCUS type and no id', () => {
+    let startState = Object.assign({}, initialState, {wardAccountFocus: 102});
+    expect(startState.wardAccountFocus).to.eq(102);
+    expect(ui(startState, {type: SET_WARD_ACCOUNT_FOCUS}).wardAccountFocus).to.be.undefined;
+  });
+
+  it('should clear relevant ward focus vars with CLEAR_WARD_FOCUS type', () => {
+    let startState = Object.assign({}, initialState, {wardFocus: 1, wardAccountFocus: 101});
+    expect(ui(startState, {type: CLEAR_WARD_FOCUS})).to.eql(initialState);
+  });
+
+  it('should clear wardAccountFocus with CLEAR_WARD_ACCOUNT_FOCUS type', () => {
+    let startState = Object.assign({}, initialState, {wardAccountFocus: 101});
+    expect(ui(startState, {type: CLEAR_WARD_ACCOUNT_FOCUS})).to.eql(initialState);
+  });
+
+  it('should set formModal with OPEN_FORM_MODAL and name', () => {
+    let endState = Object.assign({}, initialState, {formModal: 'newUser'});
+    expect(ui(initialState, {type: OPEN_FORM_MODAL, name: 'newUser'})).to.eql(endState);
+  });
+
+  it('should set formModal to undefined with OPEN_FORM_MODAL and no name', () => {
+    let startState = Object.assign({}, initialState, {formModal: 'newUser'});
+    expect(startState.formModal).to.eq('newUser');
+    expect(ui(startState, {type: OPEN_FORM_MODAL}).formModal).to.be.undefined;
+  });
+
+  it('should remove wardFocus and wardAccountFocus on REMOVE_WARD type and matching ward id', () => {
+    let startState = Object.assign({}, initialState, {wardFocus: 1, wardAccountFocus: 101});
+    expect(ui(startState, {type: REMOVE_WARD, id: 1})).to.eql(initialState);
+  });
+
+  it('should maintain wardFocus and wardAccountFocus on REMOVE_WARD type and non-matching ward id', () => {
+    let startState = Object.assign({}, initialState, {wardFocus: 1, wardAccountFocus: 101});
+    expect(ui(startState, {type: REMOVE_WARD, id: 12})).to.eql(startState);
+  });
+
+  it('should set formModal to undefined with CLOSE_FORM_MODAL type', () => {
+    let startState = Object.assign({}, initialState, {formModal: 'newUser'});
+    expect(startState.formModal).to.eq('newUser');
+    expect(ui(startState, {type: CLOSE_FORM_MODAL}).formModal).to.be.undefined;
+  });
+
+  it('should set confirmModal to passed name with OPEN_CONFIRM_MODAL type', () => {
+    let endState = Object.assign({}, initialState, {confirmModal: 'yesorno'});
+    expect(ui(initialState, {type: OPEN_CONFIRM_MODAL, name: 'yesorno'})).to.eql(endState);
+  });
+
+  it('should set confirmModal to undefined if not passed name with OPEN_CONFIRM_MODAL type', () => {
+    let startState = Object.assign({}, initialState, {confirmModal: 'yesorno'});
+    expect(startState.confirmModal).to.eq('yesorno');
+    expect(ui(startState, {type: OPEN_CONFIRM_MODAL}).confirmModal).to.be.undefined;
+  });
+
+  it('should set confirmModal to undefined with CLOSE_CONFIRM_MODAL type', () => {
+    let startState = Object.assign({}, initialState, {confirmModal: 'yesorno'});
+    expect(startState.confirmModal).to.eq('yesorno');
+    expect(ui(startState, {type: CLOSE_CONFIRM_MODAL}).confirmModal).to.be.undefined;
+  });
+
+  it('should reset state to initialState with LOGOUT type', () => {
+    let startState = {
+      showUserEdit: true,
+      showChangePassword: false,
+      dashboardTab: 'My Wards',
+      wardFocus: 1,
+      wardAccountFocus: 12,
+      formModal: undefined,
+      confirmModal: undefined
+    };
+    expect(ui(startState, {type: LOGOUT})).to.eql(initialState);
+  });
 });
