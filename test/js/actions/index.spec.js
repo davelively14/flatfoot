@@ -102,5 +102,61 @@ describe('index', () => {
         expect(actions.clearSocket()).to.eql({type: actions.CLEAR_SOCKET});
       });
     });
+
+    describe('UI', () => {
+      it('should return expected object for toggleUserEdit', () => {
+        expect(actions.toggleUserEdit()).to.eql({type: actions.TOGGLE_USER_EDIT});
+      });
+
+      it('should return expected object for toggleChangePassword', () => {
+        expect(actions.toggleChangePassword()).to.eql({type: actions.TOGGLE_CHANGE_PASSWORD});
+      });
+
+      it('should return expected object for setDashboardTab', () => {
+        let params = { newTab: 'new tab' };
+        let endState = Object.assign({}, {type: actions.SET_DASHBOARD_TAB}, params);
+        expect(actions.setDashboardTab(params.newTab)).to.eql(endState);
+      });
+
+      it('should return expected object for setWardFocus', () => {
+        let params = { ward_id: 3 };
+        let endState = Object.assign({}, {type: actions.SET_WARD_FOCUS}, params);
+        expect(actions.setWardFocus(params.ward_id)).to.eql(endState);
+      });
+
+      it('should return expected object for setWardAccountFocus', () => {
+        let params = { ward_account_id: 3 };
+        let endState = Object.assign({}, {type: actions.SET_WARD_ACCOUNT_FOCUS}, params);
+        expect(actions.setWardAccountFocus(params.ward_account_id)).to.eql(endState);
+      });
+
+      it('should return expected object for clearWardFocus', () => {
+        expect(actions.clearWardFocus()).to.eql({type: actions.CLEAR_WARD_FOCUS});
+      });
+
+      it('should return expected object for clearWardAccountFocus', () => {
+        expect(actions.clearWardAccountFocus()).to.eql({type: actions.CLEAR_WARD_ACCOUNT_FOCUS});
+      });
+
+      it('should return expected object for openFormModal', () => {
+        let params = { name: 'newUser' };
+        let endState = Object.assign({}, {type: actions.OPEN_FORM_MODAL}, params);
+        expect(actions.openFormModal(params.name)).to.eql(endState);
+      });
+
+      it('should return expected object for closeFormModal', () => {
+        expect(actions.closeFormModal()).to.eql({type: actions.CLOSE_FORM_MODAL});
+      });
+
+      it('should return expected object for openConfirmModal', () => {
+        let params = { name: 'yesorno' };
+        let endState = Object.assign({}, {type: actions.OPEN_CONFIRM_MODAL}, params);
+        expect(actions.openConfirmModal(params.name)).to.eql(endState);
+      });
+
+      it('should return expected object for closeConfirmModal', () => {
+        expect(actions.closeConfirmModal()).to.eql({type: actions.CLOSE_CONFIRM_MODAL});
+      });
+    });
   });
 });
