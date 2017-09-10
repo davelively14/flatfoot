@@ -65,4 +65,42 @@ describe('index', () => {
       expect(actions.ADD_FORM_VALUE).to.eq('ADD_FORM_VALUE');
     });
   });
+
+  describe('action creaters', () => {
+    it('should return expected object for Super action creators', () => {
+      expect(actions.logout()).to.eql({type: actions.LOGOUT});
+      expect(actions.clearDashboard()).to.eql({type: actions.CLEAR_DASHBOARD});
+    });
+
+    it('should return expected object for setUser', () => {
+      let params = { id: 1, username: 'testname', email: 't@gmail.com', globalThreshold: 0 };
+      let endState = Object.assign({}, {type: actions.SET_USER}, params);
+      expect(actions.setUser(params.id, params.username, params.email)).to.eql(endState);
+      expect(actions.setUser(params.id, params.username, params.email, params.globalThreshold)).to.eql(endState);
+    });
+
+    describe('session', () => {
+      it('should return expected object for setToken', () => {
+        let params = { token: 'asdf' };
+        let endState = Object.assign({}, {type: actions.SET_TOKEN}, params);
+        expect(actions.setToken(params.token)).to.eql(endState);
+      });
+
+      it('should return expected object for setPhoenixToken', () => {
+        let params = { phoenixToken: 'asdf' };
+        let endState = Object.assign({}, {type: actions.SET_PHOENIX_TOKEN}, params);
+        expect(actions.setPhoenixToken(params.phoenixToken)).to.eql(endState);
+      });
+
+      it('should return expected object for setSocket', () => {
+        let params = { phoenixToken: 'asdf' };
+        let endState = Object.assign({}, {type: actions.SET_SOCKET}, params);
+        expect(actions.setSocket(params.phoenixToken)).to.eql(endState);
+      });
+
+      it('should return expected object for clearSocket', () => {
+        expect(actions.clearSocket()).to.eql({type: actions.CLEAR_SOCKET});
+      });
+    });
+  });
 });
