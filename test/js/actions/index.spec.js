@@ -158,5 +158,25 @@ describe('index', () => {
         expect(actions.closeConfirmModal()).to.eql({type: actions.CLOSE_CONFIRM_MODAL});
       });
     });
+
+    describe('ward', () => {
+      it('should return expected object for addWard', () => {
+        let params = { ward_params: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.ADD_WARD}, params);
+        expect(actions.addWard(params.ward_params)).to.eql(endState);
+      });
+
+      it('should return expected object for removeWard', () => {
+        let params = { ward_id: 1 };
+        let endState = Object.assign({}, {type: actions.REMOVE_WARD}, params);
+        expect(actions.removeWard(params.ward_id)).to.eql(endState);
+      });
+
+      it('should return expected object for updateWard', () => {
+        let params = { ward_params: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.UPDATE_WARD}, params);
+        expect(actions.updateWard(params.ward_params)).to.eql(endState);
+      });
+    });
   });
 });
