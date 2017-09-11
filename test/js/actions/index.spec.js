@@ -178,5 +178,97 @@ describe('index', () => {
         expect(actions.updateWard(params.ward_params)).to.eql(endState);
       });
     });
+
+    describe('wardAccount', () => {
+      it('should return expected object for addWardAccount', () => {
+        let params = { ward_account_params: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.ADD_WARD_ACCOUNT}, params);
+        expect(actions.addWardAccount(params.ward_account_params)).to.eql(endState);
+      });
+
+      it('should return expected object for removeWardAccount', () => {
+        let params = { ward_account_id: 1 };
+        let endState = Object.assign({}, {type: actions.REMOVE_WARD_ACCOUNT}, params);
+        expect(actions.removeWardAccount(params.ward_account_id)).to.eql(endState);
+      });
+
+      it('should return expected object for updateWardAccount', () => {
+        let params = { ward_account_params: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.UPDATE_WARD_ACCOUNT}, params);
+        expect(actions.updateWardAccount(params.ward_account_params)).to.eql(endState);
+      });
+    });
+
+    describe('wardResult', () => {
+      it('should return expected object for addWardResult', () => {
+        let params = { ward_result_params: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.ADD_WARD_RESULT}, params);
+        expect(actions.addWardResult(params.ward_result_params)).to.eql(endState);
+      });
+
+      it('should return expected object for clearWardResults', () => {
+        expect(actions.clearWardResults()).to.eql({type: actions.CLEAR_WARD_RESULTS});
+      });
+
+      it('should return expected object for addWardResults', () => {
+        let params = { ward_results: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.ADD_WARD_RESULTS}, params);
+        expect(actions.addWardResults(params.ward_results)).to.eql(endState);
+      });
+
+      it('should return expected object for removeWardResult', () => {
+        let params = { ward_result: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.REMOVE_WARD_RESULT}, params);
+        expect(actions.removeWardResult(params.ward_result)).to.eql(endState);
+      });
+
+      it('should return expected object for removeWardResults', () => {
+        let params = { ward_results: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.REMOVE_WARD_RESULTS}, params);
+        expect(actions.removeWardResults(params.ward_results)).to.eql(endState);
+      });
+    });
+
+    describe('backend', () => {
+      it('should return expected object for setBackends', () => {
+        let params = { backends: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.SET_BACKENDS}, params);
+        expect(actions.setBackends(params.backends)).to.eql(endState);
+      });
+    });
+
+    describe('modalForm', () => {
+      it('should return expected object for setFormValues', () => {
+        let params = { form_values: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.SET_FORM_VALUES}, params);
+        expect(actions.setFormValues(params.form_values)).to.eql(endState);
+      });
+
+      it('should return expected object for clearFormValues', () => {
+        expect(actions.clearFormValues()).to.eql({type: actions.CLEAR_FORM_VALUES});
+      });
+
+      it('should return expected object for setFormErrors', () => {
+        let params = { form_errors: {name: 'name'} };
+        let endState = Object.assign({}, {type: actions.SET_FORM_ERRORS}, params);
+        expect(actions.setFormErrors(params.form_errors)).to.eql(endState);
+      });
+
+      it('should return expected object for clearFormErrors', () => {
+        expect(actions.clearFormErrors()).to.eql({type: actions.CLEAR_FORM_ERRORS});
+      });
+
+      it('should return expected object for addFormError', () => {
+        let params = { key: 'key', value: 'value' };
+        let endState = Object.assign({}, {type: actions.ADD_FORM_ERROR}, params);
+        expect(actions.addFormError(params.key, params.value)).to.eql(endState);
+      });
+
+      it('should return expected object for addFormValue', () => {
+        let params = { key: 'key', value: 'value' };
+        let endState = Object.assign({}, {type: actions.ADD_FORM_VALUE}, params);
+        expect(actions.addFormValue(params.key, params.value)).to.eql(endState);
+      });
+    });
   });
 });
