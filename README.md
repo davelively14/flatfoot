@@ -1,7 +1,7 @@
 # Flatfoot
 [![Build Status](https://travis-ci.org/davelively14/flatfoot.svg?branch=master)](https://travis-ci.org/davelively14/flatfoot) &nbsp;&nbsp;[View Heroku Demo](https://obscure-reef-78695.herokuapp.com/)
 
-Monitors and reports if someone you are tracking is a victim of cyberbullying or making cries for help.
+Monitors and reports if someone you are tracking is a victim of cyberbullying or making cries for help. Capstone for my Bloc web development course.
 
 ## Table of Contents
 
@@ -9,7 +9,6 @@ Monitors and reports if someone you are tracking is a victim of cyberbullying or
 * [Intro](#intro)
 * [Demo installation instructions](#install)
 * [Getting started](#getting-started)
-* [Live Demo](#demo)
 
 ## <a name="docs"></a>Documentation links
 
