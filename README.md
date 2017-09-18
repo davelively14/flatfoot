@@ -42,7 +42,7 @@ config :flatfoot, Flatfoot.Repo,
   hostname: "localhost",
   pool_size: 10
 ```
-* Create a file called `config/dev.secret.exs` and populate with the following (this is where you'll put your Twitter dev account info):
+* Create a file called `config/dev.secret.exs` and populate with the following (replace the "YOUR_KEY_HERE" values with your Twitter dev account info):
 
 ```elixir
 use Mix.Config
