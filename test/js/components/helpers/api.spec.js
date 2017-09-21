@@ -5,3 +5,13 @@ describe('uri', () => {
     expect(api.uri).to.eq('http://localhost:4000/');
   });
 });
+
+// describe('fetchUser', () => {
+//   let fileInjector;
+//
+//   beforeEach(() => {
+//     let fetchUser = api.fetchUser;
+//     fileInjector = require('inject-loader!fetchUser');
+//
+//   });
+// });
