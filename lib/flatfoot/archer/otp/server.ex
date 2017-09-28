@@ -1,6 +1,6 @@
 defmodule Flatfoot.Archer.Server do
   use GenServer
-  alias Flatfoot.Archer.{FidoSupervisor}
+  alias Flatfoot.Archer
 
   defmodule ArcherState do
     defstruct sup: nil
@@ -20,18 +20,18 @@ defmodule Flatfoot.Archer.Server do
 
   ## Examples
 
-    iex> config =
+    iex> configs =
     iex> [
-    iex> mfa: {Archer.Twitter, :start_link, [return_pid, ids_map, handle, last_msg_id]},
-    iex> mfa: {Archer.Facebook, :start_link, [return_pid, ids_map, handle, last_msg_id]}
+    iex> mfa: {Elixir.Flatfoot.Archer.Twitter, :start_link, [return_pid, ids_map, handle, last_msg_id]},
+    iex> mfa: {Elixir.Flatfoot.Archer.Facebook, :start_link, [return_pid, ids_map, handle, last_msg_id]}
     iex> ]
-    [mfa: {Archer.Twitter, :start_link, [#PID<0.659.0>, %{...}, "@handle", "234242"]}, mfa: {Archer.Facebook, :start_link, [#PID<0.659.0>, %{...}, "username", "123"]}]
-    iex> fetch_data(config)
+    [mfa: {Elixir.Flatfoot.Archer.Twitter, :start_link, [#PID<0.659.0>, %{...}, "@handle", "234242"]}, mfa: {Elixir.Flatfoot.Archer.Facebook, :start_link, [#PID<0.659.0>, %{...}, "username", "123"]}]
+    iex> fetch_data(configs)
 
 
   """
-  def fetch_data(config) do
-    GenServer.cast(__MODULE__, {:fetch_data, config})
+  def fetch_data(configs) do
+    GenServer.cast(__MODULE__, {:fetch_data, configs})
   end
 
   def get_state do
@@ -72,7 +72,7 @@ defmodule Flatfoot.Archer.Server do
     # that module, and any arguments in a list. Note that FidoSupervisor only
     # exists as a named Task.Supervisor child within ArcherSupervisor - you
     # won't find a separate fido_supervisor.ex.
-    {:ok, _pid} = Task.Supervisor.start_child(FidoSupervisor, mod, fun, args)
+    {:ok, _pid} = Task.Supervisor.start_child(Archer.FidoSupervisor, mod, fun, args)
     dispatch_fido(tail)
   end
 end
