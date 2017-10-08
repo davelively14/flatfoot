@@ -68,9 +68,9 @@ defmodule Flatfoot.ArcherTest do
 
   describe "fetch_data/1" do
     test "with valid configs, returns :ok and new data" do
-      user = insert(:user)
+      user = insert(:spade_user)
       ward = insert(:ward, user: user)
-      backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
+      backend = insert(:spade_backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
       ward_account = insert(:ward_account, backend: backend, ward: ward)
 
       configs = [%{mfa: {

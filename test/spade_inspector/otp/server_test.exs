@@ -18,9 +18,9 @@ defmodule Flatfoot.SpadeInspector.ServerTest do
 
   describe "fetch_update/1" do
     test "with valid ward_id, casts and awaits reply" do
-      user = insert(:user)
+      user = insert(:spade_user)
       ward = insert(:ward, user: user)
-      backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
+      backend = insert(:spade_backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
       ward_account = insert(:ward_account, ward: ward, backend: backend, handle: "@sarahinatlanta")
 
       use_cassette "twitter.fetch" do

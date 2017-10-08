@@ -12,6 +12,14 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def spade_user_factory do
+    %Flatfoot.Spade.User{
+      username: Faker.Internet.user_name,
+      email: Faker.Internet.free_email,
+      global_threshold: Enum.random(0..100)
+    }
+  end
+
   def session_factory do
     %Flatfoot.Clients.Session{
       token: SecureRandom.urlsafe_base64(),
@@ -50,12 +58,22 @@ defmodule Flatfoot.Factory do
     }
   end
 
+  def spade_backend_factory do
+    name = Faker.Name.name
+
+    %Flatfoot.Spade.Backend{
+      name: name,
+      url: Faker.Internet.url,
+      module: "Flatfoot.Archer.#{name |> String.split(" ") |> Enum.map(&String.capitalize/1) |> List.to_string}"
+    }
+  end
+
   def ward_factory do
     %Flatfoot.Spade.Ward{
       name: Faker.Name.name,
       relationship: Faker.Team.creature,
       active: [true, false] |> Enum.random,
-      user: build(:user)
+      user: build(:spade_user)
     }
   end
 
@@ -63,14 +81,14 @@ defmodule Flatfoot.Factory do
     %Flatfoot.Spade.WardAccount{
       handle: Faker.Internet.user_name,
       ward: build(:ward),
-      backend: build(:backend)
+      backend: build(:spade_backend)
     }
   end
 
   def watchlist_factory do
     %Flatfoot.Spade.Watchlist{
       name: Faker.Name.name,
-      user: build(:user)
+      user: build(:spade_user)
     }
   end
 
@@ -88,7 +106,7 @@ defmodule Flatfoot.Factory do
     %Flatfoot.Spade.SuspectAccount{
       handle: Faker.Internet.user_name,
       suspect: build(:suspect),
-      backend: build(:backend)
+      backend: build(:spade_backend)
     }
   end
 
@@ -100,7 +118,7 @@ defmodule Flatfoot.Factory do
       msg_id: Enum.random(1000..1999) |> to_string,
       msg_text: Faker.Lorem.Shakespeare.hamlet,
       ward_account: build(:ward_account),
-      backend: build(:backend),
+      backend: build(:spade_backend),
       timestamp: random_ecto_datetime()
     }
   end

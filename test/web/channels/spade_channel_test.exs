@@ -494,8 +494,8 @@ defmodule FlatfootWeb.SpadeChannelTest do
   #####################
 
   defp generate_and_return_watchlist_data(user) do
-    watchlists = insert_list(2, :watchlist, user: user)
-    backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
+    watchlists = insert_list(2, :watchlist, user: Spade.get_user!(user.id))
+    backend = insert(:spade_backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
     suspects =
       watchlists
       |> Enum.map(fn (watchlist) ->
@@ -512,8 +512,8 @@ defmodule FlatfootWeb.SpadeChannelTest do
   end
 
   defp generate_and_return_ward_data(user) do
-    wards = insert_list(2, :ward, user: user)
-    backend = insert(:backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
+    wards = insert_list(2, :ward, user: Spade.get_user!(user.id))
+    backend = insert(:spade_backend, module: "Elixir.Flatfoot.Archer.Backend.Twitter")
     ward_accounts =
       wards
       |> Enum.map(fn (ward) ->

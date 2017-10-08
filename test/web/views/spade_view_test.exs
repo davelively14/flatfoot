@@ -7,7 +7,7 @@ defmodule FlatfootWeb.SpadeViewTest do
   setup do
     watchlist = insert(:watchlist)
     suspect = insert(:suspect, watchlist: watchlist)
-    backend = insert(:backend)
+    backend = insert(:spade_backend)
     suspect_account = insert(:suspect_account, suspect: suspect, backend: backend)
 
     preloaded_watchlist = Spade.get_watchlist_preload!(watchlist.id)

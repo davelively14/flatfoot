@@ -94,7 +94,7 @@ defmodule Flatfoot.ClientsTest do
 
     test "deletes associated wards from Archer" do
       user = insert(:user)
-      ward = insert(:ward, user: user)
+      ward = insert(:ward, user: Flatfoot.Spade.get_user!(user.id))
 
       Clients.delete_user(user)
       assert nil == Flatfoot.Spade.get_ward(ward.id)

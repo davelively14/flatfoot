@@ -86,8 +86,8 @@ defmodule Flatfoot.SpadeTest do
 
   describe "get_user_preload/1" do
     test "with valid id returns a user" do
-      user = insert(:user)
-      backend = insert(:backend)
+      user = insert(:spade_user)
+      backend = insert(:spade_backend)
 
       watchlist = insert(:watchlist, user: user)
       suspect = insert(:suspect, watchlist: watchlist)
@@ -163,7 +163,7 @@ defmodule Flatfoot.SpadeTest do
 
   describe "list_wards/1" do
     test "with valid user_id, returns all wards for that user" do
-      user = insert(:user)
+      user = insert(:spade_user)
       user_wards = insert(:ward, user: user)
       insert_list(2, :ward)
 
@@ -181,7 +181,7 @@ defmodule Flatfoot.SpadeTest do
 
   describe "list_wards_preload/1" do
     test "with valid user_id, returns all associated wards and preloaded associations" do
-      user = insert(:user)
+      user = insert(:spade_user)
       ward = insert(:ward, user: user)
       ward_account = insert(:ward_account, ward: ward)
 
@@ -424,7 +424,7 @@ defmodule Flatfoot.SpadeTest do
 
   describe "get_ward_account_preload!/1" do
     test "with valid ward_account_id, returns a single ward account with backload preloaded" do
-      backend = insert(:backend)
+      backend = insert(:spade_backend)
       account = insert(:ward_account, backend: backend)
 
       result = Spade.get_ward_account_preload!(account.id)
@@ -516,7 +516,7 @@ defmodule Flatfoot.SpadeTest do
 
   describe "list_watchlists/1" do
     test "with valid user_id, returns list of watchlists" do
-      user = insert(:user)
+      user = insert(:spade_user)
       watchlist = insert(:watchlist, user: user)
       insert_list(3, :watchlist)
 
@@ -535,7 +535,7 @@ defmodule Flatfoot.SpadeTest do
 
   describe "list_watchlist_preload/1" do
     test "with valid user id, loads watchlist and all preloads" do
-      user = insert(:user)
+      user = insert(:spade_user)
       watchlist = insert(:watchlist, user: user)
       suspect = insert(:suspect, watchlist: watchlist)
       suspect_account = insert(:suspect_account, suspect: suspect)
@@ -919,7 +919,7 @@ defmodule Flatfoot.SpadeTest do
     test "with valid token, returns results for all associated ward_accounts in correct order" do
       user = insert(:user)
       session = insert(:session, user: user)
-      ward = insert(:ward, user: user)
+      ward = insert(:ward, user: Spade.get_user!(user.id))
       ward_account1 = insert(:ward_account, ward: ward)
       ward_account2 = insert(:ward_account, ward: ward)
       ward_result1 = insert(:ward_result, ward_account: ward_account2, timestamp: Ecto.DateTime.cast({{2016, 1, 1}, {0,0,0}}) |> elem(1), rating: 100)
@@ -934,7 +934,7 @@ defmodule Flatfoot.SpadeTest do
     test "with valid token and as_of date, returns correct results" do
       user = insert(:user)
       session = insert(:session, user: user)
-      ward = insert(:ward, user: user)
+      ward = insert(:ward, user: Spade.get_user!(user.id))
       ward_account = insert(:ward_account, ward: ward)
       ward_result = insert(:ward_result, ward_account: ward_account)
 
@@ -946,7 +946,7 @@ defmodule Flatfoot.SpadeTest do
     test "with valid token and invalid as_of date, returns an error" do
       user = insert(:user)
       session = insert(:session, user: user)
-      ward = insert(:ward, user: user)
+      ward = insert(:ward, user: Spade.get_user!(user.id))
       ward_account = insert(:ward_account, ward: ward)
       insert(:ward_result, ward_account: ward_account)
 
