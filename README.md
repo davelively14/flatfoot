@@ -1,5 +1,6 @@
 # Flatfoot
-[![Build Status](https://travis-ci.org/davelively14/flatfoot.svg?branch=master)](https://travis-ci.org/davelively14/flatfoot) &nbsp;&nbsp;[View Heroku Demo](https://obscure-reef-78695.herokuapp.com/)
+[![Build Status](https://travis-ci.org/davelively14/flatfoot.svg?branch=master)](https://travis-ci.org/davelively14/flatfoot) &nbsp;&nbsp;[View Heroku Demo](https://obscure-reef-78695.herokuapp.com
+[![Coverage Status](https://coveralls.io/repos/github/davelively14/flatfoot/badge.svg?branch=master)](https://coveralls.io/github/davelively14/flatfoot?branch=master)
 
 Monitors and reports if someone you are tracking is a victim of cyberbullying or making cries for help. Capstone for my Bloc web development course.
 

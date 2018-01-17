@@ -11,6 +11,7 @@
   "elixir_make": {:hex, :elixir_make, "0.4.0", "992f38fabe705bb45821a728f20914c554b276838433349d4f2341f7a687cddf", [:mix], []},
   "ex_machina": {:hex, :ex_machina, "2.0.0", "ec284c6f57233729cea9319e083f66e613e82549f78eccdb2059aeba5d0df9f3", [:mix], [{:ecto, "~> 2.1", [hex: :ecto, optional: true]}]},
   "exactor": {:hex, :exactor, "2.2.3", "a6972f43bb6160afeb73e1d8ab45ba604cd0ac8b5244c557093f6e92ce582786", [:mix], []},
+  "excoveralls": {:hex, :excoveralls, "0.8.0", "99d2691d3edf8612f128be3f9869c4d44b91c67cec92186ce49470ae7a7404cf", [], [{:exjsx, ">= 3.0.0", [hex: :exjsx, repo: "hexpm", optional: false]}, {:hackney, ">= 0.12.0", [hex: :hackney, repo: "hexpm", optional: false]}], "hexpm"},
   "exjsx": {:hex, :exjsx, "3.2.1", "1bc5bf1e4fd249104178f0885030bcd75a4526f4d2a1e976f4b428d347614f0f", [:mix], [{:jsx, "~> 2.8.0", [hex: :jsx, optional: false]}]},
   "exvcr": {:hex, :exvcr, "0.8.7", "e76f33b10dfefbcf32afa6d6867140566d0d54797e352b47485eed0241dd7edf", [:mix], [{:exactor, "~> 2.2", [hex: :exactor, optional: false]}, {:exjsx, "~> 3.2", [hex: :exjsx, optional: false]}, {:httpoison, "~> 0.8", [hex: :httpoison, optional: true]}, {:httpotion, "~> 3.0", [hex: :httpotion, optional: true]}, {:ibrowse, "~> 4.2.2", [hex: :ibrowse, optional: true]}, {:meck, "~> 0.8.3", [hex: :meck, optional: false]}]},
   "faker": {:hex, :faker, "0.7.0", "2c42deeac7be717173c78c77fb3edc749fb5d5e460e33d01fe592ae99acc2f0d", [:mix], []},

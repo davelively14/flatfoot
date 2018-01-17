@@ -9,6 +9,8 @@ defmodule Flatfoot.Mixfile do
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: [coveralls: :test],
      deps: deps()]
   end
 
@@ -44,6 +46,7 @@ defmodule Flatfoot.Mixfile do
      {:secure_random, "~> 0.5"},
      {:httpoison, "~> 0.11.1"},
      {:csv, "~> 1.4.2"},
+     {:excoveralls, "~> 0.8", only: :test},
      {:cowboy, "~> 1.0"}]
   end
 
