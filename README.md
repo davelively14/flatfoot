@@ -4,6 +4,8 @@
 
 Monitors and reports if someone you are tracking is a victim of cyberbullying or making cries for help. Capstone for my Bloc web development course.
 
+[Link to presentation](https://docs.google.com/presentation/d/1DizgJApp2Nh0CHDvFSuoKyeqatdNqTP3mReYv4xEBCs/edit?usp=sharing) from 2017 detailing this project and how it utilized the new architecture in Phoenix 1.3-rc.
+
 ## Table of Contents
 
 * [Documentation links](#docs)
